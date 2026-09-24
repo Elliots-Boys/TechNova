@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://technova-bmm.pages.dev/index.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/events.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/register.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/technology.html</loc></url>
@@ -33,4 +33,10 @@
   <url><loc>https://technova-bmm.pages.dev/pages/glossary.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/learning.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/showcase.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/projects.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/updates.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/experiments.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/status.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/submit.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/notifications.html</loc></url>
 </urlset>
