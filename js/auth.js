@@ -145,8 +145,17 @@ async function loadAccount() {
       const details = [r.events?.event_date, r.events?.event_time, r.events?.location].filter(Boolean);
       meta.textContent = details.join(' · ') || 'Registration saved';
 
+      const actions = document.createElement('div');
+      actions.className = 'event-actions';
+      const cancel = document.createElement('button');
+      cancel.className = 'cancel-event';
+      cancel.type = 'button';
+      cancel.textContent = 'Remove';
+      cancel.addEventListener('click', () => cancelEvent(r.event_id, item, r.events?.title || 'this event'));
+      actions.append(cancel);
+
       body.append(title, meta);
-      item.append(icon, body);
+      item.append(icon, body, actions);
       return item;
     }));
   } catch (error) {
@@ -173,3 +182,30 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.querySelector('#myEvents')) loadAccount();
   finishPasswordReset();
 });
+
+async function cancelEvent(eventId, item, eventTitle) {
+  if (!confirm(`Remove your registration for "${eventTitle}"?`)) return;
+  const button = item.querySelector('.cancel-event');
+  if (button) { button.disabled = true; button.textContent = 'Removing…'; }
+
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) { location.href = 'login.html'; return; }
+
+  const { error } = await supabaseClient
+    .from('event_registrations')
+    .delete()
+    .eq('event_id', eventId)
+    .eq('user_id', user.id);
+
+  if (error) {
+    if (button) { button.disabled = false; button.textContent = 'Remove'; }
+    setAccountMessage(error.message || 'Could not remove the registration.');
+    return;
+  }
+
+  item.remove();
+  const list = document.querySelector('#myEvents');
+  if (list && !list.querySelector('.event-item')) {
+    list.innerHTML = '<p class="loading">You have not registered for any events yet. <a href="events.html" style="color:#32d6ff">Browse events →</a></p>';
+  }
+}
