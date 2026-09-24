@@ -175,6 +175,66 @@ async function registerForEvent(eventId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // Add the same compact More menu to auth-only pages such as login and signup.
+  const nav = document.querySelector('header nav');
+  if (nav && !nav.querySelector('.nav-more')) {
+    const pagePrefix = '';
+    const links = [
+      ['Discover', 'discover.html'],
+      ['Community', 'community.html'],
+      ['Resources', 'resources.html'],
+      ['FAQ', 'faq.html'],
+      ['Support', 'support.html'],
+      ['Careers', 'careers.html'],
+      ['Partners', 'partners.html'],
+      ['Saved', 'saved.html'],
+      ['Roadmap', 'roadmap.html'],
+      ['Changelog', 'changelog.html'],
+      ['Accessibility', 'accessibility.html'],
+      ['Sitemap', 'sitemap.html'],
+      ['Settings', 'settings.html'],
+      ['Privacy', 'privacy.html'],
+      ['Terms', 'terms.html']
+    ];
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'nav-more';
+    wrapper.innerHTML = '<button class="nav-more-btn" type="button" aria-expanded="false" aria-haspopup="true">More ▾</button><div class="nav-more-menu" aria-label="More TechNova pages"></div>';
+    const menuBox = wrapper.querySelector('.nav-more-menu');
+
+    links.forEach(([label, file], index) => {
+      const link = document.createElement('a');
+      link.href = pagePrefix + file;
+      link.textContent = label;
+      link.dataset.morePage = file;
+      if (index === links.length - 1) link.classList.add('more-wide');
+      menuBox.appendChild(link);
+    });
+
+    nav.appendChild(wrapper);
+
+    const moreButton = wrapper.querySelector('.nav-more-btn');
+    const closeMore = () => {
+      wrapper.classList.remove('open');
+      moreButton.setAttribute('aria-expanded', 'false');
+    };
+    moreButton.addEventListener('click', event => {
+      event.stopPropagation();
+      const open = wrapper.classList.toggle('open');
+      moreButton.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', event => {
+      if (!wrapper.contains(event.target)) closeMore();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeMore();
+    });
+    const current = location.pathname.split('/').pop() || 'index.html';
+    menuBox.querySelectorAll('a[data-more-page]').forEach(link => {
+      if (link.dataset.morePage === current) link.classList.add('active');
+    });
+  }
   document.querySelector('#signupForm')?.addEventListener('submit', signUp);
   document.querySelector('#loginForm')?.addEventListener('submit', signIn);
   document.querySelector('#forgotPassword')?.addEventListener('click', resetPassword);
