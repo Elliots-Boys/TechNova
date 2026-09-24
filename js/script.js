@@ -6,25 +6,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const box = document.querySelector('#eventsGrid');
   if (!box) return;
 
-  const draw = (events) => {
+  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  }[c]));
+
+  const draw = events => {
     const q = (document.querySelector('#eventSearch')?.value || '').toLowerCase();
     const type = document.querySelector('#eventType')?.value || '';
+
     const filtered = events.filter(e => {
       const text = `${e.title} ${e.location} ${e.event_type} ${e.description || ''}`.toLowerCase();
       return (!q || text.includes(q)) && (!type || e.event_type === type);
     });
-    box.innerHTML = filtered.length ? filtered.map(e => `
-      <article class="panel event">
-        <span class="badge">${e.event_type}</span>
-        <h2>${e.title}</h2>
-        <p class="muted">📅 ${e.event_date}${e.event_time ? ` · ${String(e.event_time).slice(0,5)}` : ''}<br>📍 ${e.location}</p>
-        <p class="muted">${e.description || ''}</p>
-        <button class="btn primary event-register" data-event-id="${e.id}">Register to my account →</button>
-      </article>`).join('') : '<div class="panel">No matching events.</div>';
 
-    box.querySelectorAll('.event-register').forEach(button => {
-      button.addEventListener('click', () => registerForEvent(button.dataset.eventId));
-    });
+    box.innerHTML = filtered.length ? filtered.map(e => {
+      const params = new URLSearchParams({ event: e.title });
+      return `
+      <article class="panel event">
+        <span class="badge">${escapeHtml(e.event_type)}</span>
+        <h2>${escapeHtml(e.title)}</h2>
+        <p class="muted">📅 ${escapeHtml(e.event_date)}${e.event_time ? ` · ${escapeHtml(String(e.event_time).slice(0,5))}` : ''}<br>📍 ${escapeHtml(e.location)}</p>
+        <p class="muted">${escapeHtml(e.description || '')}</p>
+        <a class="btn primary" href="register.html?${params.toString()}">Register →</a>
+      </article>`;
+    }).join('') : '<div class="panel">No matching events.</div>';
   };
 
   const loadEvents = async () => {
@@ -32,11 +37,17 @@ document.addEventListener('DOMContentLoaded', () => {
       box.innerHTML = '<div class="panel">The event service is not configured.</div>';
       return;
     }
-    const { data, error } = await supabaseClient.from('events').select('id,title,event_date,event_time,location,event_type,description,capacity').order('event_date', { ascending: true });
+
+    const { data, error } = await supabaseClient
+      .from('events')
+      .select('id,title,event_date,event_time,location,event_type,description,capacity')
+      .order('event_date', { ascending: true });
+
     if (error) {
-      box.innerHTML = `<div class="panel">Could not load events: ${error.message}</div>`;
+      box.innerHTML = `<div class="panel">Could not load events: ${escapeHtml(error.message)}</div>`;
       return;
     }
+
     draw(data || []);
   };
 
