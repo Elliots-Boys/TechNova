@@ -1,0 +1,10 @@
+{
+  "name":"TechNova",
+  "short_name":"TechNova",
+  "description":"Technology, events, ideas and resources for what's next.",
+  "start_url":"./index.html",
+  "display":"standalone",
+  "background_color":"#050811",
+  "theme_color":"#050811",
+  "orientation":"any"
+}
