@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Account settings · TechNova</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.settings-page{max-width:900px;margin:0 auto;padding:55px 22px 80px}
+.settings-card{background:linear-gradient(180deg,#0d1728,#09111e);border:1px solid #20324b;border-radius:20px;padding:26px;margin-bottom:18px}
+.settings-card h2{margin:0 0 6px}.settings-card>p{color:#91a0b7}
+.settings-form{display:grid;gap:14px;margin-top:20px}.settings-form label{display:grid;gap:7px;font-weight:700;font-size:14px}.settings-form input,.settings-form textarea{background:#08111e;color:#fff;border:1px solid #20324b;padding:12px;border-radius:10px;font:inherit}.settings-form textarea{min-height:120px;resize:vertical}
+.settings-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.status{display:none;margin-top:14px;padding:12px 14px;border-radius:11px}.status.show{display:block}.status.good{background:#0d2a22;border:1px solid #1d725d;color:#a9f3de}.status.bad{background:#27131a;border:1px solid #6b3040;color:#ffb7c5}
+.small{font-size:13px;color:#91a0b7}
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="../index.html">✦ TECHNOVA</a><button id="menu">☰</button>
+<nav><a href="../index.html">Home</a><a href="events.html">Events</a><a href="technology.html">Technology</a><a href="innovation.html">Innovation</a><a href="news.html">News</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="account.html">My account</a><a class="active" href="settings.html">Settings</a></nav>
+</header>
+
+<main class="settings-page">
+<p class="eyebrow">ACCOUNT SETTINGS</p>
+<h1 style="font-size:clamp(42px,6vw,64px);line-height:1.05;margin:8px 0">Make TechNova <span>yours.</span></h1>
+<p class="lead">Update your profile and account preferences.</p>
+
+<section class="settings-card">
+<p class="eyebrow">PROFILE</p><h2>Profile details</h2><p>These details are shown on your TechNova account.</p>
+<form id="profileForm" class="settings-form">
+<label>Display name<input id="displayName" maxlength="80" required></label>
+<label>Bio<textarea id="bio" maxlength="500" placeholder="Tell TechNova a little about yourself"></textarea></label>
+<div class="settings-actions"><button id="profileBtn" class="btn primary" type="submit">Save profile</button><a class="btn" href="account.html">Back to account</a></div>
+<div id="profileStatus" class="status" role="status"></div>
+</form>
+</section>
+
+<section class="settings-card">
+<p class="eyebrow">SECURITY</p><h2>Change password</h2><p>Choose a new password for your TechNova account.</p>
+<form id="passwordForm" class="settings-form">
+<label>New password<input id="newPassword" type="password" minlength="8" required></label>
+<label>Confirm new password<input id="confirmPassword" type="password" minlength="8" required></label>
+<div class="settings-actions"><button id="passwordBtn" class="btn primary" type="submit">Update password</button></div>
+<div id="passwordStatus" class="status" role="status"></div>
+</form>
+</section>
+
+<section class="settings-card">
+<p class="eyebrow">PREFERENCES</p><h2>Site preferences</h2><p>These preferences are saved in this browser.</p>
+<label style="display:flex;align-items:center;gap:10px;margin-top:18px;font-weight:700"><input id="compactMode" type="checkbox"> Use compact event cards</label>
+<p class="small">This only affects your current browser.</p>
+</section>
+</main>
+
+<footer>© 2026 TechNova · Technology for what's next.</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script>
+const supabaseClient=window.supabase.createClient(window.TECHNOVA_SUPABASE_URL,window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
+const show=(id,msg,good=false)=>{const e=document.getElementById(id);e.textContent=msg;e.className='status show'+(good?' good':' bad')};
+document.addEventListener('DOMContentLoaded',async()=>{
+ const header=document.querySelector('header'),menu=document.querySelector('#menu');menu?.addEventListener('click',()=>header?.classList.toggle('open'));
+ const {data:{user}}=await supabaseClient.auth.getUser();
+ if(!user){location.href='login.html';return}
+ const {data:profile}=await supabaseClient.from('profiles').select('display_name,bio').eq('id',user.id).maybeSingle();
+ document.getElementById('displayName').value=profile?.display_name||user.user_metadata?.display_name||user.email?.split('@')[0]||'TechNova member';
+ document.getElementById('bio').value=profile?.bio||'';
+ const compact=document.getElementById('compactMode');compact.checked=localStorage.getItem('technova_compact_events')==='1';
+ compact.addEventListener('change',()=>localStorage.setItem('technova_compact_events',compact.checked?'1':'0'));
+
+ document.getElementById('profileForm').addEventListener('submit',async e=>{
+  e.preventDefault();const b=document.getElementById('profileBtn');b.disabled=true;b.textContent='Saving…';
+  const display_name=document.getElementById('displayName').value.trim(),bio=document.getElementById('bio').value.trim();
+  const {error}=await supabaseClient.from('profiles').upsert({id:user.id,display_name,bio,updated_at:new Date().toISOString()},{onConflict:'id'});
+  if(error)show('profileStatus',error.message);else{await supabaseClient.auth.updateUser({data:{display_name}});show('profileStatus','Profile saved successfully.',true)}
+  b.disabled=false;b.textContent='Save profile';
+ });
+
+ document.getElementById('passwordForm').addEventListener('submit',async e=>{
+  e.preventDefault();const p=document.getElementById('newPassword').value,c=document.getElementById('confirmPassword').value,b=document.getElementById('passwordBtn');
+  if(p.length<8||p!==c){show('passwordStatus',p!==c?'Passwords do not match.':'Password must be at least 8 characters.');return}
+  b.disabled=true;b.textContent='Updating…';const {error}=await supabaseClient.auth.updateUser({password:p});
+  if(error)show('passwordStatus',error.message);else{document.getElementById('passwordForm').reset();show('passwordStatus','Password updated successfully.',true)}
+  b.disabled=false;b.textContent='Update password';
+ });
+});
+</script>
+</body>
+</html>
