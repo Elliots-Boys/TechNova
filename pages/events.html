@@ -1,1 +1,98 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Events · TechNova</title><link rel="stylesheet" href="../css/style.css"></head><body><header><a class="brand" href="../index.html">✦ TECHNOVA</a><button id="menu">☰</button><nav><a href="../index.html">Home</a><a class="active" href="events.html">Events</a><a href="technology.html">Technology</a><a href="innovation.html">Innovation</a><a href="news.html">News</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="account.html">My account</a></nav></header><main class="page"><p class="eyebrow">TECHNOVA EVENTS</p><h1>Meet the <span>future.</span></h1><p class="lead">Discover technology events, then register directly to your TechNova account or use the external registration form.</p><div class="filters"><input id="eventSearch" class="input" placeholder="Search events, cities or topics"><select id="eventType" class="select" style="max-width:190px"><option value="">All types</option><option>Conference</option><option>Meetup</option><option>Security</option><option>Gaming</option><option>Web</option><option>Robotics</option></select></div><div id="eventsGrid" class="grid"><div class="panel">Loading events…</div></div><section id="register" style="margin-top:70px"><p class="eyebrow">EXTERNAL REGISTRATION</p><h2>Register without an account</h2><p class="muted">You can also submit the Jotform registration. The form owner can receive email notifications for new registrations.</p><div class="panel"><iframe src="https://form.jotform.com/262664137150050" title="TechNova Event Registration" style="width:100%;min-height:650px;border:0" loading="lazy"></iframe></div></section></main><footer>© 2026 TechNova</footer><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/supabase-config.js"></script><script src="../js/auth.js"></script><script src="../js/script.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Events · TechNova</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.success-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px;z-index:50;opacity:0;visibility:hidden;transition:.2s}
+.success-overlay.show{opacity:1;visibility:visible}
+.success-box{width:min(500px,100%);background:linear-gradient(145deg,#10233d,#09111e);border:1px solid #2c537c;border-radius:24px;padding:32px;text-align:center;box-shadow:0 30px 90px #0009}
+.success-icon{width:72px;height:72px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;font-size:34px;background:linear-gradient(145deg,#32d6ff,#9b6cff)}
+.success-box h2{font-size:34px;margin:0 0 8px}
+.success-box p{color:#91a0b7;margin:0}
+.success-box .actions{justify-content:center}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="../index.html">✦ TECHNOVA</a>
+  <button id="menu">☰</button>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a class="active" href="events.html">Events</a>
+    <a href="technology.html">Technology</a>
+    <a href="innovation.html">Innovation</a>
+    <a href="news.html">News</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="account.html">My account</a>
+  </nav>
+</header>
+
+<main class="page">
+  <p class="eyebrow">TECHNOVA EVENTS</p>
+  <h1>Meet the <span>future.</span></h1>
+  <p class="lead">Discover technology events. Pick an event below and you'll be taken to the registration form.</p>
+
+  <div class="filters">
+    <input id="eventSearch" class="input" placeholder="Search events, cities or topics">
+    <select id="eventType" class="select" style="max-width:190px">
+      <option value="">All types</option>
+      <option>Conference</option>
+      <option>Meetup</option>
+      <option>Security</option>
+      <option>Gaming</option>
+      <option>Web</option>
+      <option>Robotics</option>
+    </select>
+  </div>
+
+  <div id="eventsGrid" class="grid">
+    <div class="panel">Loading events…</div>
+  </div>
+</main>
+
+<div id="registrationComplete" class="success-overlay" aria-hidden="true">
+  <div class="success-box" role="dialog" aria-modal="true" aria-labelledby="registrationTitle">
+    <div class="success-icon">✓</div>
+    <p class="eyebrow">TECHNOVA EVENTS</p>
+    <h2 id="registrationTitle">Registration complete!</h2>
+    <p>Your event registration has been submitted successfully.</p>
+    <div class="actions">
+      <button id="closeRegistration" class="btn primary">Back to events</button>
+      <a class="btn" href="account.html">View my account</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 TechNova</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.getElementById('registrationComplete');
+  const close = document.getElementById('closeRegistration');
+  const params = new URLSearchParams(location.search);
+
+  if (params.get('registration') === 'complete') {
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+    history.replaceState({}, document.title, 'events.html');
+  }
+
+  close?.addEventListener('click', () => {
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden', 'true');
+  });
+
+  overlay?.addEventListener('click', e => {
+    if (e.target === overlay) close?.click();
+  });
+});
+</script>
+</body>
+</html>
