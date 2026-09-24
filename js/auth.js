@@ -69,18 +69,92 @@ async function signOut(event) {
   location.href = '../index.html';
 }
 
+function setAccountMessage(message) {
+  const el = document.querySelector('#accountMessage');
+  if (!el) return;
+  el.textContent = message;
+  el.classList.add('show');
+}
+
 async function loadAccount() {
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) { location.href = 'login.html'; return; }
-  const { data: profile } = await supabaseClient.from('profiles').select('display_name,bio').eq('id', user.id).maybeSingle();
-  document.querySelector('#accountEmail')?.replaceChildren(document.createTextNode(user.email || ''));
-  document.querySelector('#accountName')?.replaceChildren(document.createTextNode(profile?.display_name || user.email?.split('@')[0] || 'TechNova member'));
-  const { data: registrations } = await supabaseClient.from('event_registrations').select('event_id,events(title,event_date,location)').eq('user_id', user.id).order('created_at', { ascending: false });
   const list = document.querySelector('#myEvents');
-  if (!list) return;
-  list.innerHTML = registrations?.length
-    ? registrations.map(r => `<div class="feature"><span class="icon">🎟️</span><div><b>${r.events?.title || 'Event'}</b><br><span class="muted">${r.events?.event_date || ''} · ${r.events?.location || ''}</span></div></div>`).join('')
-    : '<p class="muted">You have not registered for any events yet.</p>';
+  try {
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    if (userError) throw userError;
+    if (!user) {
+      location.href = 'login.html';
+      return;
+    }
+
+    const nameFallback = user.email?.split('@')[0] || 'TechNova member';
+    document.querySelector('#accountEmail')?.replaceChildren(document.createTextNode(user.email || ''));
+    document.querySelector('#accountName')?.replaceChildren(document.createTextNode(nameFallback));
+
+    const { data: profile, error: profileError } = await supabaseClient
+      .from('profiles')
+      .select('display_name,bio,created_at')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (profileError) console.warn('Profile could not be loaded:', profileError.message);
+
+    const displayName = profile?.display_name || user.user_metadata?.display_name || nameFallback;
+    document.querySelector('#accountName')?.replaceChildren(document.createTextNode(displayName));
+    document.querySelector('#accountBio')?.replaceChildren(
+      document.createTextNode(profile?.bio || 'No bio added yet.')
+    );
+
+    const status = document.querySelector('#accountStatus');
+    if (status) {
+      const joined = profile?.created_at
+        ? new Date(profile.created_at).toLocaleDateString(undefined, { day:'numeric', month:'long', year:'numeric' })
+        : '';
+      status.textContent = joined ? `Signed in · Member since ${joined}` : 'Signed in successfully';
+    }
+
+    if (!list) return;
+
+    const { data: registrations, error: registrationError } = await supabaseClient
+      .from('event_registrations')
+      .select('event_id,created_at,events(title,event_date,event_time,location,event_type)')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (registrationError) throw registrationError;
+
+    if (!registrations?.length) {
+      list.innerHTML = '<p class="loading">You have not registered for any events yet. <a href="events.html" style="color:#32d6ff">Browse events →</a></p>';
+      return;
+    }
+
+    list.replaceChildren(...registrations.map(r => {
+      const item = document.createElement('div');
+      item.className = 'event-item';
+
+      const icon = document.createElement('div');
+      icon.className = 'event-icon';
+      icon.textContent = '🎟️';
+
+      const body = document.createElement('div');
+      const title = document.createElement('div');
+      title.className = 'event-title';
+      title.textContent = r.events?.title || 'TechNova event';
+
+      const meta = document.createElement('div');
+      meta.className = 'event-meta';
+      const details = [r.events?.event_date, r.events?.event_time, r.events?.location].filter(Boolean);
+      meta.textContent = details.join(' · ') || 'Registration saved';
+
+      body.append(title, meta);
+      item.append(icon, body);
+      return item;
+    }));
+  } catch (error) {
+    console.error('TechNova account error:', error);
+    document.querySelector('#accountStatus')?.replaceChildren(document.createTextNode('Signed in, but some account data could not be loaded.'));
+    if (list) list.innerHTML = '<p class="loading">We could not load your events right now. Refresh the page and try again.</p>';
+    setAccountMessage(error?.message || 'There was a problem loading your account.');
+  }
 }
 
 async function registerForEvent(eventId) {
