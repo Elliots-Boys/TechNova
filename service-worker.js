@@ -1,8 +1,14 @@
-const CACHE = 'technova-shell-v1';
-const OFFLINE = './offline.html';
+const CACHE = 'technova-shell-v2';
+const CORE = [
+  './offline.html',
+  './index.html',
+  './css/style.css',
+  './js/script.js',
+  './manifest.webmanifest'
+];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll([OFFLINE])));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)));
   self.skipWaiting();
 });
 
@@ -18,10 +24,12 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        const copy = response.clone();
-        caches.open(CACHE).then(cache => cache.put(event.request, copy)).catch(() => {});
+        if (response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE).then(cache => cache.put(event.request, copy)).catch(() => {});
+        }
         return response;
       })
-      .catch(() => caches.match(event.request).then(cached => cached || caches.match(OFFLINE)))
+      .catch(() => caches.match(event.request).then(cached => cached || caches.match('./offline.html')))
   );
 });
