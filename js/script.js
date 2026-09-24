@@ -3,70 +3,120 @@ document.addEventListener('DOMContentLoaded', () => {
   const menu = document.querySelector('#menu');
   menu?.addEventListener('click', () => header?.classList.toggle('open'));
 
-  // Keep the main navbar clean while making every new TechNova page easy to find.
+  // Keep the top navbar focused on primary destinations. Put secondary pages in a slide-out side drawer.
   const nav = document.querySelector('header nav');
-  if (nav && !nav.querySelector('.nav-more')) {
-    const rootPrefix = location.pathname.includes('/pages/') || document.querySelector('link[href="../css/style.css"]') ? '' : 'pages/';
-    const pagePrefix = rootPrefix ? 'pages/' : '';
-    const links = [
-      ['Discover', 'discover.html'],
-      ['Community', 'community.html'],
-      ['Resources', 'resources.html'],
-      ['FAQ', 'faq.html'],
-      ['Support', 'support.html'],
-      ['Careers', 'careers.html'],
-      ['Partners', 'partners.html'],
-      ['Saved', 'saved.html'],
-      ['Roadmap', 'roadmap.html'],
-      ['Changelog', 'changelog.html'],
-      ['Accessibility', 'accessibility.html'],
-      ['Sitemap', 'sitemap.html'],
-      ['Settings', 'settings.html'],
-      ['Privacy', 'privacy.html'],
-      ['Terms', 'terms.html']
+  if (nav && !document.querySelector('.site-drawer')) {
+    const inPages = location.pathname.includes('/pages/');
+    const prefix = inPages ? '' : 'pages/';
+    const groups = [
+      {
+        title: 'Explore',
+        items: [
+          ['🔎','Search','search.html'],
+          ['✦','Discover','discover.html'],
+          ['🌐','Community','community.html'],
+          ['📚','Resources','resources.html'],
+          ['💾','Saved','saved.html']
+        ]
+      },
+      {
+        title: 'Help & information',
+        items: [
+          ['❓','FAQ','faq.html'],
+          ['💬','Support','support.html'],
+          ['🧭','Sitemap','sitemap.html'],
+          ['♿','Accessibility','accessibility.html']
+        ]
+      },
+      {
+        title: 'TechNova',
+        items: [
+          ['💼','Careers','careers.html'],
+          ['🤝','Partners','partners.html'],
+          ['🗺️','Roadmap','roadmap.html'],
+          ['📝','Changelog','changelog.html']
+        ]
+      },
+      {
+        title: 'Account & legal',
+        items: [
+          ['⚙️','Settings','settings.html'],
+          ['🔒','Privacy','privacy.html'],
+          ['📄','Terms','terms.html']
+        ]
+      }
     ];
 
-    const wrapper = document.createElement('div');
-    wrapper.className = 'nav-more';
-    wrapper.innerHTML = '<button class="nav-more-btn" type="button" aria-expanded="false" aria-haspopup="true">More ▾</button><div class="nav-more-menu" aria-label="More TechNova pages"></div>';
-    const menuBox = wrapper.querySelector('.nav-more-menu');
+    const overlay = document.createElement('div');
+    overlay.className = 'site-drawer-overlay';
 
-    links.forEach(([label, file], index) => {
-      const a = document.createElement('a');
-      a.href = pagePrefix + file;
-      a.textContent = label;
-      a.dataset.morePage = file;
-      if (index === links.length - 1) a.classList.add('more-wide');
-      menuBox.appendChild(a);
+    const drawer = document.createElement('aside');
+    drawer.className = 'site-drawer';
+    drawer.setAttribute('aria-hidden','true');
+
+    const head = document.createElement('div');
+    head.className = 'site-drawer-head';
+    head.innerHTML = '<div><p class="eyebrow" style="margin:0 0 3px">MORE TECHNOVA</p><h2>Explore the site</h2></div><button class="site-drawer-close" type="button" aria-label="Close menu">×</button>';
+
+    const content = document.createElement('div');
+    content.className = 'site-drawer-content';
+
+    const current = location.pathname.split('/').pop() || 'index.html';
+    groups.forEach(group => {
+      const section = document.createElement('section');
+      section.className = 'drawer-section';
+      section.innerHTML = '<h3 class="drawer-section-title"></h3><div class="drawer-links"></div>';
+      section.querySelector('h3').textContent = group.title;
+      const links = section.querySelector('.drawer-links');
+
+      group.items.forEach(([icon,label,file]) => {
+        const a = document.createElement('a');
+        a.href = prefix + file;
+        a.dataset.drawerPage = file;
+        if (file === current) a.classList.add('active');
+        a.innerHTML = '<span class="drawer-icon" aria-hidden="true"></span><span></span>';
+        a.querySelector('.drawer-icon').textContent = icon;
+        a.querySelector('span:last-child').textContent = label;
+        links.appendChild(a);
+      });
+      content.appendChild(section);
     });
 
-    nav.appendChild(wrapper);
+    const note = document.createElement('p');
+    note.className = 'drawer-note';
+    note.textContent = 'Primary navigation stays in the header. This panel keeps the rest of TechNova one click away without filling the navbar.';
+    content.appendChild(note);
 
-    const moreButton = wrapper.querySelector('.nav-more-btn');
-    const closeMore = () => {
-      wrapper.classList.remove('open');
-      moreButton.setAttribute('aria-expanded', 'false');
+    drawer.append(head, content);
+    document.body.append(overlay, drawer);
+
+    const trigger = document.createElement('button');
+    trigger.className = 'site-drawer-trigger';
+    trigger.type = 'button';
+    trigger.setAttribute('aria-expanded','false');
+    trigger.setAttribute('aria-controls','technova-more-drawer');
+    trigger.textContent = 'More';
+    drawer.id = 'technova-more-drawer';
+
+    const close = () => {
+      drawer.classList.remove('open');
+      overlay.classList.remove('open');
+      drawer.setAttribute('aria-hidden','true');
+      trigger.setAttribute('aria-expanded','false');
+    };
+    const open = () => {
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+      drawer.setAttribute('aria-hidden','false');
+      trigger.setAttribute('aria-expanded','true');
     };
 
-    moreButton.addEventListener('click', event => {
-      event.stopPropagation();
-      const open = wrapper.classList.toggle('open');
-      moreButton.setAttribute('aria-expanded', String(open));
-    });
+    trigger.addEventListener('click', () => drawer.classList.contains('open') ? close() : open());
+    head.querySelector('.site-drawer-close').addEventListener('click', close);
+    overlay.addEventListener('click', close);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 
-    document.addEventListener('click', event => {
-      if (!wrapper.contains(event.target)) closeMore();
-    });
-
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') closeMore();
-    });
-
-    // Highlight the page currently being viewed inside the More menu.
-    const current = location.pathname.split('/').pop() || 'index.html';
-    menuBox.querySelectorAll('a[data-more-page]').forEach(a => {
-      if (a.dataset.morePage === current) a.classList.add('active');
-    });
+    document.body.appendChild(trigger);
   }
 
   const box = document.querySelector('#eventsGrid');
