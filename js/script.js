@@ -26,6 +26,37 @@ document.addEventListener('DOMContentLoaded', () => {
     document.head.appendChild(icon);
   }
 
+  // Accessibility: provide a keyboard skip link even on older pages that were created without one.
+  const main = document.querySelector('main');
+  if (main && !document.querySelector('.skip-link')) {
+    main.id = main.id || 'main-content';
+    const skip = document.createElement('a');
+    skip.className = 'skip-link';
+    skip.href = '#main-content';
+    skip.textContent = 'Skip to main content';
+    document.body.prepend(skip);
+  }
+
+  // Give every page the same polished footer without requiring duplicate markup in every file.
+  const footer = document.querySelector('footer');
+  if (footer && !footer.dataset.enhanced) {
+    footer.dataset.enhanced = 'true';
+    footer.innerHTML = `
+      <div class="site-footer-inner">
+        <div class="footer-brand">
+          <a class="brand" href="${rootPrefix}index.html">✦ TECHNOVA</a>
+          <p>Technology, events, ideas and resources for what's next.</p>
+          <span>Built as a connected technology hub.</span>
+        </div>
+        <div class="footer-links">
+          <div><strong>Explore</strong><a href="${rootPrefix}pages/events.html">Events</a><a href="${rootPrefix}pages/technology.html">Technology</a><a href="${rootPrefix}pages/search.html">Search</a><a href="${rootPrefix}pages/community.html">Community</a></div>
+          <div><strong>Company</strong><a href="${rootPrefix}pages/about.html">About</a><a href="${rootPrefix}pages/careers.html">Careers</a><a href="${rootPrefix}pages/partners.html">Partners</a><a href="${rootPrefix}pages/contact.html">Contact</a></div>
+          <div><strong>Help</strong><a href="${rootPrefix}pages/support.html">Support</a><a href="${rootPrefix}pages/faq.html">FAQ</a><a href="${rootPrefix}pages/accessibility.html">Accessibility</a><a href="${rootPrefix}pages/privacy.html">Privacy</a></div>
+        </div>
+      </div>
+      <div class="site-footer-bottom"><span>© ${new Date().getFullYear()} TechNova</span><span class="footer-key">Press <kbd>Ctrl</kbd> + <kbd>K</kbd> to search anywhere</span></div>`;
+  }
+
   // Primary navigation: highlight the current route without requiring manual markup.
   const primaryLinks = document.querySelectorAll('header nav > a');
   primaryLinks.forEach(link => {
