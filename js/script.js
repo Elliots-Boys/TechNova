@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </article>`).join('') : '<div class="panel">No matching events.</div>';
 
     box.querySelectorAll('.event-register').forEach(button => {
-      button.addEventListener('click', () => registerForEvent(Number(button.dataset.eventId)));
+      button.addEventListener('click', () => registerForEvent(button.dataset.eventId));
     });
   };
 
