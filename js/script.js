@@ -270,17 +270,53 @@ document.addEventListener('DOMContentLoaded', () => {
       return (!q || text.includes(q)) && (!type || e.event_type === type);
     });
 
+    const relativeDate = event => {
+      const start = new Date(`${event.event_date}T${event.event_time || '00:00'}`);
+      if (Number.isNaN(start.getTime())) return '';
+      const diff = start.getTime() - Date.now();
+      const days = Math.ceil(Math.abs(diff) / 86400000);
+      if (Math.abs(diff) < 86400000) return diff >= 0 ? 'Today' : 'Finished today';
+      return diff >= 0 ? `In ${days} day${days === 1 ? '' : 's'}` : `Ended ${days} day${days === 1 ? '' : 's'} ago`;
+    };
+
     box.innerHTML = filtered.length ? filtered.map(e => {
       const params = new URLSearchParams({ event: e.title });
+      const when = relativeDate(e);
       return `
       <article class="panel event">
-        <span class="badge">${escapeHtml(e.event_type)}</span>
+        <div class="event-topline"><span class="badge">${escapeHtml(e.event_type)}</span><span class="event-countdown">${escapeHtml(when)}</span></div>
         <h2>${escapeHtml(e.title)}</h2>
         <p class="muted">📅 ${escapeHtml(e.event_date)}${e.event_time ? ` · ${escapeHtml(String(e.event_time).slice(0,5))}` : ''}<br>📍 ${escapeHtml(e.location)}</p>
         <p class="muted">${escapeHtml(e.description || '')}</p>
-        <div class="event-card-actions"><a class="btn primary" href="register.html?${params.toString()}">Register →</a><button class="btn event-share" type="button" data-event="${escapeHtml(e.title)}">Share</button></div>
+        <div class="event-card-actions"><a class="btn primary" href="register.html?${params.toString()}">Register →</a><button class="btn event-calendar" type="button" data-event-index="${events.indexOf(e)}">Add to calendar</button><button class="btn event-share" type="button" data-event="${escapeHtml(e.title)}">Share</button></div>
       </article>`;
     }).join('') : '<div class="panel">No matching events.</div>';
+
+    box.querySelectorAll('.event-calendar').forEach(button => {
+      button.addEventListener('click', () => {
+        const event = events[Number(button.dataset.eventIndex)];
+        if (!event) return;
+        const pad = value => String(value).padStart(2,'0');
+        const date = String(event.event_date || '').replace(/-/g,'');
+        const time = String(event.event_time || '00:00').slice(0,5).split(':');
+        const start = date + 'T' + pad(time[0]) + pad(time[1]) + '00';
+        const endDate = new Date(`${event.event_date}T${event.event_time || '00:00'}`);
+        endDate.setHours(endDate.getHours() + 2);
+        const end = endDate.getFullYear() + pad(endDate.getMonth()+1) + pad(endDate.getDate()) + 'T' + pad(endDate.getHours()) + pad(endDate.getMinutes()) + '00';
+        const clean = value => String(value || '').replace(/[\\,;]/g,' ').replace(/\r?\n/g,' ');
+        const ics = [
+          'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//TechNova//Events//EN','BEGIN:VEVENT',
+          `UID:technova-${event.id || event.title}-${event.event_date}@technova`,
+          `DTSTART:${start}`,`DTEND:${end}`,`SUMMARY:${clean(event.title)}`,
+          `LOCATION:${clean(event.location)}`,`DESCRIPTION:${clean(event.description || 'TechNova event')}`,
+          'END:VEVENT','END:VCALENDAR'
+        ].join('\\r\\n');
+        const url = URL.createObjectURL(new Blob([ics], {type:'text/calendar;charset=utf-8'}));
+        const a = document.createElement('a'); a.href = url; a.download = `${clean(event.title).replace(/\\s+/g,'-')}.ics`; a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast('Calendar file created.');
+      });
+    });
 
     box.querySelectorAll('.event-share').forEach(button => {
       button.addEventListener('click', async () => {
