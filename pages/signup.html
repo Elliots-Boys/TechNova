@@ -1,1 +1,44 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Create account · TechNova"><link rel="stylesheet" href="../css/style.css"><style>.auth{max-width:520px;margin:80px auto}.auth-message{margin-top:14px;padding:12px;border-radius:10px;background:#3a1620;color:#ff9aaa}.auth-message.good{background:#0b332b;color:#70f0c1}.auth input{margin:7px 0 14px}</style></head><body><main class="container"><section class="card auth"><div class="eyebrow">Join TechNova</div><h1 style="font-size:48px">Create your <span>account.</span></h1><p class="muted">Save events, manage registrations and build your technology profile.</p><label>Name</label><input id="name" class="input" autocomplete="name"><label>Email</label><input id="email" class="input" type="email" autocomplete="email"><label>Password</label><input id="password" class="input" type="password" minlength="8" autocomplete="new-password"><button id="signupBtn" class="btn primary">Create account</button><p class="muted">Already registered? <a href="login.html" style="color:#32d6ff">Log in</a></p><div id="authMessage" class="auth-message" aria-live="polite"></div></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/supabase-config.js"></script><script src="../js/auth.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Create account · TechNova</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.auth-page{min-height:100vh;display:grid;grid-template-columns:1fr 520px;max-width:1200px;margin:auto;padding:34px 22px;gap:60px;align-items:center}
+.auth-brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;letter-spacing:.08em;margin-bottom:45px}.auth-brand-mark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#32d6ff,#9b6cff);color:#06101d;font-size:22px}
+.auth-copy h1{font-size:clamp(48px,6vw,76px);margin:0 0 20px;line-height:.98}.auth-copy h1 span{color:var(--cyan)}.auth-copy p{max-width:560px;font-size:18px;color:var(--muted)}
+.auth-points{display:grid;gap:12px;margin-top:30px}.auth-point{display:flex;gap:12px;align-items:center;color:#c8d4e5}.auth-point b{width:30px;height:30px;border-radius:9px;background:#10263c;display:grid;place-items:center;color:var(--cyan)}
+.auth-card{background:linear-gradient(180deg,#101b2d,#09111d);border:1px solid #243955;border-radius:24px;padding:32px;box-shadow:0 30px 100px #0008}.auth-card h2{font-size:30px;margin:0 0 8px}.auth-card .sub{color:var(--muted);margin:0 0 25px}.field{margin-bottom:17px}.field label{display:block;font-size:13px;font-weight:700;color:#b7c5d9;margin-bottom:7px}.field input{width:100%;background:#07101c;border:1px solid #253a55;color:#fff;padding:13px 14px;border-radius:11px;outline:0}.field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #32d6ff16}.auth-submit{width:100%;margin-top:3px}.auth-message{display:none;margin-top:15px;padding:12px;border-radius:11px;font-size:14px;background:#3a1620;color:#ff9aaa}.auth-message.show{display:block}.auth-message.good{background:#0b332b;color:#70f0c1}.back-home{display:block;text-align:center;margin-top:22px;color:var(--muted);font-size:13px}.terms{font-size:12px;color:var(--muted);margin:17px 0 0;line-height:1.5}.terms a{color:var(--cyan)}
+@media(max-width:800px){.auth-page{grid-template-columns:1fr;padding:22px}.auth-copy{display:none}.auth-card{margin-top:30px}}
+</style>
+</head>
+<body>
+<main class="auth-page">
+<section class="auth-copy">
+<a class="auth-brand" href="../index.html"><span class="auth-brand-mark">✦</span> TECHNOVA</a>
+<p class="eyebrow">JOIN THE COMMUNITY</p>
+<h1>Create your <span>account.</span></h1>
+<p>Join TechNova and make events, technology discoveries and your personal profile work together.</p>
+<div class="auth-points"><div class="auth-point"><b>✓</b><span>Register for technology events</span></div><div class="auth-point"><b>✓</b><span>Save your favourite content</span></div><div class="auth-point"><b>✓</b><span>Build your TechNova profile</span></div></div>
+</section>
+<section class="auth-card">
+<div class="eyebrow">TECHNOVA ACCOUNT</div>
+<h2>Create account</h2><p class="sub">It only takes a minute to get started.</p>
+<form id="signupForm">
+<div class="field"><label for="name">Full name</label><input id="name" type="text" autocomplete="name" required placeholder="Your name"></div>
+<div class="field"><label for="email">Email address</label><input id="email" type="email" autocomplete="email" required placeholder="you@example.com"></div>
+<div class="field"><label for="password">Password</label><input id="password" type="password" minlength="8" autocomplete="new-password" required placeholder="At least 8 characters"></div>
+<button id="signupBtn" class="btn primary auth-submit" type="submit">Create account</button>
+</form>
+<div id="authMessage" class="auth-message" aria-live="polite"></div>
+<p class="terms">By creating an account, you agree to use TechNova responsibly. You can manage your account settings after signing in.</p>
+<a class="back-home" href="login.html">Already have an account? Log in</a>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/auth.js"></script>
+</body>
+</html>
