@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <span>Built as a connected technology hub.</span>
         </div>
         <div class="footer-links">
-          <div><strong>Explore</strong><a href="${rootPrefix}pages/events.html">Events</a><a href="${rootPrefix}pages/technology.html">Technology</a><a href="${rootPrefix}pages/search.html">Search</a><a href="${rootPrefix}pages/community.html">Community</a></div>
-          <div><strong>Company</strong><a href="${rootPrefix}pages/about.html">About</a><a href="${rootPrefix}pages/careers.html">Careers</a><a href="${rootPrefix}pages/partners.html">Partners</a><a href="${rootPrefix}pages/contact.html">Contact</a></div>
+          <div><strong>Explore</strong><a href="${rootPrefix}pages/events.html">Events</a><a href="${rootPrefix}pages/technology.html">Technology</a><a href="${rootPrefix}pages/search.html">Search</a><a href="${rootPrefix}pages/radar.html">Tech Radar</a><a href="${rootPrefix}pages/labs.html">Labs</a></div>
+          <div><strong>Discover</strong><a href="${rootPrefix}pages/community.html">Community</a><a href="${rootPrefix}pages/resources.html">Resources</a><a href="${rootPrefix}pages/compare.html">Compare</a><a href="${rootPrefix}pages/glossary.html">Glossary</a></div><div><strong>Company</strong><a href="${rootPrefix}pages/about.html">About</a><a href="${rootPrefix}pages/careers.html">Careers</a><a href="${rootPrefix}pages/partners.html">Partners</a><a href="${rootPrefix}pages/contact.html">Contact</a></div>
           <div><strong>Help</strong><a href="${rootPrefix}pages/support.html">Support</a><a href="${rootPrefix}pages/faq.html">FAQ</a><a href="${rootPrefix}pages/accessibility.html">Accessibility</a><a href="${rootPrefix}pages/privacy.html">Privacy</a></div>
         </div>
       </div>
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const groups = [
       { title: 'Explore', items: [
         ['🔎','Search','search.html'],['✦','Discover','discover.html'],['🌐','Community','community.html'],
-        ['📚','Resources','resources.html'],['💾','Saved','saved.html']
+        ['📚','Resources','resources.html'],['💾','Saved','saved.html'],['📡','Tech Radar','radar.html'],['⚖️','Compare','compare.html'],['🧪','Labs','labs.html'],['📖','Glossary','glossary.html']
       ]},
       { title: 'Help & information', items: [
         ['❓','FAQ','faq.html'],['💬','Support','support.html'],['🧭','Sitemap','sitemap.html'],['♿','Accessibility','accessibility.html']
@@ -230,6 +230,10 @@ document.addEventListener('DOMContentLoaded', () => {
       ['News','Read TechNova news and updates','news.html','📰'],
       ['Community','Explore community topics','community.html','🌐'],
       ['Resources','Open guides and checklists','resources.html','📚'],
+      ['Tech Radar','Explore technology patterns by maturity','radar.html','📡'],
+      ['Compare','Put technology areas side by side','compare.html','⚖️'],
+      ['Labs','Build a starting technology stack','labs.html','🧪'],
+      ['Glossary','Look up common technology terms','glossary.html','📖'],
       ['FAQ','Get quick answers','faq.html','❓'],
       ['Support','Get help with TechNova','support.html','💬'],
       ['My account','View your account dashboard','account.html','👤'],
