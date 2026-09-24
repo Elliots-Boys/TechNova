@@ -1,1 +1,78 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Contact · TechNova</title><link rel="stylesheet" href="../css/style.css"></head><body><header><a class="brand" href="../index.html">✦ TECHNOVA</a><button id="menu">☰</button><nav><a href="../index.html">Home</a><a href="events.html">Events</a><a href="technology.html">Technology</a><a href="innovation.html">Innovation</a><a href="news.html">News</a><a href="about.html">About</a><a class="active" href="contact.html">Contact</a></nav></header><main class="page"><p class="eyebrow">CONTACT</p><h1>Let's build <span>something.</span></h1><div class="grid"><section class="panel"><h2>TechNova HQ</h2><p class="muted">A fictional contact area for the project.</p><p>✉ hello@technova.example</p><p>📍 Manchester, United Kingdom</p></section><form class="panel" onsubmit="event.preventDefault();alert('Message submitted in demo mode.');this.reset()"><div class="form-grid"><label>Name<input class="input" required></label><label>Email<input class="input" type="email" required></label><label class="full">Message<textarea class="textarea" rows="7" required></textarea></label></div><button class="btn primary" style="margin-top:15px">Send message</button></form></div></main><footer>© 2026 TechNova</footer><script src="../js/script.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact · TechNova</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.contact-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:18px}
+.contact-card{background:linear-gradient(180deg,#0d1728,#09111e);border:1px solid #20324b;border-radius:18px;padding:24px}
+.contact-form{display:grid;gap:14px}.contact-form label{display:grid;gap:7px;font-weight:700;font-size:14px}.contact-form input,.contact-form textarea,.contact-form select{background:#08111e;color:#fff;border:1px solid #20324b;padding:12px;border-radius:10px;font:inherit}.contact-form textarea{min-height:180px;resize:vertical}
+.contact-status{display:none;margin-top:14px;padding:12px 14px;border-radius:11px}.contact-status.show{display:block}.contact-status.good{background:#0d2a22;border:1px solid #1d725d;color:#a9f3de}.contact-status.bad{background:#27131a;border:1px solid #6b3040;color:#ffb7c5}
+@media(max-width:800px){.contact-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="../index.html">✦ TECHNOVA</a><button id="menu">☰</button>
+<nav><a href="../index.html">Home</a><a href="events.html">Events</a><a href="technology.html">Technology</a><a href="innovation.html">Innovation</a><a href="news.html">News</a><a href="about.html">About</a><a class="active" href="contact.html">Contact</a><a href="account.html">My account</a></nav>
+</header>
+
+<main class="page">
+<p class="eyebrow">CONTACT</p>
+<h1>Let's build <span>something.</span></h1>
+<p class="lead">Have a question, found a problem, or have an idea for TechNova? Send a message and it will be saved to the TechNova contact inbox.</p>
+
+<div class="contact-grid">
+<section class="contact-card">
+<p class="eyebrow">TECHNOVA HQ</p>
+<h2>Get in touch</h2>
+<p class="muted">This is the project's contact area.</p>
+<p>✉ hello@technova.example</p>
+<p>📍 Manchester, United Kingdom</p>
+<p class="muted">Typical topics: events, account help, site feedback and general enquiries.</p>
+</section>
+
+<section class="contact-card">
+<form id="contactForm" class="contact-form">
+<label>Name<input id="contactName" maxlength="100" required></label>
+<label>Email<input id="contactEmail" type="email" maxlength="320" required></label>
+<label>Subject
+<select id="contactSubject" required>
+<option value="">Choose a subject</option>
+<option>General enquiry</option><option>Event question</option><option>Account help</option><option>Website feedback</option><option>Report a problem</option>
+</select></label>
+<label>Message<textarea id="contactMessage" maxlength="5000" required placeholder="Write your message…"></textarea></label>
+<button id="contactBtn" class="btn primary" type="submit">Send message →</button>
+<div id="contactStatus" class="contact-status" role="status"></div>
+</form>
+</section>
+</div>
+</main>
+
+<footer>© 2026 TechNova · Technology for what's next.</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script>
+const supabaseClient=window.supabase.createClient(window.TECHNOVA_SUPABASE_URL,window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
+const show=(msg,good=false)=>{const e=document.getElementById('contactStatus');e.textContent=msg;e.className='contact-status show'+(good?' good':' bad')};
+document.addEventListener('DOMContentLoaded',async()=>{
+ const header=document.querySelector('header'),menu=document.querySelector('#menu');menu?.addEventListener('click',()=>header?.classList.toggle('open'));
+ const {data:{user}}=await supabaseClient.auth.getUser();
+ if(user){document.getElementById('contactName').value=user.user_metadata?.display_name||'';document.getElementById('contactEmail').value=user.email||''}
+ document.getElementById('contactForm').addEventListener('submit',async e=>{
+  e.preventDefault();const b=document.getElementById('contactBtn');b.disabled=true;b.textContent='Sending…';
+  const {error}=await supabaseClient.from('contact_messages').insert({
+    name:document.getElementById('contactName').value.trim(),
+    email:document.getElementById('contactEmail').value.trim(),
+    subject:document.getElementById('contactSubject').value,
+    message:document.getElementById('contactMessage').value.trim()
+  });
+  if(error)show(error.message);else{e.target.reset();if(user){document.getElementById('contactName').value=user.user_metadata?.display_name||'';document.getElementById('contactEmail').value=user.email||''}show('Message sent successfully. Thanks for contacting TechNova.',true)}
+  b.disabled=false;b.textContent='Send message →';
+ });
+});
+</script>
+</body>
+</html>
