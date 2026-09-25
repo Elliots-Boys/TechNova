@@ -23,12 +23,38 @@ async function signInWithGoogle(event) {
     provider: 'google',
     options: {
       redirectTo: destination,
-      queryParams: { access_type: 'offline', prompt: 'select_account' }
+      scopes: 'openid email profile https://www.googleapis.com/auth/drive.file',
+      queryParams: { access_type: 'offline', prompt: 'consent' }
     }
   });
   if (error) {
     setBusy(button, false, 'Continue with Google');
     showAuthMessage(error.message || 'Google sign-in could not be started.');
+  }
+}
+
+async function connectGoogleDrive(event) {
+  event?.preventDefault();
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) {
+    location.href = 'login.html?next=storage-manager.html';
+    return;
+  }
+  const button = document.querySelector('#connectDriveBtn');
+  setBusy(button, true, 'Connecting…');
+  const destination = `${location.origin}/pages/google-drive.html?connected=1`;
+  const { error } = await supabaseClient.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: destination,
+      scopes: 'openid email profile https://www.googleapis.com/auth/drive.file',
+      queryParams: { access_type: 'offline', prompt: 'consent' }
+    }
+  });
+  if (error) {
+    setBusy(button, false, 'Connect Google Drive');
+    const el = document.querySelector('#driveMessage');
+    if (el) { el.textContent = error.message || 'Google Drive could not be connected.'; el.classList.add('show'); }
   }
 }
 
@@ -146,6 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#signupForm')?.addEventListener('submit', signUp);
   document.querySelector('#loginForm')?.addEventListener('submit', signIn);
   document.querySelector('#googleLoginBtn, #googleSignupBtn')?.addEventListener('click', signInWithGoogle);
+  document.querySelector('#connectDriveBtn')?.addEventListener('click', connectGoogleDrive);
   document.querySelector('#forgotPassword')?.addEventListener('click', resetPassword);
   document.querySelector('#logoutBtn')?.addEventListener('click', signOut);
   if (document.querySelector('#myEvents')) loadAccount();
