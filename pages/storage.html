@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Private cloud storage for your TechNova account.">
+<title>Cloud Storage · TechNova</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.storage-page{max-width:1180px;margin:0 auto;padding:44px 22px 80px}
+.storage-hero{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;padding:28px;border:1px solid #20324b;border-radius:24px;background:radial-gradient(circle at 80% 10%,#163b5c,#0b1422 52%,#09111e);margin-bottom:18px}
+.storage-hero h1{font-size:clamp(38px,6vw,64px);margin:8px 0}.storage-hero p{color:#91a0b7;max-width:650px}
+.storage-actions{display:flex;gap:9px;flex-wrap:wrap}.storage-actions label{cursor:pointer}
+.storage-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:18px 0}.storage-toolbar .input{min-width:240px;flex:1}.storage-select{background:#09111e;border:1px solid #20324b;color:#dce7f7;padding:11px 12px;border-radius:10px}
+.dropzone{border:1.5px dashed #315579;border-radius:18px;padding:30px;text-align:center;background:#08111e;transition:.2s;margin-bottom:18px}.dropzone.drag{border-color:#32d6ff;background:#0c2034}.dropzone strong{display:block;font-size:20px}.dropzone span{display:block;color:#91a0b7;margin:7px 0 15px}.dropzone input{display:none}
+.storage-summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}.storage-stat{padding:10px 13px;border:1px solid #20324b;border-radius:12px;background:#09111e;color:#b8c8dc}.storage-stat strong{color:#fff}
+.file-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.file-card{border:1px solid #20324b;border-radius:16px;background:linear-gradient(180deg,#0d1728,#09111e);padding:16px;min-width:0}.file-top{display:flex;align-items:center;gap:11px}.file-icon{width:44px;height:44px;border-radius:12px;background:#102844;display:grid;place-items:center;font-size:22px;flex:none}.file-name{font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.file-meta{font-size:12px;color:#74849a;margin-top:3px}.file-actions{display:flex;gap:7px;margin-top:14px}.file-actions button{flex:1}.danger{background:#21131a!important;border-color:#5a3040!important;color:#ffb7c5!important}.empty{padding:40px;text-align:center;border:1px solid #20324b;border-radius:18px;color:#91a0b7;grid-column:1/-1}.progress{height:4px;background:#122238;border-radius:99px;overflow:hidden;margin-top:12px}.progress i{display:block;height:100%;width:0;background:#32d6ff;transition:width .2s}
+.storage-note{font-size:12px;color:#718199;margin-top:12px}.auth-wall{display:none;text-align:center;padding:70px 20px}.auth-wall.show{display:block}.storage-content.hidden{display:none}
+@media(max-width:900px){.file-grid{grid-template-columns:1fr 1fr}.storage-hero{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.file-grid{grid-template-columns:1fr}.storage-page{padding-left:15px;padding-right:15px}.storage-toolbar .input{min-width:100%}}
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="../index.html">✦ TECHNOVA</a>
+<button id="menu" aria-label="Open menu">☰</button>
+<nav><a href="../index.html">Home</a><a href="events.html">Events</a><a href="technology.html">Technology</a><a href="innovation.html">Innovation</a><a href="news.html">News</a><a href="about.html">About</a><a href="contact.html">Contact</a><a class="active" href="storage.html">Cloud</a></nav>
+<a class="btn" href="account.html">My account</a>
+</header>
+<main class="storage-page">
+<section id="authWall" class="auth-wall"><p class="eyebrow">PRIVATE CLOUD</p><h1>Sign in to access <span>your files.</span></h1><p class="lead">Your files are private to your TechNova account.</p><a class="btn primary" href="login.html?next=storage.html">Log in →</a></section>
+<section id="storageContent" class="storage-content hidden">
+<section class="storage-hero"><div><p class="eyebrow">TECHNOVA CLOUD</p><h1>Your files, <span>wherever you are.</span></h1><p>Upload documents, images, videos and project files to your private TechNova cloud. Files are stored in your account's secure storage area.</p></div><div class="storage-actions"><label class="btn primary" for="fileInput">＋ Upload files</label><a class="btn" href="account.html">Account</a></div></section>
+<section id="dropzone" class="dropzone"><strong>Drop files here</strong><span>or choose files from your device · maximum 100 MB per file</span><label class="btn" for="fileInput">Choose files</label><input id="fileInput" type="file" multiple></section>
+<div class="storage-summary"><div class="storage-stat"><strong id="fileCount">0</strong> files</div><div class="storage-stat"><strong id="totalSize">0 B</strong> used</div><div class="storage-stat"><strong>100 MB</strong> max per file</div></div>
+<div class="storage-toolbar"><input id="searchFiles" class="input" type="search" placeholder="Search your files…"><select id="sortFiles" class="storage-select"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="name">Name A–Z</option><option value="size">Largest first</option></select><button id="refreshBtn" class="btn" type="button">↻ Refresh</button></div>
+<div id="fileGrid" class="file-grid"><div class="empty">Loading your cloud…</div></div>
+<p class="storage-note">Private storage is scoped to your signed-in account. TechNova never displays another user's files here.</p>
+</section>
+</main>
+<footer>© 2026 TechNova · Technology for what's next.</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/script.js"></script>
+<script>
+const client=window.supabase.createClient(window.TECHNOVA_SUPABASE_URL,window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
+const bucket='user-files';let user=null,files=[];
+const $=s=>document.querySelector(s);
+function size(n){if(!n)return'0 B';const u=['B','KB','MB','GB'];const i=Math.min(Math.floor(Math.log(n)/Math.log(1024)),u.length-1);return`${(n/Math.pow(1024,i)).toFixed(i?1:0)} ${u[i]}`}
+function icon(type,name){if(type?.startsWith('image/'))return'🖼️';if(type?.startsWith('video/'))return'🎬';if(type?.startsWith('audio/'))return'🎧';if(type==='application/pdf')return'📕';if(/zip|compressed/i.test(type||''))return'🗜️';if(/word|document|text/i.test(type||''))return'📄';if(/sheet|excel|csv/i.test(type||''))return'📊';if(/presentation|powerpoint/i.test(type||''))return'📽️';return/\.json$/i.test(name)?'{}':'📁'}
+function escapeText(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function displayName(path){const parts=path.split('/');return parts.slice(1).join('/')||path}
+async function load(){
+ const {data:{user:u},error}=await client.auth.getUser(); if(error||!u){user=null;$('#authWall').classList.add('show');$('#storageContent').classList.add('hidden');return} user=u;$('#authWall').classList.remove('show');$('#storageContent').classList.remove('hidden');
+ const {data,error:e}=await client.storage.from(bucket).list(user.id,{limit:1000,sortBy:{column:'created_at',order:'desc'}}); if(e){$('#fileGrid').innerHTML=`<div class="empty">Could not load your files.<br><small>${escapeText(e.message)}</small></div>`;return} files=(data||[]).filter(x=>x.name&&!x.name.endsWith('/'));render();
+}
+function render(){const q=$('#searchFiles').value.toLowerCase().trim();const sort=$('#sortFiles').value;let shown=files.filter(f=>!q||f.name.toLowerCase().includes(q));shown.sort((a,b)=>{if(sort==='name')return a.name.localeCompare(b.name);if(sort==='size')return (b.metadata?.size||0)-(a.metadata?.size||0);const da=new Date(a.created_at||0),db=new Date(b.created_at||0);return sort==='oldest'?da-db:db-da});$('#fileCount').textContent=files.length;$('#totalSize').textContent=size(files.reduce((n,f)=>n+(f.metadata?.size||0),0));if(!shown.length){$('#fileGrid').innerHTML=`<div class="empty">${q?'No files match your search.':'Your cloud is empty. Upload your first file above.'}</div>`;return}$('#fileGrid').innerHTML=shown.map(f=>{const path=`${user.id}/${f.name}`;const id=encodeURIComponent(path);return`<article class="file-card"><div class="file-top"><div class="file-icon">${icon(f.metadata?.mimetype,f.name)}</div><div style="min-width:0"><div class="file-name" title="${escapeText(f.name)}">${escapeText(f.name)}</div><div class="file-meta">${size(f.metadata?.size||0)} · ${f.created_at?new Date(f.created_at).toLocaleDateString():''}</div></div></div><div class="file-actions"><button class="btn" type="button" onclick="downloadFile('${id}','${escapeText(f.name).replace(/'/g,"\\'")}')">Download</button><button class="btn danger" type="button" onclick="deleteFile('${id}')">Delete</button></div></article>`}).join('')}
+async function upload(selected){if(!user||!selected?.length)return;for(const file of [...selected]){if(file.size>100*1024*1024){alert(`${file.name} is over the 100 MB limit.`);continue}const safe=file.name.replace(/[\\/]/g,'-');const path=`${user.id}/${Date.now()}-${crypto.randomUUID().slice(0,8)}-${safe}`;const {error}=await client.storage.from(bucket).upload(path,file,{contentType:file.type||'application/octet-stream',upsert:false});if(error)alert(`Could not upload ${file.name}: ${error.message}`)}$('#fileInput').value='';await load()}
+async function downloadFile(encodedPath,name){const path=decodeURIComponent(encodedPath);const {data,error}=await client.storage.from(bucket).download(path);if(error){alert(`Download failed: ${error.message}`);return}const url=URL.createObjectURL(data);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+async function deleteFile(encodedPath){if(!confirm('Delete this file from your TechNova cloud?'))return;const path=decodeURIComponent(encodedPath);const {error}=await client.storage.from(bucket).remove([path]);if(error){alert(`Delete failed: ${error.message}`);return}await load()}
+$('#fileInput').addEventListener('change',e=>upload(e.target.files));$('#searchFiles').addEventListener('input',render);$('#sortFiles').addEventListener('change',render);$('#refreshBtn').addEventListener('click',load);const dz=$('#dropzone');['dragenter','dragover'].forEach(x=>dz.addEventListener(x,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(x=>dz.addEventListener(x,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>upload(e.dataTransfer.files));load();
+</script>
+</body>
+</html>
