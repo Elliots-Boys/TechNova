@@ -1,5 +1,13 @@
 const supabaseClient = window.supabase.createClient(window.TECHNOVA_SUPABASE_URL, window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
 
+// Capture the Google provider token during the OAuth callback. Supabase documents
+// that provider tokens are delivered through auth state events after OAuth redirects.
+window.__technovaGoogleProviderToken = null;
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if (session?.provider_token) window.__technovaGoogleProviderToken = session.provider_token;
+  if (event === 'SIGNED_OUT') window.__technovaGoogleProviderToken = null;
+});
+
 function showAuthMessage(message, good = false) {
   const el = document.querySelector('#authMessage');
   if (!el) return;
@@ -13,49 +21,27 @@ function setBusy(button, busy, label) {
   button.textContent = busy ? 'Please wait…' : label;
 }
 
+const GOOGLE_DRIVE_SCOPE = 'openid email profile https://www.googleapis.com/auth/drive.file';
+
 async function signInWithGoogle(event) {
   event?.preventDefault();
   const button = document.querySelector('#googleLoginBtn, #googleSignupBtn');
   setBusy(button, true, 'Continue with Google');
   const next = new URLSearchParams(location.search).get('next');
   const destination = next === 'events.html' ? `${location.origin}/pages/events.html` : `${location.origin}/pages/account.html`;
-  const { error } = await supabaseClient.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: destination,
-      scopes: 'openid email profile https://www.googleapis.com/auth/drive.file',
-      queryParams: { access_type: 'offline', prompt: 'consent' }
-    }
-  });
-  if (error) {
-    setBusy(button, false, 'Continue with Google');
-    showAuthMessage(error.message || 'Google sign-in could not be started.');
-  }
+  const { error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: destination, scopes: GOOGLE_DRIVE_SCOPE, queryParams: { access_type: 'offline', prompt: 'consent', include_granted_scopes: 'true' } } });
+  if (error) { setBusy(button, false, 'Continue with Google'); showAuthMessage(error.message || 'Google sign-in could not be started.'); }
 }
 
 async function connectGoogleDrive(event) {
   event?.preventDefault();
   const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) {
-    location.href = 'login.html?next=storage-manager.html';
-    return;
-  }
+  if (!user) { location.href = 'login.html?next=google-drive.html'; return; }
   const button = document.querySelector('#connectDriveBtn');
   setBusy(button, true, 'Connecting…');
   const destination = `${location.origin}/pages/google-drive.html?connected=1`;
-  const { error } = await supabaseClient.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: destination,
-      scopes: 'openid email profile https://www.googleapis.com/auth/drive.file',
-      queryParams: { access_type: 'offline', prompt: 'consent' }
-    }
-  });
-  if (error) {
-    setBusy(button, false, 'Connect Google Drive');
-    const el = document.querySelector('#driveMessage');
-    if (el) { el.textContent = error.message || 'Google Drive could not be connected.'; el.classList.add('show'); }
-  }
+  const { error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: destination, scopes: GOOGLE_DRIVE_SCOPE, queryParams: { access_type: 'offline', prompt: 'consent', include_granted_scopes: 'true' } } });
+  if (error) { setBusy(button, false, 'Connect Google Drive'); const el = document.querySelector('#driveMessage'); if (el) { el.textContent = error.message || 'Google Drive could not be connected.'; el.classList.add('show'); } }
 }
 
 async function signUp(event) {
@@ -66,10 +52,7 @@ async function signUp(event) {
   const button = document.querySelector('#signupBtn');
   if (!email || password.length < 8) { showAuthMessage('Enter a valid email and a password of at least 8 characters.'); return; }
   setBusy(button, true, 'Create account');
-  const { error } = await supabaseClient.auth.signUp({
-    email, password,
-    options: { data: { display_name: name || email.split('@')[0] }, emailRedirectTo: `${location.origin}/pages/account.html` }
-  });
+  const { error } = await supabaseClient.auth.signUp({ email, password, options: { data: { display_name: name || email.split('@')[0] }, emailRedirectTo: `${location.origin}/pages/account.html` } });
   setBusy(button, false, 'Create account');
   if (error) { showAuthMessage(error.message); return; }
   showAuthMessage('Account created. Check your email to confirm your address, then log in.', true);
@@ -110,6 +93,7 @@ async function finishPasswordReset() {
 
 async function signOut(event) {
   event?.preventDefault();
+  window.__technovaGoogleProviderToken = null;
   await supabaseClient.auth.signOut();
   location.href = '../index.html';
 }
