@@ -16,6 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return el;
   };
 
+  const awardAIAchievement = async () => {
+    try {
+      await supabaseClient.rpc('award_xp', { p_amount: 0, p_achievement_key: 'ai-chat' });
+    } catch {}
+  };
+
   const ask = async (message) => {
     addMessage(message, 'user');
     status.textContent = 'TechNova AI is thinking…';
@@ -34,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || 'The AI assistant could not respond.');
       addMessage(data.answer || 'I could not generate an answer.', 'assistant');
+      await awardAIAchievement();
       status.textContent = '';
     } catch (error) {
       console.error('TechNova AI:', error);
