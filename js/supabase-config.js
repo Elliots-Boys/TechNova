@@ -16,3 +16,11 @@ reportsNavScript.src = window.location.pathname.includes('/pages/')
   : 'js/reports-nav.js';
 reportsNavScript.defer = true;
 document.head.appendChild(reportsNavScript);
+
+/* Add the new TechNova community/AI navigation without replacing existing page markup. */
+const featureNavScript = document.createElement('script');
+featureNavScript.src = window.location.pathname.includes('/pages/')
+  ? '../js/site-features.js'
+  : 'js/site-features.js';
+featureNavScript.defer = true;
+document.head.appendChild(featureNavScript);
