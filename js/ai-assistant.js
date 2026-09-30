@@ -3,9 +3,7 @@
 /*
  * TechNova AI Assistant
  *
- * This file deliberately creates its own Supabase client. The AI page does
- * not load auth.js, so relying on a global `supabaseClient` causes:
- *   "supabaseClient is not defined"
+ * Creates its own Supabase client so this page does not depend on auth.js.
  */
 
 const techNovaSupabaseClient = window.supabase?.createClient(
@@ -37,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const { data: { user } } = await techNovaSupabaseClient.auth.getUser();
       if (!user) return;
 
-      // This is optional. If the RPC has not been installed yet, AI still works.
       await techNovaSupabaseClient.rpc('award_xp', {
         p_amount: 0,
         p_achievement_key: 'ai-chat'
@@ -57,15 +54,23 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Supabase could not be initialised on this page.');
       }
 
-      const { data: { session } } = await techNovaSupabaseClient.auth.getSession();
+      const { data: { session } } =
+        await techNovaSupabaseClient.auth.getSession();
 
-      const headers = {
-        'Content-Type': 'application/json'
-      };
-
-      if (session?.access_token) {
-        headers.Authorization = `Bearer ${session.access_token}`;
+      if (!session?.access_token) {
+        throw new Error('Please sign in to use TechNova AI.');
       }
+
+      /*
+       * Supabase Edge Functions require the publishable API key in `apikey`
+       * as well as the signed-in user's JWT in `Authorization` when
+       * verify_jwt is enabled.
+       */
+      const headers = {
+        'Content-Type': 'application/json',
+        'apikey': window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': `Bearer ${session.access_token}`
+      };
 
       const response = await fetch(
         `${window.TECHNOVA_SUPABASE_URL}/functions/v1/technova-ai`,
