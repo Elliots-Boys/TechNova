@@ -13,7 +13,7 @@ create table if not exists public.achievements (
 
 create table if not exists public.user_xp (
   user_id uuid primary key references auth.users(id) on delete cascade,
-  xp integer not null default 0 check (xp >= 0),
+  xp integer not null default 0,
   updated_at timestamptz not null default now()
 );
 
@@ -49,53 +49,31 @@ alter table public.user_achievements enable row level security;
 alter table public.quiz_questions enable row level security;
 alter table public.quiz_attempts enable row level security;
 
--- Public catalog; writes should be performed by trusted admin code.
 drop policy if exists "achievements_select_authenticated" on public.achievements;
-create policy "achievements_select_authenticated"
-on public.achievements for select
-to authenticated using (true);
+create policy "achievements_select_authenticated" on public.achievements for select to authenticated using (true);
 
--- Users can read their own score. Admin policies should use the existing private.is_admin() helper.
 drop policy if exists "user_xp_select_own" on public.user_xp;
-create policy "user_xp_select_own"
-on public.user_xp for select
-to authenticated using (auth.uid() = user_id);
+create policy "user_xp_select_own" on public.user_xp for select to authenticated using (auth.uid() = user_id);
 
 drop policy if exists "user_xp_select_admin" on public.user_xp;
-create policy "user_xp_select_admin"
-on public.user_xp for select
-to authenticated using (private.is_admin());
+create policy "user_xp_select_admin" on public.user_xp for select to authenticated using (private.is_admin());
 
 drop policy if exists "user_achievements_select_own" on public.user_achievements;
-create policy "user_achievements_select_own"
-on public.user_achievements for select
-to authenticated using (auth.uid() = user_id);
+create policy "user_achievements_select_own" on public.user_achievements for select to authenticated using (auth.uid() = user_id);
 
 drop policy if exists "user_achievements_select_admin" on public.user_achievements;
-create policy "user_achievements_select_admin"
-on public.user_achievements for select
-to authenticated using (private.is_admin());
+create policy "user_achievements_select_admin" on public.user_achievements for select to authenticated using (private.is_admin());
 
--- Quiz catalogue is readable to signed-in users; attempts are private to their owner plus admins.
 drop policy if exists "quiz_questions_select_authenticated" on public.quiz_questions;
-create policy "quiz_questions_select_authenticated"
-on public.quiz_questions for select
-to authenticated using (published = true or private.is_admin());
+create policy "quiz_questions_select_authenticated" on public.quiz_questions for select to authenticated using (published = true or private.is_admin());
 
 drop policy if exists "quiz_attempts_select_own" on public.quiz_attempts;
-create policy "quiz_attempts_select_own"
-on public.quiz_attempts for select
-to authenticated using (auth.uid() = user_id);
+create policy "quiz_attempts_select_own" on public.quiz_attempts for select to authenticated using (auth.uid() = user_id);
 
 drop policy if exists "quiz_attempts_select_admin" on public.quiz_attempts;
-create policy "quiz_attempts_select_admin"
-on public.quiz_attempts for select
-to authenticated using (private.is_admin());
-
+create policy "quiz_attempts_select_admin" on public.quiz_attempts for select to authenticated using (private.is_admin());
 drop policy if exists "quiz_attempts_insert_own" on public.quiz_attempts;
-create policy "quiz_attempts_insert_own"
-on public.quiz_attempts for insert
-to authenticated with check (auth.uid() = user_id);
+create policy "quiz_attempts_insert_own" on public.quiz_attempts for insert to authenticated with check (auth.uid() = user_id);
 
 insert into public.achievements (key,title,description,icon,xp) values
 ('first-login','Welcome to TechNova','Create your TechNova profile.','👋',25),
@@ -107,3 +85,41 @@ insert into public.achievements (key,title,description,icon,xp) values
 ('five-events','Event Regular','Register for five events.','🏆',150),
 ('ten-events','TechNova Veteran','Register for ten events.','🚀',300)
 on conflict (key) do update set title=excluded.title,description=excluded.description,icon=excluded.icon,xp=excluded.xp;
+
+-- Secure XP/achievement awarding. Clients can call this function but cannot directly edit scores.
+create or replace function public.award_xp(p_amount integer, p_achievement_key text default null)
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  uid uuid := auth.uid();
+  new_xp integer;
+  achievement_xp integer := 0;
+begin
+  if uid is null then raise exception 'Not authenticated'; end if;
+  if p_amount < 0 or p_amount > 1000 then raise exception 'Invalid XP amount'; end if;
+
+  if p_achievement_key is not null then
+    select xp into achievement_xp from public.achievements where key = p_achievement_key;
+    if achievement_xp is null then raise exception 'Unknown achievement'; end if;
+    insert into public.user_achievements(user_id, achievement_key)
+    values(uid, p_achievement_key)
+    on conflict (user_id, achievement_key) do nothing;
+    if not found then
+      achievement_xp := 0;
+    end if;
+  end if;
+
+  insert into public.user_xp(user_id, xp)
+  values(uid, greatest(0, p_amount + achievement_xp))
+  on conflict (user_id) do update
+  set xp = public.user_xp.xp + greatest(0, p_amount + achievement_xp), updated_at = now();
+
+  select xp into new_xp from public.user_xp where user_id = uid;
+  return new_xp;
+end;
+$$;
+
+grant execute on function public.award_xp(integer,text) to authenticated;
