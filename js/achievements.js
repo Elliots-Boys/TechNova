@@ -22,11 +22,14 @@ function technovaClient() {
 
 async function technovaAwardXP(amount, achievementKey = null) {
   try {
-    const { data, error } = await technovaClient().rpc('award_xp', { p_amount:Number(amount)||0, p_achievement_key:achievementKey });
-    if (error) return null;
+    const { data, error } = await technovaClient().rpc('award_xp', {
+      p_amount: Number(amount) || 0,
+      p_achievement_key: achievementKey
+    });
+    if (error) throw error;
     return Number(data || 0);
   } catch (error) {
-    console.warn('XP tracking is unavailable until the gamification migration is applied.', error);
+    console.warn('XP award failed:', error);
     return null;
   }
 }
@@ -36,81 +39,88 @@ async function technovaLoadAchievements() {
   const xpEl = document.getElementById('xpTotal');
   const levelEl = document.getElementById('levelText');
   const leaderboard = document.getElementById('leaderboard');
-
-  if (!grid && leaderboard) {
-    await technovaLoadLeaderboard(leaderboard);
-    return;
-  }
+  if (!grid && leaderboard) return technovaLoadLeaderboard(leaderboard);
   if (!grid) return;
 
   try {
-    const { data:{ user }, error:authError } = await technovaClient().auth.getUser();
+    const client = technovaClient();
+    const { data: { user }, error: authError } = await client.auth.getUser();
     if (authError || !user) {
       grid.innerHTML = '<p class="muted">Sign in to track achievements.</p>';
       return;
     }
 
-    await technovaAwardXP(0, 'first-login');
-    const client = technovaClient();
-    const [{data:xpRows,error:xpError},{data:unlocked,error:unlockError}] = await Promise.all([
-      client.from('user_xp').select('xp').eq('user_id',user.id).maybeSingle(),
-      client.from('user_achievements').select('achievement_key,unlocked_at').eq('user_id',user.id)
+    const [{ data: xpRow, error: xpError }, { data: unlocked, error: unlockError }, { data: achievements, error: achievementError }] = await Promise.all([
+      client.from('user_xp').select('xp,level').eq('user_id', user.id).maybeSingle(),
+      client.from('user_achievements').select('achievement_id,earned_at').eq('user_id', user.id),
+      client.from('achievements').select('id,slug,name,description,icon,xp_reward').order('id')
     ]);
 
-    if (xpError || unlockError) {
-      grid.innerHTML = '<p class="muted">Achievements need the prepared TechNova gamification database migration applied before scores can be saved.</p>';
-      return;
+    if (xpError || unlockError || achievementError) {
+      throw xpError || unlockError || achievementError;
     }
 
-    const xp=Number(xpRows?.xp||0);
-    const unlockedSet=new Set((unlocked||[]).map(row=>row.achievement_key));
-    const level=Math.max(1,Math.floor(xp/100)+1);
-    if(xpEl) xpEl.textContent=`${xp} XP`;
-    if(levelEl) levelEl.textContent=`Level ${level}`;
+    const xp = Number(xpRow?.xp || 0);
+    const level = Number(xpRow?.level || Math.max(1, Math.floor(xp / 100) + 1));
+    if (xpEl) xpEl.textContent = `${xp} XP`;
+    if (levelEl) levelEl.textContent = `Level ${level}`;
 
-    grid.replaceChildren(...TECHNOVA_ACHIEVEMENTS.map(item=>{
-      const card=document.createElement('article');
-      card.className=`g-card${unlockedSet.has(item.key)?'':' locked'}`;
-      card.innerHTML=`<div class="g-icon">${item.icon}</div><h3>${item.title}</h3><p>${item.description}</p><p style="margin-top:10px"><strong>${unlockedSet.has(item.key)?'Unlocked':'Locked'}</strong> · ${item.xp} XP</p>`;
+    const unlockedIds = new Set((unlocked || []).map(row => String(row.achievement_id)));
+    const list = achievements?.length ? achievements : TECHNOVA_ACHIEVEMENTS.map((item, index) => ({
+      id: index + 1, slug: item.key, name: item.title, description: item.description, icon: item.icon, xp_reward: item.xp
+    }));
+
+    grid.replaceChildren(...list.map(item => {
+      const card = document.createElement('article');
+      const isUnlocked = unlockedIds.has(String(item.id));
+      card.className = `g-card${isUnlocked ? '' : ' locked'}`;
+      card.innerHTML = `<div class="g-icon">${item.icon || '🏆'}</div><h3>${item.name || 'Achievement'}</h3><p>${item.description || ''}</p><p style="margin-top:10px"><strong>${isUnlocked ? 'Unlocked' : 'Locked'}</strong> · ${Number(item.xp_reward || 0)} XP</p>`;
       return card;
     }));
 
-    if(leaderboard) await technovaLoadLeaderboard(leaderboard);
-  } catch(error) {
-    console.error('Achievement loading failed:',error);
-    grid.innerHTML=`<p class="muted">Could not load achievements: ${error.message||'Unknown error'}</p>`;
+    if (leaderboard) await technovaLoadLeaderboard(leaderboard);
+  } catch (error) {
+    console.error('Achievement loading failed:', error);
+    grid.innerHTML = `<p class="muted">Could not load achievements: ${error.message || 'Unknown error'}</p>`;
   }
 }
 
 async function technovaLoadLeaderboard(container) {
-  if(!container) return;
+  if (!container) return;
   try {
-    const client=technovaClient();
-    const {data:scores,error:scoreError}=await client.from('user_xp').select('user_id,xp').order('xp',{ascending:false}).limit(25);
-    if(scoreError){
-      container.innerHTML='<p class="muted">The leaderboard database is not available yet. Apply the prepared gamification migration to enable XP and leaderboard scores.</p>';
+    const client = technovaClient();
+    const { data: scores, error } = await client
+      .from('user_xp')
+      .select('user_id,xp,level')
+      .order('xp', { ascending: false })
+      .limit(25);
+    if (error) throw error;
+    if (!scores?.length) {
+      container.innerHTML = '<p class="muted">No leaderboard scores yet.</p>';
       return;
     }
-    if(!scores?.length){
-      container.innerHTML='<p class="muted">No leaderboard scores yet.</p>';
-      return;
-    }
-    const ids=scores.map(row=>row.user_id).filter(Boolean);
-    const {data:profiles,error:profileError}=await client.from('profiles').select('id,display_name').in('id',ids);
-    const names=new Map((profiles||[]).map(profile=>[profile.id,profile.display_name]));
-    if(profileError) console.warn('Leaderboard profile names could not be loaded:',profileError);
-    container.replaceChildren(...scores.map((row,index)=>{
-      const el=document.createElement('div');
-      el.className='l-row';
-      const name=names.get(row.user_id)||`User ${String(row.user_id||'').slice(0,8)}`;
-      el.innerHTML=`<span class="rank">#${index+1}</span><span>${name}</span><span class="points">${Number(row.xp||0)} XP</span>`;
+
+    const ids = scores.map(row => row.user_id).filter(Boolean);
+    const { data: profiles } = await client.from('profiles').select('id,display_name').in('id', ids);
+    const names = new Map((profiles || []).map(profile => [profile.id, profile.display_name]));
+
+    container.replaceChildren(...scores.map((row, index) => {
+      const el = document.createElement('div');
+      el.className = 'l-row';
+      const name = names.get(row.user_id) || `User ${String(row.user_id || '').slice(0, 8)}`;
+      el.innerHTML = `<span class="rank">#${index + 1}</span><span>${name}</span><span class="points">${Number(row.xp || 0)} XP</span>`;
       return el;
     }));
-  } catch(error) {
-    console.error('Leaderboard loading failed:',error);
-    container.innerHTML=`<p class="muted">Could not load the leaderboard: ${error.message||'Unknown error'}</p>`;
+  } catch (error) {
+    console.error('Leaderboard loading failed:', error);
+    container.innerHTML = `<p class="muted">Could not load the leaderboard: ${error.message || 'Unknown error'}</p>`;
   }
 }
 
-window.TechNovaAchievements={awardXP:technovaAwardXP,load:technovaLoadAchievements,loadLeaderboard:technovaLoadLeaderboard};
-document.addEventListener('DOMContentLoaded',technovaLoadAchievements);
+window.TechNovaAchievements = {
+  awardXP: technovaAwardXP,
+  load: technovaLoadAchievements,
+  loadLeaderboard: technovaLoadLeaderboard
+};
+
+document.addEventListener('DOMContentLoaded', technovaLoadAchievements);
