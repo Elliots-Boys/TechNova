@@ -1,11 +1,53 @@
 'use strict';
 
+/* Load the QR library with a fallback CDN. */
+function loadTicketQrLibrary() {
+  if (window.QRCode?.toCanvas) return Promise.resolve(true);
+
+  const sources = [
+    'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js',
+    'https://unpkg.com/qrcode@1.5.4/build/qrcode.min.js'
+  ];
+
+  return new Promise(resolve => {
+    let index = 0;
+
+    const tryNext = () => {
+      if (window.QRCode?.toCanvas) {
+        resolve(true);
+        return;
+      }
+
+      if (index >= sources.length) {
+        resolve(false);
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = sources[index++];
+      script.async = true;
+      script.dataset.technovaQrcode = 'true';
+      script.onload = () => {
+        if (window.QRCode?.toCanvas) resolve(true);
+        else tryNext();
+      };
+      script.onerror = tryNext;
+      document.head.appendChild(script);
+    };
+
+    tryNext();
+  });
+}
+
 function technovaTicketsClient() {
   if (window.supabaseClient) return window.supabaseClient;
   if (!window.supabase || !window.TECHNOVA_SUPABASE_URL || !window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY) {
     throw new Error('TechNova Supabase configuration is unavailable.');
   }
-  window.supabaseClient = window.supabase.createClient(window.TECHNOVA_SUPABASE_URL, window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
+  window.supabaseClient = window.supabase.createClient(
+    window.TECHNOVA_SUPABASE_URL,
+    window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
+  );
   return window.supabaseClient;
 }
 
@@ -20,10 +62,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const client = technovaTicketsClient();
     const { data: { user }, error: authError } = await client.auth.getUser();
+
     if (authError || !user) {
       container.innerHTML = '<p class="muted">Please sign in to view your tickets.</p>';
       return;
     }
+
+    const qrReady = await loadTicketQrLibrary();
 
     const { data: registrations, error: registrationError } = await client
       .from('event_registrations')
@@ -45,6 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       .in('id', eventIds);
 
     if (eventError) throw eventError;
+
     const eventMap = new Map((events || []).map(event => [String(event.id), event]));
 
     container.replaceChildren(...registrations.map(registration => {
@@ -70,23 +116,39 @@ document.addEventListener('DOMContentLoaded', async () => {
       id.textContent = `Ticket #${registration.id}`;
       info.append(eyebrow, title, date, location, id);
 
-      const canvas = document.createElement('canvas');
-      canvas.className = 'qr';
-      const payload = JSON.stringify({ ticketId: registration.id, eventId: registration.event_id, userId: user.id });
+      const payload = JSON.stringify({
+        ticketId: registration.id,
+        eventId: registration.event_id,
+        userId: user.id
+      });
 
-      if (window.QRCode?.toCanvas) {
+      if (qrReady && window.QRCode?.toCanvas) {
+        const canvas = document.createElement('canvas');
+        canvas.className = 'qr';
         window.QRCode.toCanvas(canvas, payload, { width: 130, margin: 1 }, qrError => {
           if (qrError) console.error('Ticket QR error:', qrError);
         });
         ticket.append(info, canvas);
       } else {
-        const qrMessage = document.createElement('p');
-        qrMessage.className = 'muted';
-        qrMessage.textContent = 'QR code library could not be loaded.';
-        ticket.append(info, qrMessage);
+        const fallback = document.createElement('div');
+        fallback.style.cssText = 'background:#07101c;border:1px solid #29415e;border-radius:12px;padding:14px;text-align:center;max-width:180px';
+        const heading = document.createElement('strong');
+        heading.textContent = 'QR unavailable';
+        const text = document.createElement('p');
+        text.className = 'muted';
+        text.style.margin = '7px 0 0';
+        text.textContent = 'Ticket ID:';
+        const code = document.createElement('code');
+        code.textContent = String(registration.id);
+        code.style.wordBreak = 'break-all';
+        fallback.append(heading, text, code);
+        ticket.append(info, fallback);
       }
+
       return ticket;
     }));
+
+    if (!qrReady) console.warn('TechNova: QR code CDNs failed to load.');
   } catch (error) {
     console.error('Ticket loading failed:', error);
     container.innerHTML = `<p class="muted">Could not load tickets: ${error.message || 'Unknown error'}</p>`;
