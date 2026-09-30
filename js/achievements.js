@@ -11,6 +11,20 @@ const TECHNOVA_ACHIEVEMENTS = [
   { key:'ten-events', icon:'🚀', title:'TechNova Veteran', description:'Register for ten events.', xp:300 }
 ];
 
+async function technovaAwardXP(amount, achievementKey = null) {
+  try {
+    const { data, error } = await supabaseClient.rpc('award_xp', {
+      p_amount: Number(amount) || 0,
+      p_achievement_key: achievementKey
+    });
+    if (error) return null;
+    return Number(data || 0);
+  } catch (error) {
+    console.warn('XP tracking is unavailable until the gamification migration is applied.', error);
+    return null;
+  }
+}
+
 async function technovaLoadAchievements() {
   const grid = document.getElementById('achievementGrid');
   const xpEl = document.getElementById('xpTotal');
@@ -24,13 +38,15 @@ async function technovaLoadAchievements() {
       return;
     }
 
+    await technovaAwardXP(0, 'first-login');
+
     const [{ data: xpRows, error: xpError }, { data: unlocked, error: unlockError }] = await Promise.all([
       supabaseClient.from('user_xp').select('xp').eq('user_id', user.id).maybeSingle(),
       supabaseClient.from('user_achievements').select('achievement_key,unlocked_at').eq('user_id', user.id)
     ]);
 
     if (xpError || unlockError) {
-      grid.innerHTML = '<p class="muted">Achievements need the TechNova gamification database migration before they can be saved.</p>';
+      grid.innerHTML = '<p class="muted">Achievements need the prepared TechNova gamification migration applied before scores can be saved.</p>';
       return;
     }
 
@@ -63,7 +79,7 @@ async function technovaLoadLeaderboard(container) {
     .limit(25);
 
   if (error) {
-    container.innerHTML = '<p class="muted">The leaderboard will appear after the gamification database migration is applied.</p>';
+    container.innerHTML = '<p class="muted">The leaderboard will appear after the gamification migration is applied.</p>';
     return;
   }
 
