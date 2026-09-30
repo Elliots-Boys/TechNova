@@ -1,156 +1,117 @@
 'use strict';
 
-/* Load the QR library with a fallback CDN. */
-function loadTicketQrLibrary() {
-  if (window.QRCode?.toCanvas) return Promise.resolve(true);
-
-  const sources = [
-    'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js',
-    'https://unpkg.com/qrcode@1.5.4/build/qrcode.min.js'
-  ];
-
-  return new Promise(resolve => {
-    let index = 0;
-
-    const tryNext = () => {
-      if (window.QRCode?.toCanvas) {
-        resolve(true);
-        return;
-      }
-
-      if (index >= sources.length) {
-        resolve(false);
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.src = sources[index++];
-      script.async = true;
-      script.dataset.technovaQrcode = 'true';
-      script.onload = () => {
-        if (window.QRCode?.toCanvas) resolve(true);
-        else tryNext();
-      };
-      script.onerror = tryNext;
-      document.head.appendChild(script);
-    };
-
-    tryNext();
-  });
-}
-
-function technovaTicketsClient() {
-  if (window.supabaseClient) return window.supabaseClient;
-  if (!window.supabase || !window.TECHNOVA_SUPABASE_URL || !window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY) {
+function ticketClient(){
+  if(window.supabaseClient) return window.supabaseClient;
+  if(!window.supabase || !window.TECHNOVA_SUPABASE_URL || !window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY){
     throw new Error('TechNova Supabase configuration is unavailable.');
   }
-  window.supabaseClient = window.supabase.createClient(
-    window.TECHNOVA_SUPABASE_URL,
-    window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
-  );
+  window.supabaseClient=window.supabase.createClient(window.TECHNOVA_SUPABASE_URL,window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
   return window.supabaseClient;
 }
 
-function ticketText(value, fallback = '—') {
-  return value === null || value === undefined || value === '' ? fallback : String(value);
+function ticketText(value,fallback='—'){
+  return value===null || value===undefined || value==='' ? fallback : String(value);
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const container = document.getElementById('tickets');
-  if (!container) return;
+function createTicketQr(ticketId){
+  const wrapper=document.createElement('div');
+  wrapper.style.cssText='background:white;padding:8px;border-radius:12px;width:130px;height:130px;box-sizing:border-box;display:grid;place-items:center;overflow:hidden';
 
-  try {
-    const client = technovaTicketsClient();
-    const { data: { user }, error: authError } = await client.auth.getUser();
+  const img=document.createElement('img');
+  img.alt=`QR code for ticket ${ticketId}`;
+  img.width=114;
+  img.height=114;
+  img.loading='lazy';
+  img.referrerPolicy='no-referrer';
 
-    if (authError || !user) {
-      container.innerHTML = '<p class="muted">Please sign in to view your tickets.</p>';
+  // Keep the QR payload minimal: only the ticket ID is encoded.
+  // This avoids exposing the user's UUID to a QR image service.
+  const payload=encodeURIComponent(`TechNova ticket:${ticketId}`);
+  img.src=`https://quickchart.io/qr?text=${payload}&size=130&margin=1`;
+
+  img.onerror=()=>{
+    wrapper.innerHTML='';
+    const fallback=document.createElement('div');
+    fallback.style.cssText='background:#07101c;color:#dbe7f5;border:1px solid #29415e;border-radius:10px;padding:10px;text-align:center;font-size:12px;width:100%;box-sizing:border-box';
+    fallback.innerHTML='<strong>QR unavailable</strong><br><span style="color:#91a0b7">Ticket ID:</span>';
+    const code=document.createElement('code');
+    code.textContent=String(ticketId);
+    code.style.wordBreak='break-all';
+    fallback.appendChild(code);
+    wrapper.appendChild(fallback);
+  };
+
+  wrapper.appendChild(img);
+  return wrapper;
+}
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  const container=document.getElementById('tickets');
+  if(!container) return;
+
+  try{
+    const client=ticketClient();
+    const {data:{user},error:authError}=await client.auth.getUser();
+
+    if(authError || !user){
+      container.innerHTML='<p class="muted">Please sign in to view your tickets.</p>';
       return;
     }
 
-    const qrReady = await loadTicketQrLibrary();
-
-    const { data: registrations, error: registrationError } = await client
+    const {data:registrations,error:registrationError}=await client
       .from('event_registrations')
       .select('id,event_id,created_at')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+      .eq('user_id',user.id)
+      .order('created_at',{ascending:false});
 
-    if (registrationError) throw registrationError;
+    if(registrationError) throw registrationError;
 
-    if (!registrations?.length) {
-      container.innerHTML = '<p class="muted">You do not have any event tickets yet.</p><p style="margin-top:12px"><a class="btn primary" href="events.html">Browse events →</a></p>';
+    if(!registrations?.length){
+      container.innerHTML='<p class="muted">You do not have any event tickets yet.</p><p style="margin-top:12px"><a class="btn primary" href="events.html">Browse events →</a></p>';
       return;
     }
 
-    const eventIds = [...new Set(registrations.map(row => row.event_id).filter(Boolean))];
-    const { data: events, error: eventError } = await client
+    const eventIds=[...new Set(registrations.map(row=>row.event_id).filter(Boolean))];
+    const {data:events,error:eventError}=await client
       .from('events')
       .select('id,title,event_date,event_time,location,event_type')
-      .in('id', eventIds);
+      .in('id',eventIds);
 
-    if (eventError) throw eventError;
+    if(eventError) throw eventError;
 
-    const eventMap = new Map((events || []).map(event => [String(event.id), event]));
+    const eventMap=new Map((events||[]).map(event=>[String(event.id),event]));
 
-    container.replaceChildren(...registrations.map(registration => {
-      const event = eventMap.get(String(registration.event_id));
-      const ticket = document.createElement('article');
-      ticket.className = 'ticket';
+    container.replaceChildren(...registrations.map(registration=>{
+      const event=eventMap.get(String(registration.event_id));
+      const ticket=document.createElement('article');
+      ticket.className='ticket';
 
-      const info = document.createElement('div');
-      const eyebrow = document.createElement('p');
-      eyebrow.className = 'eyebrow';
-      eyebrow.textContent = 'TECHNOVA EVENT TICKET';
+      const info=document.createElement('div');
+      const eyebrow=document.createElement('p');
+      eyebrow.className='eyebrow';
+      eyebrow.textContent='TECHNOVA EVENT TICKET';
 
-      const title = document.createElement('h2');
-      title.textContent = ticketText(event?.title, 'Event');
+      const title=document.createElement('h2');
+      title.textContent=ticketText(event?.title,'Event');
 
-      const date = document.createElement('p');
-      date.textContent = `${ticketText(event?.event_date, 'Date')} · ${ticketText(event?.event_time, 'Time')}`;
+      const date=document.createElement('p');
+      date.textContent=`${ticketText(event?.event_date,'Date')} · ${ticketText(event?.event_time,'Time')}`;
 
-      const location = document.createElement('p');
-      location.textContent = ticketText(event?.location, 'Location');
+      const location=document.createElement('p');
+      location.textContent=ticketText(event?.location,'Location');
 
-      const id = document.createElement('p');
-      id.textContent = `Ticket #${registration.id}`;
-      info.append(eyebrow, title, date, location, id);
+      const type=document.createElement('p');
+      type.textContent=ticketText(event?.event_type,'Event');
 
-      const payload = JSON.stringify({
-        ticketId: registration.id,
-        eventId: registration.event_id,
-        userId: user.id
-      });
+      const id=document.createElement('p');
+      id.textContent=`Ticket #${registration.id}`;
 
-      if (qrReady && window.QRCode?.toCanvas) {
-        const canvas = document.createElement('canvas');
-        canvas.className = 'qr';
-        window.QRCode.toCanvas(canvas, payload, { width: 130, margin: 1 }, qrError => {
-          if (qrError) console.error('Ticket QR error:', qrError);
-        });
-        ticket.append(info, canvas);
-      } else {
-        const fallback = document.createElement('div');
-        fallback.style.cssText = 'background:#07101c;border:1px solid #29415e;border-radius:12px;padding:14px;text-align:center;max-width:180px';
-        const heading = document.createElement('strong');
-        heading.textContent = 'QR unavailable';
-        const text = document.createElement('p');
-        text.className = 'muted';
-        text.style.margin = '7px 0 0';
-        text.textContent = 'Ticket ID:';
-        const code = document.createElement('code');
-        code.textContent = String(registration.id);
-        code.style.wordBreak = 'break-all';
-        fallback.append(heading, text, code);
-        ticket.append(info, fallback);
-      }
-
+      info.append(eyebrow,title,date,location,type,id);
+      ticket.append(info,createTicketQr(registration.id));
       return ticket;
     }));
-
-    if (!qrReady) console.warn('TechNova: QR code CDNs failed to load.');
-  } catch (error) {
-    console.error('Ticket loading failed:', error);
-    container.innerHTML = `<p class="muted">Could not load tickets: ${error.message || 'Unknown error'}</p>`;
+  }catch(error){
+    console.error('Ticket loading failed:',error);
+    container.innerHTML=`<p class="muted">Could not load tickets: ${error.message||'Unknown error'}</p>`;
   }
 });
