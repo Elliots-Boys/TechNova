@@ -2,337 +2,512 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Admin Dashboard · TechNova</title>
 
 <link rel="stylesheet" href="../css/style.css">
 
 <style>
-body {
-  min-height: 100vh;
+:root{
+  --admin-bg:#07101c;
+  --admin-card:#0d1728;
+  --admin-card-2:#101b2d;
+  --admin-border:#243955;
+  --admin-muted:#91a0b7;
+  --admin-text:#dbe7f5;
+  --admin-cyan:#32d6ff;
+  --admin-green:#75efc2;
+  --admin-red:#ff9aaa;
+  --admin-yellow:#ffd166;
 }
 
-.admin-page {
-  width: min(1400px, 100%);
-  margin: 0 auto;
-  padding: 35px 25px 70px;
+body{
+  min-height:100vh;
 }
 
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 25px;
-  margin-bottom: 30px;
+.admin-page{
+  width:min(1500px,100%);
+  margin:0 auto;
+  padding:35px 25px 80px;
 }
 
-.admin-header h1 {
-  margin: 5px 0 8px;
-  font-size: clamp(36px, 5vw, 56px);
-  line-height: 1;
+.admin-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:25px;
+  margin-bottom:30px;
 }
 
-.admin-header p {
-  color: var(--muted);
-  margin: 0;
+.admin-header h1{
+  margin:5px 0 8px;
+  font-size:clamp(36px,5vw,58px);
+  line-height:1;
 }
 
-.admin-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.admin-header p{
+  color:var(--admin-muted);
+  margin:0;
 }
 
-.admin-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  margin-bottom: 28px;
+.admin-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-.admin-stat {
-  background: linear-gradient(180deg,#101b2d,#09111d);
-  border: 1px solid #243955;
-  border-radius: 18px;
-  padding: 22px;
-  box-shadow: 0 15px 45px #0005;
+.admin-message{
+  display:none;
+  padding:14px 16px;
+  border-radius:12px;
+  margin-bottom:22px;
 }
 
-.admin-stat h3 {
-  margin: 0 0 8px;
-  color: #9db0c9;
-  font-size: 14px;
+.admin-message.show{
+  display:block;
 }
 
-.admin-stat strong {
-  display: block;
-  font-size: 36px;
-  color: var(--cyan);
+.admin-message.error{
+  background:#421820;
+  color:var(--admin-red);
+  border:1px solid #71303c;
 }
 
-.admin-card {
-  background: linear-gradient(180deg,#101b2d,#09111d);
-  border: 1px solid #243955;
-  border-radius: 18px;
-  padding: 24px;
-  margin-bottom: 25px;
-  box-shadow: 0 15px 45px #0004;
-  overflow-x: auto;
+.admin-message.good{
+  background:#0c342b;
+  color:var(--admin-green);
+  border:1px solid #185d4e;
 }
 
-.admin-card h2 {
-  margin: 0 0 20px;
-  font-size: 25px;
+.admin-message.warning{
+  background:#382b0d;
+  color:var(--admin-yellow);
+  border:1px solid #69501a;
 }
 
-.admin-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
+/* TABS */
+
+.admin-tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:25px;
+  padding:8px;
+  background:#08111e;
+  border:1px solid var(--admin-border);
+  border-radius:15px;
 }
 
-.admin-card-header h2 {
-  margin: 0;
+.admin-tab{
+  border:0;
+  background:transparent;
+  color:var(--admin-muted);
+  padding:11px 15px;
+  border-radius:9px;
+  cursor:pointer;
+  font:inherit;
+  font-weight:700;
 }
 
-.admin-toolbar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
+.admin-tab:hover{
+  color:white;
+  background:#102136;
 }
 
-.admin-search {
-  flex: 1;
-  min-width: 220px;
+.admin-tab.active{
+  background:#123047;
+  color:var(--admin-cyan);
 }
 
-.admin-table-wrap {
-  overflow-x: auto;
+.admin-section{
+  display:none;
 }
 
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 850px;
+.admin-section.active{
+  display:block;
+}
+
+/* STATS */
+
+.admin-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  margin-bottom:25px;
+}
+
+.admin-stat{
+  background:linear-gradient(180deg,var(--admin-card-2),var(--admin-card));
+  border:1px solid var(--admin-border);
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 15px 45px #0005;
+}
+
+.admin-stat h3{
+  margin:0 0 8px;
+  color:var(--admin-muted);
+  font-size:14px;
+}
+
+.admin-stat strong{
+  display:block;
+  font-size:35px;
+  color:var(--admin-cyan);
+}
+
+/* CARDS */
+
+.admin-card{
+  background:linear-gradient(180deg,var(--admin-card-2),var(--admin-card));
+  border:1px solid var(--admin-border);
+  border-radius:18px;
+  padding:24px;
+  margin-bottom:22px;
+  box-shadow:0 15px 45px #0004;
+}
+
+.admin-card h2{
+  margin:0;
+  font-size:25px;
+}
+
+.admin-card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+
+.admin-card-header p{
+  color:var(--admin-muted);
+  margin:5px 0 0;
+}
+
+/* TABLE */
+
+.admin-table-wrap{
+  overflow-x:auto;
+}
+
+.admin-table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:850px;
 }
 
 .admin-table th,
-.admin-table td {
-  text-align: left;
-  padding: 13px;
-  border-bottom: 1px solid #243955;
-  vertical-align: top;
+.admin-table td{
+  text-align:left;
+  padding:13px;
+  border-bottom:1px solid var(--admin-border);
+  vertical-align:top;
 }
 
-.admin-table th {
-  color: #8fa5c0;
-  font-size: 13px;
+.admin-table th{
+  color:#8fa5c0;
+  font-size:13px;
 }
 
-.admin-table td {
-  color: #dbe7f5;
-  font-size: 14px;
+.admin-table td{
+  color:var(--admin-text);
+  font-size:14px;
 }
 
-.admin-table tr:last-child td {
-  border-bottom: 0;
+.admin-table tr:last-child td{
+  border-bottom:0;
+}
+
+/* FORMS */
+
+.admin-form{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:15px;
+}
+
+.admin-field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.admin-field.full{
+  grid-column:1/-1;
+}
+
+.admin-field label{
+  color:#aebfd4;
+  font-size:13px;
+  font-weight:700;
 }
 
 .admin-input,
 .admin-textarea,
-.admin-select {
-  width: 100%;
-  box-sizing: border-box;
-  background: #07101c;
-  border: 1px solid #29415e;
-  color: white;
-  border-radius: 9px;
-  padding: 10px 11px;
-  outline: none;
-  font: inherit;
+.admin-select{
+  width:100%;
+  box-sizing:border-box;
+  background:#07101c;
+  border:1px solid #29415e;
+  color:white;
+  border-radius:9px;
+  padding:10px 11px;
+  outline:none;
+  font:inherit;
 }
 
 .admin-input:focus,
 .admin-textarea:focus,
-.admin-select:focus {
-  border-color: var(--cyan);
-  box-shadow: 0 0 0 3px #32d6ff16;
+.admin-select:focus{
+  border-color:var(--admin-cyan);
+  box-shadow:0 0 0 3px #32d6ff16;
 }
 
-.admin-textarea {
-  min-height: 100px;
-  resize: vertical;
+.admin-textarea{
+  min-height:120px;
+  resize:vertical;
 }
 
-.admin-form {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 15px;
+.admin-form-actions{
+  grid-column:1/-1;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-.admin-field {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+.admin-hidden{
+  display:none!important;
 }
 
-.admin-field.full {
-  grid-column: 1 / -1;
+/* BUTTONS */
+
+.admin-small-btn{
+  border:1px solid #29415e;
+  background:#102136;
+  color:var(--admin-text);
+  border-radius:8px;
+  padding:8px 10px;
+  cursor:pointer;
 }
 
-.admin-field label {
-  color: #aebfd4;
-  font-size: 13px;
-  font-weight: 700;
+.admin-small-btn:hover{
+  border-color:var(--admin-cyan);
+  color:var(--admin-cyan);
 }
 
-.admin-form-actions {
-  grid-column: 1 / -1;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.admin-danger{
+  background:#4a1820!important;
+  color:#ffb4c0!important;
+  border-color:#77303c!important;
 }
 
-.admin-message {
-  display: none;
-  padding: 14px 16px;
-  border-radius: 12px;
-  margin-bottom: 22px;
+.admin-danger:hover{
+  background:#5b202a!important;
 }
 
-.admin-message.show {
-  display: block;
+.admin-success{
+  background:#0d342b!important;
+  color:#75efc2!important;
+  border-color:#185d4e!important;
 }
 
-.admin-message.error {
-  background: #421820;
-  color: #ff9aaa;
-  border: 1px solid #71303c;
+.admin-warning{
+  background:#382b0d!important;
+  color:#ffd166!important;
+  border-color:#69501a!important;
 }
 
-.admin-message.good {
-  background: #0c342b;
-  color: #75efc2;
-  border: 1px solid #185d4e;
+/* BADGES */
+
+.admin-badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:8px;
+  background:#123047;
+  color:var(--admin-cyan);
+  font-size:12px;
+  font-weight:700;
 }
 
-.admin-badge {
-  display: inline-block;
-  padding: 5px 9px;
-  border-radius: 8px;
-  background: #123047;
-  color: var(--cyan);
-  font-size: 12px;
-  font-weight: 700;
+.badge-green{
+  background:#0c342b;
+  color:var(--admin-green);
 }
 
-.admin-id {
-  font-family: monospace;
-  font-size: 12px !important;
-  color: #91a5bd !important;
-  word-break: break-all;
+.badge-red{
+  background:#421820;
+  color:var(--admin-red);
 }
 
-.admin-actions-cell {
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
+.badge-yellow{
+  background:#382b0d;
+  color:var(--admin-yellow);
 }
 
-.admin-small-btn {
-  border: 1px solid #29415e;
-  background: #102136;
-  color: #dbe7f5;
-  border-radius: 8px;
-  padding: 8px 10px;
-  cursor: pointer;
+.admin-id{
+  font-family:monospace;
+  font-size:12px!important;
+  color:#91a5bd!important;
+  word-break:break-all;
 }
 
-.admin-small-btn:hover {
-  border-color: var(--cyan);
-  color: var(--cyan);
+.admin-actions-cell{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
 }
 
-.admin-danger {
-  background: #4a1820 !important;
-  color: #ffb4c0 !important;
-  border-color: #77303c !important;
+/* SEARCH */
+
+.admin-toolbar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
 }
 
-.admin-danger:hover {
-  background: #5b202a !important;
+.admin-toolbar .admin-input,
+.admin-toolbar .admin-select{
+  width:auto;
+  min-width:190px;
 }
 
-.loading {
-  color: var(--muted) !important;
+/* EDITORS */
+
+.editor{
+  display:none;
 }
 
-#eventEditor,
-#profileEditor {
-  display: none;
+.editor.show{
+  display:block;
 }
 
-#eventEditor.show,
-#profileEditor.show {
-  display: block;
+/* PAGINATION */
+
+.pagination{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  margin-top:20px;
 }
 
-.empty-state {
-  text-align: center;
-  padding: 25px;
-  color: var(--muted);
+.pagination button{
+  border:1px solid var(--admin-border);
+  background:#102136;
+  color:white;
+  border-radius:8px;
+  padding:8px 13px;
+  cursor:pointer;
 }
 
-.admin-info {
-  color: #91a0b7;
-  font-size: 13px;
-  margin-top: 12px;
-  line-height: 1.6;
+.pagination button:disabled{
+  opacity:.4;
+  cursor:not-allowed;
 }
 
-@media(max-width:950px) {
-  .admin-grid {
-    grid-template-columns: repeat(2,1fr);
+.pagination span{
+  color:var(--admin-muted);
+}
+
+/* ACTIVITY */
+
+.activity-item{
+  display:flex;
+  gap:14px;
+  padding:15px 0;
+  border-bottom:1px solid var(--admin-border);
+}
+
+.activity-item:last-child{
+  border-bottom:0;
+}
+
+.activity-icon{
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  background:#123047;
+  display:grid;
+  place-items:center;
+  flex:none;
+}
+
+.activity-content{
+  flex:1;
+}
+
+.activity-action{
+  font-weight:800;
+}
+
+.activity-meta{
+  color:var(--admin-muted);
+  font-size:13px;
+  margin-top:4px;
+}
+
+/* IMAGE PREVIEW */
+
+.image-preview{
+  max-width:180px;
+  max-height:110px;
+  border-radius:10px;
+  border:1px solid var(--admin-border);
+  object-fit:cover;
+  display:none;
+}
+
+.image-preview.show{
+  display:block;
+}
+
+.loading{
+  color:var(--admin-muted)!important;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1000px){
+  .admin-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:700px){
+
+  .admin-page{
+    padding:22px 15px 50px;
   }
 
-  .admin-header {
-    flex-direction: column;
-    align-items: flex-start;
+  .admin-header{
+    flex-direction:column;
+    align-items:flex-start;
   }
-}
 
-@media(max-width:700px) {
-  .admin-form {
-    grid-template-columns: 1fr;
+  .admin-form{
+    grid-template-columns:1fr;
   }
 
   .admin-field.full,
-  .admin-form-actions {
-    grid-column: auto;
-  }
-}
-
-@media(max-width:600px) {
-  .admin-page {
-    padding: 22px 15px 45px;
+  .admin-form-actions{
+    grid-column:auto;
   }
 
-  .admin-grid {
-    grid-template-columns: 1fr;
+  .admin-grid{
+    grid-template-columns:1fr;
   }
 
-  .admin-actions {
-    width: 100%;
+  .admin-toolbar{
+    flex-direction:column;
   }
 
-  .admin-actions .btn {
-    flex: 1;
-    text-align: center;
+  .admin-toolbar .admin-input,
+  .admin-toolbar .admin-select{
+    width:100%;
   }
 }
 </style>
@@ -346,57 +521,42 @@ body {
 
 <div>
 <div class="eyebrow">TECHNOVA ADMIN</div>
-
 <h1>Admin Dashboard</h1>
-
-<p id="adminWelcome">
-Checking administrator access…
-</p>
+<p id="adminWelcome">Checking administrator access…</p>
 </div>
 
 <div class="admin-actions">
-
-<a class="btn" href="../index.html">
-View website
-</a>
-
-<a class="btn" href="account.html">
-My account
-</a>
-
-<button
-id="refreshBtn"
-class="btn"
-type="button"
->
-↻ Refresh
-</button>
-
-<button
-id="logoutBtn"
-class="btn admin-danger"
-type="button"
->
+<a class="btn" href="../index.html">View website</a>
+<a class="btn" href="account.html">My account</a>
+<button id="logoutBtn" class="btn admin-danger" type="button">
 Log out
 </button>
-
 </div>
 
 </header>
 
+<div id="adminMessage" class="admin-message" aria-live="polite"></div>
 
-<div
-id="adminMessage"
-class="admin-message"
-aria-live="polite"
-></div>
+<nav class="admin-tabs" aria-label="Admin sections">
+
+<button class="admin-tab active" data-section="overview">📊 Overview</button>
+<button class="admin-tab" data-section="events">📅 Events</button>
+<button class="admin-tab" data-section="users">👥 Users</button>
+<button class="admin-tab" data-section="registrations">📋 Registrations</button>
+<button class="admin-tab" data-section="articles">📰 Articles</button>
+<button class="admin-tab" data-section="content">🏠 Website</button>
+<button class="admin-tab" data-section="activity">📝 Activity</button>
+
+</nav>
 
 
 <!-- =====================================================
-     STATISTICS
+     OVERVIEW
 ===================================================== -->
 
-<section class="admin-grid">
+<section id="section-overview" class="admin-section active">
+
+<div class="admin-grid">
 
 <div class="admin-stat">
 <h3>Total users</h3>
@@ -409,7 +569,7 @@ aria-live="polite"
 </div>
 
 <div class="admin-stat">
-<h3>Registrations</h3>
+<h3>Total registrations</h3>
 <strong id="registrationCount">—</strong>
 </div>
 
@@ -418,159 +578,132 @@ aria-live="polite"
 <strong id="adminCount">—</strong>
 </div>
 
+</div>
+
+
+<div class="admin-grid">
+
+<div class="admin-stat">
+<h3>New users this week</h3>
+<strong id="newUsersWeek">—</strong>
+</div>
+
+<div class="admin-stat">
+<h3>New users this month</h3>
+<strong id="newUsersMonth">—</strong>
+</div>
+
+<div class="admin-stat">
+<h3>Published articles</h3>
+<strong id="publishedArticleCount">—</strong>
+</div>
+
+<div class="admin-stat">
+<h3>Upcoming events</h3>
+<strong id="upcomingEventCount">—</strong>
+</div>
+
+</div>
+
+
+<div class="admin-card">
+
+<div class="admin-card-header">
+<div>
+<p class="eyebrow">POPULARITY</p>
+<h2>Most popular events</h2>
+<p>Events with the highest number of registrations.</p>
+</div>
+</div>
+
+<div id="popularEvents">
+<p class="loading">Loading…</p>
+</div>
+
+</div>
+
+
+<div class="admin-card">
+
+<div class="admin-card-header">
+<div>
+<p class="eyebrow">RECENT</p>
+<h2>Recently registered users</h2>
+</div>
+</div>
+
+<div id="recentUsers">
+<p class="loading">Loading…</p>
+</div>
+
+</div>
+
 </section>
 
 
 <!-- =====================================================
-     EVENT EDITOR
+     EVENTS
 ===================================================== -->
 
-<section
-id="eventEditor"
-class="admin-card"
->
+<section id="section-events" class="admin-section">
+
+<section id="eventEditor" class="admin-card editor">
 
 <div class="admin-card-header">
 
 <div>
 <p class="eyebrow">EVENT MANAGEMENT</p>
-<h2 id="eventEditorTitle">
-Add event
-</h2>
+<h2 id="eventEditorTitle">Add event</h2>
 </div>
 
-<button
-id="cancelEventEdit"
-class="btn"
-type="button"
->
+<button id="cancelEventEdit" class="btn" type="button">
 Cancel
 </button>
 
 </div>
 
 
-<form
-id="eventForm"
-class="admin-form"
->
+<form id="eventForm" class="admin-form">
 
-<input
-type="hidden"
-id="eventId"
->
-
+<input type="hidden" id="eventId">
 
 <div class="admin-field">
-
-<label for="eventTitle">
-Event title
-</label>
-
-<input
-id="eventTitle"
-class="admin-input"
-type="text"
-required
->
-
+<label for="eventTitle">Event title</label>
+<input id="eventTitle" class="admin-input" type="text" required>
 </div>
-
 
 <div class="admin-field">
-
-<label for="eventType">
-Event type
-</label>
-
-<input
-id="eventType"
-class="admin-input"
-type="text"
-placeholder="Conference, workshop, exhibition..."
->
-
+<label for="eventType">Event type</label>
+<input id="eventType" class="admin-input" type="text">
 </div>
-
 
 <div class="admin-field">
-
-<label for="eventDate">
-Date
-</label>
-
-<input
-id="eventDate"
-class="admin-input"
-type="date"
-required
->
-
+<label for="eventDate">Date</label>
+<input id="eventDate" class="admin-input" type="date" required>
 </div>
-
 
 <div class="admin-field">
-
-<label for="eventTime">
-Time
-</label>
-
-<input
-id="eventTime"
-class="admin-input"
-type="text"
-placeholder="10:00 AM"
->
-
+<label for="eventTime">Time</label>
+<input id="eventTime" class="admin-input" type="text">
 </div>
-
 
 <div class="admin-field">
-
-<label for="eventLocation">
-Location
-</label>
-
-<input
-id="eventLocation"
-class="admin-input"
-type="text"
->
-
+<label for="eventLocation">Location</label>
+<input id="eventLocation" class="admin-input" type="text">
 </div>
-
 
 <div class="admin-field full">
-
-<label for="eventDescription">
-Description
-</label>
-
-<textarea
-id="eventDescription"
-class="admin-textarea"
-placeholder="Event description..."
-></textarea>
-
+<label for="eventDescription">Description</label>
+<textarea id="eventDescription" class="admin-textarea"></textarea>
 </div>
-
 
 <div class="admin-form-actions">
 
-<button
-id="saveEventBtn"
-class="btn primary"
-type="submit"
->
+<button class="btn primary" type="submit">
 Save event
 </button>
 
-<button
-id="deleteEventBtn"
-class="btn admin-danger"
-type="button"
-style="display:none"
->
+<button id="deleteEventBtn" class="btn admin-danger" type="button">
 Delete event
 </button>
 
@@ -581,87 +714,75 @@ Delete event
 </section>
 
 
-<!-- =====================================================
-     EVENTS
-===================================================== -->
-
 <section class="admin-card">
 
 <div class="admin-card-header">
 
 <div>
-<p class="eyebrow">CONTENT MANAGEMENT</p>
+<p class="eyebrow">CONTENT</p>
 <h2>Events</h2>
+<p>Create, edit and remove TechNova events.</p>
 </div>
 
-<button
-id="addEventBtn"
-class="btn primary"
-type="button"
->
+<button id="addEventBtn" class="btn primary" type="button">
 + Add event
 </button>
 
 </div>
 
-
 <div class="admin-toolbar">
 
 <input
 id="eventSearch"
-class="admin-input admin-search"
+class="admin-input"
 type="search"
 placeholder="Search events..."
 >
 
-</div>
+<select id="eventSort" class="admin-select">
+<option value="newest">Newest first</option>
+<option value="oldest">Oldest first</option>
+<option value="upcoming">Upcoming first</option>
+</select>
 
+</div>
 
 <div class="admin-table-wrap">
 
 <table class="admin-table">
 
 <thead>
-
 <tr>
 <th>Event</th>
 <th>Date</th>
 <th>Time</th>
 <th>Location</th>
 <th>Type</th>
+<th>Registered</th>
 <th>Actions</th>
 </tr>
-
 </thead>
 
-<tbody id="eventsTable">
-
-<tr>
-<td
-colspan="6"
-class="loading"
->
-Loading events…
-</td>
-</tr>
-
-</tbody>
+<tbody id="eventsTable"></tbody>
 
 </table>
 
 </div>
 
+<div id="eventPagination" class="pagination"></div>
+
+</section>
+
 </section>
 
 
 <!-- =====================================================
-     PROFILE EDITOR
+     USERS
 ===================================================== -->
 
-<section
-id="profileEditor"
-class="admin-card"
->
+<section id="section-users" class="admin-section">
+
+<section id="profileEditor" class="admin-card editor">
 
 <div class="admin-card-header">
 
@@ -670,79 +791,45 @@ class="admin-card"
 <h2>Edit profile</h2>
 </div>
 
-<button
-id="cancelProfileEdit"
-class="btn"
-type="button"
->
+<button id="cancelProfileEdit" class="btn" type="button">
 Cancel
 </button>
 
 </div>
 
 
-<form
-id="profileForm"
-class="admin-form"
->
+<form id="profileForm" class="admin-form">
 
-<input
-type="hidden"
-id="profileId"
->
-
+<input type="hidden" id="profileId">
 
 <div class="admin-field">
-
-<label for="profileName">
-Display name
-</label>
-
-<input
-id="profileName"
-class="admin-input"
-type="text"
->
-
+<label for="profileName">Display name</label>
+<input id="profileName" class="admin-input" type="text">
 </div>
-
 
 <div class="admin-field">
-
-<label for="profileAvatar">
-Avatar URL
-</label>
-
-<input
-id="profileAvatar"
-class="admin-input"
-type="url"
-placeholder="https://..."
->
-
+<label for="profileAvatar">Avatar URL</label>
+<input id="profileAvatar" class="admin-input" type="url">
 </div>
-
 
 <div class="admin-field full">
-
-<label for="profileBio">
-Bio
-</label>
-
-<textarea
-id="profileBio"
-class="admin-textarea"
-></textarea>
-
+<label for="profileBio">Bio</label>
+<textarea id="profileBio" class="admin-textarea"></textarea>
 </div>
 
+<div class="admin-field">
+<label for="profileDisabled">Account status</label>
+
+<select id="profileDisabled" class="admin-select">
+<option value="false">Active</option>
+<option value="true">Disabled</option>
+</select>
+
+</div>
 
 <div class="admin-form-actions">
 
-<button
-class="btn primary"
-type="submit"
->
+<button class="btn primary" type="submit">
 Save profile
 </button>
 
@@ -753,10 +840,6 @@ Save profile
 </section>
 
 
-<!-- =====================================================
-     USERS
-===================================================== -->
-
 <section class="admin-card">
 
 <div class="admin-card-header">
@@ -764,19 +847,25 @@ Save profile
 <div>
 <p class="eyebrow">ACCOUNTS</p>
 <h2>Users</h2>
+<p>Search and manage registered users.</p>
 </div>
 
 </div>
-
 
 <div class="admin-toolbar">
 
 <input
 id="userSearch"
-class="admin-input admin-search"
+class="admin-input"
 type="search"
-placeholder="Search by name or user ID..."
+placeholder="Search users..."
 >
+
+<select id="userSort" class="admin-select">
+<option value="newest">Newest first</option>
+<option value="oldest">Oldest first</option>
+<option value="name">Name A-Z</option>
+</select>
 
 </div>
 
@@ -786,109 +875,25 @@ placeholder="Search by name or user ID..."
 <table class="admin-table">
 
 <thead>
-
 <tr>
 <th>Name</th>
 <th>User ID</th>
 <th>Joined</th>
+<th>Status</th>
 <th>Actions</th>
 </tr>
-
 </thead>
 
-<tbody id="usersTable">
-
-<tr>
-<td
-colspan="4"
-class="loading"
->
-Loading users…
-</td>
-</tr>
-
-</tbody>
+<tbody id="usersTable"></tbody>
 
 </table>
 
 </div>
 
-</section>
-
-
-<!-- =====================================================
-     REGISTRATIONS
-===================================================== -->
-
-<section class="admin-card">
-
-<div class="admin-card-header">
-
-<div>
-<p class="eyebrow">ACTIVITY</p>
-<h2>Event registrations</h2>
-</div>
-
-<button
-id="exportRegistrationsBtn"
-class="btn primary"
-type="button"
->
-📥 Export CSV
-</button>
-
-</div>
-
-
-<div class="admin-toolbar">
-
-<input
-id="registrationSearch"
-class="admin-input admin-search"
-type="search"
-placeholder="Search registrations..."
->
-
-</div>
-
-
-<div class="admin-table-wrap">
-
-<table class="admin-table">
-
-<thead>
-
-<tr>
-<th>User ID</th>
-<th>Event</th>
-<th>Registered</th>
-</tr>
-
-</thead>
-
-<tbody id="registrationsTable">
-
-<tr>
-<td
-colspan="3"
-class="loading"
->
-Loading registrations…
-</td>
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
+<div id="userPagination" class="pagination"></div>
 
 </section>
 
-
-<!-- =====================================================
-     ROLES
-===================================================== -->
 
 <section class="admin-card">
 
@@ -897,7 +902,73 @@ Loading registrations…
 <div>
 <p class="eyebrow">SECURITY</p>
 <h2>User roles</h2>
+<p>Change user privileges. The database RLS policy remains the real security boundary.</p>
 </div>
+
+</div>
+
+<div class="admin-table-wrap">
+
+<table class="admin-table">
+
+<thead>
+<tr>
+<th>User ID</th>
+<th>Role</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="rolesTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+</section>
+
+
+<!-- =====================================================
+     REGISTRATIONS
+===================================================== -->
+
+<section id="section-registrations" class="admin-section">
+
+<section class="admin-card">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">REGISTRATION MANAGEMENT</p>
+<h2>Event registrations</h2>
+<p>Search, filter and remove registrations.</p>
+</div>
+
+<button id="exportCsvBtn" class="btn primary" type="button">
+⬇ Export CSV
+</button>
+
+</div>
+
+<div class="admin-toolbar">
+
+<input
+id="registrationSearch"
+class="admin-input"
+type="search"
+placeholder="Search user or event..."
+>
+
+<select id="registrationEventFilter" class="admin-select">
+<option value="">All events</option>
+</select>
+
+<select id="registrationSort" class="admin-select">
+<option value="newest">Newest first</option>
+<option value="oldest">Oldest first</option>
+</select>
 
 </div>
 
@@ -907,46 +978,304 @@ Loading registrations…
 <table class="admin-table">
 
 <thead>
-
 <tr>
 <th>User ID</th>
-<th>Role</th>
+<th>Event</th>
+<th>Registered</th>
+<th>Actions</th>
 </tr>
-
 </thead>
 
-<tbody id="rolesTable">
-
-<tr>
-<td
-colspan="2"
-class="loading"
->
-Loading roles…
-</td>
-</tr>
-
-</tbody>
+<tbody id="registrationsTable"></tbody>
 
 </table>
 
 </div>
 
-
-<p class="admin-info">
-Roles are deliberately read-only in this page.
-Keep role changes protected by Supabase RLS/database security.
-</p>
+<div id="registrationPagination" class="pagination"></div>
 
 </section>
 
+</section>
+
+
+<!-- =====================================================
+     ARTICLES
+===================================================== -->
+
+<section id="section-articles" class="admin-section">
+
+<section id="articleEditor" class="admin-card editor">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">ARTICLE EDITOR</p>
+<h2 id="articleEditorTitle">Add article</h2>
+</div>
+
+<button id="cancelArticleEdit" class="btn" type="button">
+Cancel
+</button>
+
+</div>
+
+
+<form id="articleForm" class="admin-form">
+
+<input type="hidden" id="articleId">
+
+<div class="admin-field">
+<label for="articleTitle">Title</label>
+<input id="articleTitle" class="admin-input" required>
+</div>
+
+<div class="admin-field">
+<label for="articleCategory">Category</label>
+<input id="articleCategory" class="admin-input" value="Technology">
+</div>
+
+<div class="admin-field full">
+<label for="articleExcerpt">Excerpt</label>
+<textarea id="articleExcerpt" class="admin-textarea"></textarea>
+</div>
+
+<div class="admin-field full">
+<label for="articleContent">Article content</label>
+<textarea id="articleContent" class="admin-textarea" style="min-height:220px"></textarea>
+</div>
+
+<div class="admin-field">
+<label for="articleImage">Image URL</label>
+<input id="articleImage" class="admin-input" type="url">
+</div>
+
+<div class="admin-field">
+<label for="articlePublished">Publication status</label>
+
+<select id="articlePublished" class="admin-select">
+<option value="false">Draft</option>
+<option value="true">Published</option>
+</select>
+
+</div>
+
+<div class="admin-form-actions">
+
+<button class="btn primary" type="submit">
+Save article
+</button>
+
+<button id="deleteArticleBtn" class="btn admin-danger" type="button">
+Delete article
+</button>
+
+</div>
+
+</form>
+
+</section>
+
+
+<section class="admin-card">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">NEWS & TECHNOLOGY</p>
+<h2>Articles</h2>
+<p>Create, edit, publish and remove articles.</p>
+</div>
+
+<button id="addArticleBtn" class="btn primary" type="button">
++ Add article
+</button>
+
+</div>
+
+<div class="admin-toolbar">
+
+<input
+id="articleSearch"
+class="admin-input"
+type="search"
+placeholder="Search articles..."
+>
+
+<select id="articleStatusFilter" class="admin-select">
+<option value="">All articles</option>
+<option value="true">Published</option>
+<option value="false">Drafts</option>
+</select>
+
+</div>
+
+<div class="admin-table-wrap">
+
+<table class="admin-table">
+
+<thead>
+<tr>
+<th>Title</th>
+<th>Category</th>
+<th>Status</th>
+<th>Created</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="articlesTable"></tbody>
+
+</table>
+
+</div>
+
+<div id="articlePagination" class="pagination"></div>
+
+</section>
+
+</section>
+
+
+<!-- =====================================================
+     WEBSITE CONTENT
+===================================================== -->
+
+<section id="section-content" class="admin-section">
+
+<section class="admin-card">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">WEBSITE CONTENT</p>
+<h2>Homepage & site content</h2>
+<p>Edit text stored in the TechNova site content table.</p>
+</div>
+
+</div>
+
+
+<div id="contentEditorList">
+
+<p class="loading">
+Loading website content…
+</p>
+
+</div>
+
+</section>
+
+
+<section class="admin-card">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">FEATURED EVENTS</p>
+<h2>Featured event</h2>
+<p>Choose an event to feature on the website.</p>
+</div>
+
+</div>
+
+<div class="admin-field">
+
+<label for="featuredEventSelect">
+Featured event
+</label>
+
+<select id="featuredEventSelect" class="admin-select">
+<option value="">No featured event</option>
+</select>
+
+</div>
+
+<div style="margin-top:15px">
+
+<button id="saveFeaturedEventBtn" class="btn primary" type="button">
+Save featured event
+</button>
+
+</div>
+
+</section>
+
+
+<section class="admin-card">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">ANNOUNCEMENTS</p>
+<h2>Site announcement</h2>
+<p>Change the announcement shown to visitors.</p>
+</div>
+
+</div>
+
+<div class="admin-field">
+
+<label for="announcementText">
+Announcement
+</label>
+
+<textarea
+id="announcementText"
+class="admin-textarea"
+placeholder="Enter an announcement..."
+></textarea>
+
+</div>
+
+<div style="margin-top:15px">
+
+<button id="saveAnnouncementBtn" class="btn primary" type="button">
+Save announcement
+</button>
+
+</div>
+
+</section>
+
+</section>
+
+
+<!-- =====================================================
+     ACTIVITY
+===================================================== -->
+
+<section id="section-activity" class="admin-section">
+
+<section class="admin-card">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">AUDIT LOG</p>
+<h2>Admin activity</h2>
+<p>Recent administrator actions performed on TechNova.</p>
+</div>
+
+</div>
+
+<div id="activityList">
+
+<p class="loading">
+Loading activity…
+</p>
+
+</div>
+
+</section>
+
+</section>
 
 </main>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-config.js"></script>
-
 
 <script>
 
@@ -958,1436 +1287,3241 @@ Keep role changes protected by Supabase RLS/database security.
 ===================================================== */
 
 const supabaseClient =
-window.supabase.createClient(
-  window.TECHNOVA_SUPABASE_URL,
-  window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
-);
+  window.supabase.createClient(
+    window.TECHNOVA_SUPABASE_URL,
+    window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
+  );
 
 
 /* =====================================================
    STATE
 ===================================================== */
 
+let currentAdmin = null;
+
 let allUsers = [];
 let allEvents = [];
 let allRegistrations = [];
+let allArticles = [];
 let allRoles = [];
+let allActivity = [];
+
+const PAGE_SIZE = 10;
+
+let userPage = 1;
+let eventPage = 1;
+let registrationPage = 1;
+let articlePage = 1;
 
 
 /* =====================================================
-   ELEMENTS
+   HELPERS
 ===================================================== */
 
-const adminMessage =
-document.getElementById('adminMessage');
+const $ = id => document.getElementById(id);
 
-const adminWelcome =
-document.getElementById('adminWelcome');
 
-const userCount =
-document.getElementById('userCount');
+function escapeHtml(value){
 
-const eventCount =
-document.getElementById('eventCount');
+  return String(value ?? '')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
 
-const registrationCount =
-document.getElementById('registrationCount');
+}
 
-const adminCount =
-document.getElementById('adminCount');
 
-const usersTable =
-document.getElementById('usersTable');
+function showMessage(message,type='error'){
 
-const eventsTable =
-document.getElementById('eventsTable');
+  $('adminMessage').textContent = message;
 
-const registrationsTable =
-document.getElementById('registrationsTable');
+  $('adminMessage').className =
+    `admin-message show ${type}`;
 
-const rolesTable =
-document.getElementById('rolesTable');
+}
 
-const eventEditor =
-document.getElementById('eventEditor');
 
-const profileEditor =
-document.getElementById('profileEditor');
+function clearMessage(){
 
-const eventForm =
-document.getElementById('eventForm');
+  $('adminMessage').className =
+    'admin-message';
 
-const profileForm =
-document.getElementById('profileForm');
+}
 
-const userSearch =
-document.getElementById('userSearch');
 
-const eventSearch =
-document.getElementById('eventSearch');
+function paginate(items,page){
 
-const registrationSearch =
-document.getElementById('registrationSearch');
+  const start =
+    (page - 1) * PAGE_SIZE;
+
+  return items.slice(
+    start,
+    start + PAGE_SIZE
+  );
+
+}
+
+
+function renderPagination(
+  containerId,
+  page,
+  total,
+  callback
+){
+
+  const container =
+    $(containerId);
+
+  container.replaceChildren();
+
+  const pages =
+    Math.max(
+      1,
+      Math.ceil(total / PAGE_SIZE)
+    );
+
+
+  const previous =
+    document.createElement('button');
+
+  previous.textContent =
+    '← Previous';
+
+  previous.disabled =
+    page <= 1;
+
+  previous.onclick =
+    () => callback(page - 1);
+
+
+  const text =
+    document.createElement('span');
+
+  text.textContent =
+    `Page ${page} of ${pages}`;
+
+
+  const next =
+    document.createElement('button');
+
+  next.textContent =
+    'Next →';
+
+  next.disabled =
+    page >= pages;
+
+  next.onclick =
+    () => callback(page + 1);
+
+
+  container.append(
+    previous,
+    text,
+    next
+  );
+
+}
+
+
+async function logAdminAction(
+  action,
+  targetType = null,
+  targetId = null,
+  details = {}
+){
+
+  if(!currentAdmin) return;
+
+
+  const { error } =
+    await supabaseClient
+      .from('admin_activity_log')
+      .insert({
+        admin_user_id: currentAdmin.id,
+        action,
+        target_type: targetType,
+        target_id: targetId
+          ? String(targetId)
+          : null,
+        details
+      });
+
+
+  if(error){
+    console.warn(
+      'Could not write admin activity:',
+      error
+    );
+  }
+
+}
 
 
 /* =====================================================
-   MESSAGE
+   ADMIN SECURITY CHECK
 ===================================================== */
 
-function showMessage(
-message,
-type = 'error'
-) {
+async function checkAdmin(){
 
-adminMessage.textContent =
-message;
+  const {
+    data: {
+      user
+    },
+    error
+  } =
+    await supabaseClient.auth.getUser();
 
-adminMessage.className =
-`admin-message show ${type}`;
+
+  if(error || !user){
+
+    window.location.href =
+      'login.html';
+
+    return null;
+
+  }
+
+
+  const {
+    data: role,
+    error: roleError
+  } =
+    await supabaseClient
+      .from('user_roles')
+      .select('role')
+      .eq('user_id',user.id)
+      .maybeSingle();
+
+
+  if(roleError){
+
+    console.error(roleError);
+
+    showMessage(
+      'Could not verify administrator permissions.'
+    );
+
+    return null;
+
+  }
+
+
+  if(!role || role.role !== 'admin'){
+
+    window.location.href =
+      'account.html';
+
+    return null;
+
+  }
+
+
+  currentAdmin =
+    user;
+
+
+  $('adminWelcome').textContent =
+    `Signed in as ${user.email || 'administrator'}`;
+
+
+  return user;
 
 }
 
 
 /* =====================================================
-   ADMIN CHECK
+   TABS
 ===================================================== */
 
-async function checkAdmin() {
+document
+  .querySelectorAll('.admin-tab')
+  .forEach(button => {
 
-const {
-data: { user },
-error
-} =
-await supabaseClient.auth.getUser();
+    button.addEventListener(
+      'click',
+      () => {
 
-
-if (error || !user) {
-
-window.location.href =
-'login.html';
-
-return null;
-
-}
+        document
+          .querySelectorAll('.admin-tab')
+          .forEach(item =>
+            item.classList.remove('active')
+          );
 
 
-const {
-data: role,
-error: roleError
-} =
-await supabaseClient
-.from('user_roles')
-.select('role')
-.eq('user_id', user.id)
-.maybeSingle();
+        document
+          .querySelectorAll('.admin-section')
+          .forEach(section =>
+            section.classList.remove('active')
+          );
 
 
-if (roleError) {
+        button.classList.add('active');
 
-console.error(roleError);
+        const section =
+          $('section-' + button.dataset.section);
 
-showMessage(
-'Could not verify administrator permissions.'
-);
-
-return null;
-
-}
+        if(section){
+          section.classList.add('active');
+        }
 
 
-if (!role || role.role !== 'admin') {
+        if(button.dataset.section === 'activity'){
+          loadActivity();
+        }
 
-window.location.href =
-'account.html';
+      }
+    );
 
-return null;
-
-}
-
-
-adminWelcome.textContent =
-`Signed in as ${user.email || 'administrator'}`;
-
-
-return user;
-
-}
+  });
 
 
 /* =====================================================
    USERS
 ===================================================== */
 
-async function loadUsers() {
+async function loadUsers(){
 
-const {
-data,
-error
-} =
-await supabaseClient
-.from('profiles')
-.select(
-'id,display_name,avatar_url,bio,created_at'
-)
-.order(
-'created_at',
-{ ascending:false }
-);
-
-
-if (error) throw error;
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from('profiles')
+      .select(
+        'id,display_name,avatar_url,bio,created_at,is_disabled'
+      )
+      .order(
+        'created_at',
+        {ascending:false}
+      );
 
 
-allUsers =
-data || [];
+  if(error) throw error;
 
 
-userCount.textContent =
-allUsers.length;
+  allUsers =
+    data || [];
 
 
-renderUsers();
-
-}
-
-
-function renderUsers() {
-
-const search =
-(userSearch.value || '')
-.toLowerCase()
-.trim();
+  $('userCount').textContent =
+    allUsers.length;
 
 
-const users =
-allUsers.filter(user => {
+  renderUsers();
 
-const name =
-(user.display_name || '')
-.toLowerCase();
-
-const id =
-(user.id || '')
-.toLowerCase();
-
-return (
-!search ||
-name.includes(search) ||
-id.includes(search)
-);
-
-});
-
-
-if (!users.length) {
-
-usersTable.innerHTML = `
-<tr>
-<td colspan="4" class="empty-state">
-No users found.
-</td>
-</tr>
-`;
-
-return;
+  renderOverviewUsers();
 
 }
 
 
-usersTable.replaceChildren(
+function renderOverviewUsers(){
 
-...users.map(user => {
+  const now =
+    new Date();
 
-const row =
-document.createElement('tr');
+  const week =
+    new Date();
 
-
-const name =
-document.createElement('td');
-
-name.textContent =
-user.display_name ||
-'Unnamed user';
+  week.setDate(
+    now.getDate() - 7
+  );
 
 
-const id =
-document.createElement('td');
+  const month =
+    new Date();
 
-id.className =
-'admin-id';
-
-id.textContent =
-user.id;
+  month.setDate(
+    now.getDate() - 30
+  );
 
 
-const joined =
-document.createElement('td');
-
-joined.textContent =
-user.created_at
-? new Date(
-user.created_at
-).toLocaleDateString()
-: '—';
+  $('newUsersWeek').textContent =
+    allUsers.filter(
+      user =>
+        user.created_at &&
+        new Date(user.created_at) >= week
+    ).length;
 
 
-const actions =
-document.createElement('td');
-
-actions.className =
-'admin-actions-cell';
-
-
-const edit =
-document.createElement('button');
-
-edit.type =
-'button';
-
-edit.className =
-'admin-small-btn';
-
-edit.textContent =
-'Edit';
-
-edit.addEventListener(
-'click',
-() => openProfileEditor(user)
-);
-
-
-actions.appendChild(edit);
-
-
-row.append(
-name,
-id,
-joined,
-actions
-);
-
-
-return row;
-
-})
-
-);
+  $('newUsersMonth').textContent =
+    allUsers.filter(
+      user =>
+        user.created_at &&
+        new Date(user.created_at) >= month
+    ).length;
 
 }
 
 
-userSearch.addEventListener(
-'input',
-renderUsers
-);
+function renderUsers(){
+
+  const search =
+    ($('userSearch').value || '')
+      .trim()
+      .toLowerCase();
 
 
-/* =====================================================
-   EVENT EDITOR
-===================================================== */
-
-function openEventEditor(event = null) {
-
-eventEditor.classList.add('show');
+  const sort =
+    $('userSort').value;
 
 
-document.getElementById('eventId').value =
-event?.id || '';
+  let filtered =
+    allUsers.filter(user => {
 
-document.getElementById('eventTitle').value =
-event?.title || '';
+      if(!search) return true;
 
-document.getElementById('eventType').value =
-event?.event_type || '';
+      return (
+        String(user.display_name || '')
+          .toLowerCase()
+          .includes(search)
+        ||
+        String(user.id)
+          .toLowerCase()
+          .includes(search)
+      );
 
-document.getElementById('eventDate').value =
-event?.event_date || '';
-
-document.getElementById('eventTime').value =
-event?.event_time || '';
-
-document.getElementById('eventLocation').value =
-event?.location || '';
-
-document.getElementById('eventDescription').value =
-event?.description || '';
+    });
 
 
-document.getElementById(
-'eventEditorTitle'
-).textContent =
-event
-? 'Edit event'
-: 'Add event';
+  if(sort === 'name'){
+
+    filtered.sort(
+      (a,b) =>
+        String(a.display_name || '')
+          .localeCompare(
+            String(b.display_name || '')
+          )
+    );
+
+  }
+
+  else if(sort === 'oldest'){
+
+    filtered.sort(
+      (a,b) =>
+        new Date(a.created_at || 0) -
+        new Date(b.created_at || 0)
+    );
+
+  }
+
+  else{
+
+    filtered.sort(
+      (a,b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
+
+  }
 
 
-document.getElementById(
-'deleteEventBtn'
-).style.display =
-event
-? 'inline-block'
-: 'none';
+  const pageItems =
+    paginate(
+      filtered,
+      userPage
+    );
 
 
-eventEditor.scrollIntoView({
-behavior:'smooth',
-block:'start'
-});
+  if(!pageItems.length){
+
+    $('usersTable').innerHTML = `
+      <tr>
+        <td colspan="5" class="loading">
+          No users found.
+        </td>
+      </tr>
+    `;
+
+  }
+
+  else{
+
+    $('usersTable').innerHTML =
+      pageItems.map(user => `
+
+        <tr>
+
+          <td>
+            ${escapeHtml(
+              user.display_name ||
+              'Unnamed user'
+            )}
+          </td>
+
+          <td class="admin-id">
+            ${escapeHtml(user.id)}
+          </td>
+
+          <td>
+            ${
+              user.created_at
+                ? new Date(
+                    user.created_at
+                  ).toLocaleDateString()
+                : '—'
+            }
+          </td>
+
+          <td>
+            ${
+              user.is_disabled
+                ? '<span class="admin-badge badge-red">DISABLED</span>'
+                : '<span class="admin-badge badge-green">ACTIVE</span>'
+            }
+          </td>
+
+          <td>
+
+            <div class="admin-actions-cell">
+
+              <button
+                class="admin-small-btn"
+                onclick="editUser('${user.id}')"
+              >
+                Edit
+              </button>
+
+              <button
+                class="admin-small-btn ${
+                  user.is_disabled
+                    ? 'admin-success'
+                    : 'admin-danger'
+                }"
+                onclick="toggleUserDisabled(
+                  '${user.id}',
+                  ${!user.is_disabled}
+                )"
+              >
+                ${
+                  user.is_disabled
+                    ? 'Enable'
+                    : 'Disable'
+                }
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      `).join('');
+
+  }
+
+
+  renderPagination(
+    'userPagination',
+    userPage,
+    filtered.length,
+    page => {
+
+      userPage =
+        Math.max(
+          1,
+          Math.min(
+            page,
+            Math.ceil(
+              filtered.length / PAGE_SIZE
+            ) || 1
+          )
+        );
+
+      renderUsers();
+
+    }
+  );
 
 }
 
 
-function closeEventEditor() {
+function editUser(id){
 
-eventEditor.classList.remove('show');
-
-eventForm.reset();
-
-document.getElementById(
-'eventId'
-).value = '';
-
-}
+  const user =
+    allUsers.find(
+      item => item.id === id
+    );
 
 
-document.getElementById(
-'addEventBtn'
-).addEventListener(
-'click',
-() => openEventEditor()
-);
+  if(!user) return;
 
 
-document.getElementById(
-'cancelEventEdit'
-).addEventListener(
-'click',
-closeEventEditor
-);
+  $('profileEditor').classList.add('show');
+
+  $('profileId').value =
+    user.id;
+
+  $('profileName').value =
+    user.display_name || '';
+
+  $('profileAvatar').value =
+    user.avatar_url || '';
+
+  $('profileBio').value =
+    user.bio || '';
+
+  $('profileDisabled').value =
+    String(
+      Boolean(user.is_disabled)
+    );
 
 
-/* =====================================================
-   SAVE EVENT
-===================================================== */
-
-eventForm.addEventListener(
-'submit',
-async event => {
-
-event.preventDefault();
-
-
-const id =
-document.getElementById(
-'eventId'
-).value;
-
-
-const eventData = {
-
-title:
-document.getElementById(
-'eventTitle'
-).value.trim(),
-
-event_type:
-document.getElementById(
-'eventType'
-).value.trim(),
-
-event_date:
-document.getElementById(
-'eventDate'
-).value,
-
-event_time:
-document.getElementById(
-'eventTime'
-).value.trim(),
-
-location:
-document.getElementById(
-'eventLocation'
-).value.trim(),
-
-description:
-document.getElementById(
-'eventDescription'
-).value.trim()
-
-};
-
-
-try {
-
-if (id) {
-
-const {
-error
-} =
-await supabaseClient
-.from('events')
-.update(eventData)
-.eq('id', id);
-
-
-if (error) throw error;
-
-
-showMessage(
-'Event updated successfully.',
-'good'
-);
-
-} else {
-
-const {
-error
-} =
-await supabaseClient
-.from('events')
-.insert(eventData);
-
-
-if (error) throw error;
-
-
-showMessage(
-'Event created successfully.',
-'good'
-);
+  $('profileEditor').scrollIntoView({
+    behavior:'smooth',
+    block:'start'
+  });
 
 }
 
 
-closeEventEditor();
+async function toggleUserDisabled(
+  id,
+  disabled
+){
 
-await loadEvents();
+  if(id === currentAdmin.id){
 
+    showMessage(
+      'You cannot disable your own administrator account.'
+    );
 
-} catch (error) {
+    return;
 
-console.error(error);
-
-showMessage(
-error?.message ||
-'Could not save the event.'
-);
-
-}
-
-}
-);
+  }
 
 
-/* =====================================================
-   DELETE EVENT
-===================================================== */
+  try{
 
-document.getElementById(
-'deleteEventBtn'
-).addEventListener(
-'click',
-async () => {
-
-const id =
-document.getElementById(
-'eventId'
-).value;
+    const { error } =
+      await supabaseClient
+        .from('profiles')
+        .update({
+          is_disabled:
+            Boolean(disabled),
+          updated_at:
+            new Date().toISOString()
+        })
+        .eq('id',id);
 
 
-if (!id) return;
+    if(error) throw error;
 
 
-if (
-!confirm(
-'Delete this event? This cannot be undone.'
-)
-) {
-return;
-}
+    await logAdminAction(
+      disabled
+        ? 'Admin disabled user'
+        : 'Admin enabled user',
+      'user',
+      id
+    );
 
 
-try {
-
-const {
-error
-} =
-await supabaseClient
-.from('events')
-.delete()
-.eq('id', id);
+    showMessage(
+      disabled
+        ? 'User disabled.'
+        : 'User enabled.',
+      'good'
+    );
 
 
-if (error) throw error;
+    await loadUsers();
 
+    await loadActivity();
 
-showMessage(
-'Event deleted.',
-'good'
-);
+  }
+  catch(error){
 
+    console.error(error);
 
-closeEventEditor();
+    showMessage(
+      error.message ||
+      'Could not change user status.'
+    );
 
-await loadEvents();
-
-await loadRegistrations();
-
-
-} catch (error) {
-
-console.error(error);
-
-showMessage(
-error?.message ||
-'Could not delete the event.'
-);
+  }
 
 }
-
-}
-);
-
-
-/* =====================================================
-   EVENTS
-===================================================== */
-
-async function loadEvents() {
-
-const {
-data,
-error
-} =
-await supabaseClient
-.from('events')
-.select(
-'id,title,event_date,event_time,location,event_type,description'
-)
-.order(
-'event_date',
-{ ascending:true }
-);
-
-
-if (error) throw error;
-
-
-allEvents =
-data || [];
-
-
-eventCount.textContent =
-allEvents.length;
-
-
-renderEvents();
-
-}
-
-
-function renderEvents() {
-
-const search =
-(eventSearch.value || '')
-.toLowerCase()
-.trim();
-
-
-const events =
-allEvents.filter(event => {
-
-const text = [
-
-event.title,
-event.location,
-event.event_type,
-event.description
-
-]
-.filter(Boolean)
-.join(' ')
-.toLowerCase();
-
-
-return !search ||
-text.includes(search);
-
-});
-
-
-if (!events.length) {
-
-eventsTable.innerHTML = `
-<tr>
-<td colspan="6" class="empty-state">
-No events found.
-</td>
-</tr>
-`;
-
-return;
-
-}
-
-
-eventsTable.replaceChildren(
-
-...events.map(event => {
-
-const row =
-document.createElement('tr');
-
-
-const title =
-document.createElement('td');
-
-title.textContent =
-event.title ||
-'Untitled event';
-
-
-const date =
-document.createElement('td');
-
-date.textContent =
-event.event_date ||
-'—';
-
-
-const time =
-document.createElement('td');
-
-time.textContent =
-event.event_time ||
-'—';
-
-
-const location =
-document.createElement('td');
-
-location.textContent =
-event.location ||
-'—';
-
-
-const type =
-document.createElement('td');
-
-type.textContent =
-event.event_type ||
-'—';
-
-
-const actions =
-document.createElement('td');
-
-actions.className =
-'admin-actions-cell';
-
-
-const edit =
-document.createElement('button');
-
-edit.type =
-'button';
-
-edit.className =
-'admin-small-btn';
-
-edit.textContent =
-'Edit';
-
-edit.addEventListener(
-'click',
-() => openEventEditor(event)
-);
-
-
-actions.appendChild(edit);
-
-
-row.append(
-title,
-date,
-time,
-location,
-type,
-actions
-);
-
-
-return row;
-
-})
-
-);
-
-}
-
-
-eventSearch.addEventListener(
-'input',
-renderEvents
-);
 
 
 /* =====================================================
    PROFILE EDITOR
 ===================================================== */
 
-function openProfileEditor(user) {
+$('cancelProfileEdit')
+  .addEventListener(
+    'click',
+    () => {
 
-profileEditor.classList.add('show');
+      $('profileEditor')
+        .classList.remove('show');
 
+      $('profileForm').reset();
 
-document.getElementById(
-'profileId'
-).value =
-user.id;
-
-
-document.getElementById(
-'profileName'
-).value =
-user.display_name || '';
+    }
+  );
 
 
-document.getElementById(
-'profileAvatar'
-).value =
-user.avatar_url || '';
+$('profileForm')
+  .addEventListener(
+    'submit',
+    async event => {
+
+      event.preventDefault();
 
 
-document.getElementById(
-'profileBio'
-).value =
-user.bio || '';
+      const id =
+        $('profileId').value;
 
 
-profileEditor.scrollIntoView({
-behavior:'smooth',
-block:'start'
-});
-
-}
+      if(!id) return;
 
 
-function closeProfileEditor() {
+      try{
 
-profileEditor.classList.remove('show');
+        const data = {
 
-profileForm.reset();
+          display_name:
+            $('profileName')
+              .value
+              .trim(),
 
-document.getElementById(
-'profileId'
-).value = '';
+          avatar_url:
+            $('profileAvatar')
+              .value
+              .trim(),
 
-}
+          bio:
+            $('profileBio')
+              .value
+              .trim(),
+
+          is_disabled:
+            $('profileDisabled')
+              .value === 'true',
+
+          updated_at:
+            new Date().toISOString()
+
+        };
 
 
-document.getElementById(
-'cancelProfileEdit'
-).addEventListener(
-'click',
-closeProfileEditor
-);
+        const { error } =
+          await supabaseClient
+            .from('profiles')
+            .update(data)
+            .eq('id',id);
+
+
+        if(error) throw error;
+
+
+        await logAdminAction(
+          'Admin edited user profile',
+          'user',
+          id,
+          {
+            display_name:
+              data.display_name
+          }
+        );
+
+
+        showMessage(
+          'Profile updated successfully.',
+          'good'
+        );
+
+
+        $('profileEditor')
+          .classList.remove('show');
+
+
+        $('profileForm').reset();
+
+
+        await loadUsers();
+
+        await loadActivity();
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showMessage(
+          error.message ||
+          'Could not update profile.'
+        );
+
+      }
+
+    }
+  );
 
 
 /* =====================================================
-   SAVE PROFILE
+   EVENTS
 ===================================================== */
 
-profileForm.addEventListener(
-'submit',
-async event => {
+async function loadEvents(){
 
-event.preventDefault();
-
-
-const id =
-document.getElementById(
-'profileId'
-).value;
-
-
-if (!id) return;
-
-
-const profileData = {
-
-display_name:
-document.getElementById(
-'profileName'
-).value.trim(),
-
-avatar_url:
-document.getElementById(
-'profileAvatar'
-).value.trim(),
-
-bio:
-document.getElementById(
-'profileBio'
-).value.trim(),
-
-updated_at:
-new Date().toISOString()
-
-};
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from('events')
+      .select(
+        'id,title,event_date,event_time,location,event_type,description'
+      )
+      .order(
+        'event_date',
+        {ascending:true}
+      );
 
 
-try {
-
-const {
-error
-} =
-await supabaseClient
-.from('profiles')
-.update(profileData)
-.eq('id', id);
+  if(error) throw error;
 
 
-if (error) throw error;
+  allEvents =
+    data || [];
 
 
-showMessage(
-'Profile updated successfully.',
-'good'
-);
+  $('eventCount').textContent =
+    allEvents.length;
 
 
-closeProfileEditor();
+  $('upcomingEventCount').textContent =
+    allEvents.filter(
+      event =>
+        event.event_date &&
+        new Date(event.event_date) >=
+          new Date(
+            new Date()
+              .toISOString()
+              .slice(0,10)
+          )
+    ).length;
 
-await loadUsers();
 
+  renderEvents();
 
-} catch (error) {
+  populateEventFilter();
 
-console.error(error);
+  populateFeaturedEvents();
 
-showMessage(
-error?.message ||
-'Could not update the profile.'
-);
+  loadPopularEvents();
 
 }
 
+
+function getRegistrationCountForEvent(id){
+
+  return allRegistrations.filter(
+    registration =>
+      registration.event_id === id
+  ).length;
+
 }
-);
+
+
+function renderEvents(){
+
+  const search =
+    ($('eventSearch').value || '')
+      .trim()
+      .toLowerCase();
+
+
+  const sort =
+    $('eventSort').value;
+
+
+  let filtered =
+    allEvents.filter(event => {
+
+      if(!search) return true;
+
+      return (
+        String(event.title || '')
+          .toLowerCase()
+          .includes(search)
+        ||
+        String(event.location || '')
+          .toLowerCase()
+          .includes(search)
+        ||
+        String(event.event_type || '')
+          .toLowerCase()
+          .includes(search)
+      );
+
+    });
+
+
+  if(sort === 'oldest'){
+
+    filtered.sort(
+      (a,b) =>
+        String(a.event_date || '')
+          .localeCompare(
+            String(b.event_date || '')
+          )
+    );
+
+  }
+
+  else if(sort === 'upcoming'){
+
+    filtered.sort(
+      (a,b) =>
+        new Date(a.event_date || '9999-12-31') -
+        new Date(b.event_date || '9999-12-31')
+    );
+
+  }
+
+  else{
+
+    filtered.sort(
+      (a,b) =>
+        new Date(b.event_date || 0) -
+        new Date(a.event_date || 0)
+    );
+
+  }
+
+
+  const pageItems =
+    paginate(
+      filtered,
+      eventPage
+    );
+
+
+  if(!pageItems.length){
+
+    $('eventsTable').innerHTML = `
+      <tr>
+        <td colspan="7" class="loading">
+          No events found.
+        </td>
+      </tr>
+    `;
+
+  }
+  else{
+
+    $('eventsTable').innerHTML =
+      pageItems.map(event => `
+
+        <tr>
+
+          <td>
+            <strong>
+              ${escapeHtml(event.title)}
+            </strong>
+          </td>
+
+          <td>
+            ${escapeHtml(
+              event.event_date || '—'
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              event.event_time || '—'
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              event.location || '—'
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              event.event_type || '—'
+            )}
+          </td>
+
+          <td>
+            <span class="admin-badge">
+              ${getRegistrationCountForEvent(event.id)}
+            </span>
+          </td>
+
+          <td>
+
+            <div class="admin-actions-cell">
+
+              <button
+                class="admin-small-btn"
+                onclick="editEvent('${event.id}')"
+              >
+                Edit
+              </button>
+
+              <button
+                class="admin-small-btn admin-danger"
+                onclick="deleteEvent('${event.id}')"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      `).join('');
+
+  }
+
+
+  renderPagination(
+    'eventPagination',
+    eventPage,
+    filtered.length,
+    page => {
+
+      eventPage =
+        Math.max(
+          1,
+          Math.min(
+            page,
+            Math.ceil(
+              filtered.length / PAGE_SIZE
+            ) || 1
+          )
+        );
+
+      renderEvents();
+
+    }
+  );
+
+}
+
+
+function openEventEditor(event=null){
+
+  $('eventEditor')
+    .classList.add('show');
+
+
+  $('eventId').value =
+    event?.id || '';
+
+  $('eventTitle').value =
+    event?.title || '';
+
+  $('eventType').value =
+    event?.event_type || '';
+
+  $('eventDate').value =
+    event?.event_date || '';
+
+  $('eventTime').value =
+    event?.event_time || '';
+
+  $('eventLocation').value =
+    event?.location || '';
+
+  $('eventDescription').value =
+    event?.description || '';
+
+
+  $('eventEditorTitle').textContent =
+    event
+      ? 'Edit event'
+      : 'Add event';
+
+
+  $('deleteEventBtn').style.display =
+    event
+      ? 'inline-block'
+      : 'none';
+
+
+  $('eventEditor').scrollIntoView({
+    behavior:'smooth',
+    block:'start'
+  });
+
+}
+
+
+function editEvent(id){
+
+  const event =
+    allEvents.find(
+      item => item.id === id
+    );
+
+
+  if(event){
+    openEventEditor(event);
+  }
+
+}
+
+
+$('addEventBtn')
+  .addEventListener(
+    'click',
+    () => openEventEditor()
+  );
+
+
+$('cancelEventEdit')
+  .addEventListener(
+    'click',
+    () => {
+
+      $('eventEditor')
+        .classList.remove('show');
+
+      $('eventForm').reset();
+
+    }
+  );
+
+
+$('eventForm')
+  .addEventListener(
+    'submit',
+    async event => {
+
+      event.preventDefault();
+
+
+      const id =
+        $('eventId').value;
+
+
+      const eventData = {
+
+        title:
+          $('eventTitle')
+            .value
+            .trim(),
+
+        event_type:
+          $('eventType')
+            .value
+            .trim(),
+
+        event_date:
+          $('eventDate')
+            .value,
+
+        event_time:
+          $('eventTime')
+            .value
+            .trim(),
+
+        location:
+          $('eventLocation')
+            .value
+            .trim(),
+
+        description:
+          $('eventDescription')
+            .value
+            .trim()
+
+      };
+
+
+      try{
+
+        if(id){
+
+          const { error } =
+            await supabaseClient
+              .from('events')
+              .update(eventData)
+              .eq('id',id);
+
+
+          if(error) throw error;
+
+
+          await logAdminAction(
+            'Admin edited event',
+            'event',
+            id,
+            {
+              title:
+                eventData.title
+            }
+          );
+
+
+          showMessage(
+            'Event updated.',
+            'good'
+          );
+
+        }
+
+        else{
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient
+              .from('events')
+              .insert(eventData)
+              .select('id')
+              .single();
+
+
+          if(error) throw error;
+
+
+          await logAdminAction(
+            'Admin created event',
+            'event',
+            data?.id || null,
+            {
+              title:
+                eventData.title
+            }
+          );
+
+
+          showMessage(
+            'Event created.',
+            'good'
+          );
+
+        }
+
+
+        $('eventEditor')
+          .classList.remove('show');
+
+
+        $('eventForm').reset();
+
+
+        await loadEvents();
+
+        await loadActivity();
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showMessage(
+          error.message ||
+          'Could not save event.'
+        );
+
+      }
+
+    }
+  );
+
+
+async function deleteEvent(id){
+
+  const event =
+    allEvents.find(
+      item => item.id === id
+    );
+
+
+  if(!confirm(
+    `Delete "${event?.title || 'this event'}"?`
+  )){
+    return;
+  }
+
+
+  try{
+
+    const { error } =
+      await supabaseClient
+        .from('events')
+        .delete()
+        .eq('id',id);
+
+
+    if(error) throw error;
+
+
+    await logAdminAction(
+      'Admin deleted event',
+      'event',
+      id,
+      {
+        title:
+          event?.title || ''
+      }
+    );
+
+
+    showMessage(
+      'Event deleted.',
+      'good'
+    );
+
+
+    await loadEvents();
+
+    await loadRegistrations();
+
+    await loadActivity();
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    showMessage(
+      error.message ||
+      'Could not delete event.'
+    );
+
+  }
+
+}
 
 
 /* =====================================================
    REGISTRATIONS
 ===================================================== */
 
-async function loadRegistrations() {
+async function loadRegistrations(){
 
-const {
-data,
-error
-} =
-await supabaseClient
-.from('event_registrations')
-.select(`
-user_id,
-created_at,
-events (
-title
-)
-`)
-.order(
-'created_at',
-{ ascending:false }
-);
-
-
-if (error) throw error;
-
-
-allRegistrations =
-data || [];
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from('event_registrations')
+      .select(`
+        id,
+        user_id,
+        event_id,
+        created_at,
+        events (
+          title
+        )
+      `)
+      .order(
+        'created_at',
+        {ascending:false}
+      );
 
 
-registrationCount.textContent =
-allRegistrations.length;
+  if(error) throw error;
 
 
-renderRegistrations();
-
-}
-
-
-function renderRegistrations() {
-
-const search =
-(registrationSearch.value || '')
-.toLowerCase()
-.trim();
+  allRegistrations =
+    data || [];
 
 
-const registrations =
-allRegistrations.filter(reg => {
-
-const userId =
-(reg.user_id || '')
-.toLowerCase();
-
-const eventTitle =
-(reg.events?.title || '')
-.toLowerCase();
-
-return (
-!search ||
-userId.includes(search) ||
-eventTitle.includes(search)
-);
-
-});
+  $('registrationCount').textContent =
+    allRegistrations.length;
 
 
-if (!registrations.length) {
+  renderRegistrations();
 
-registrationsTable.innerHTML = `
-<tr>
-<td colspan="3" class="empty-state">
-No registrations found.
-</td>
-</tr>
-`;
-
-return;
+  populateEventFilter();
 
 }
 
 
-registrationsTable.replaceChildren(
+function renderRegistrations(){
 
-...registrations.map(registration => {
-
-const row =
-document.createElement('tr');
-
-
-const user =
-document.createElement('td');
-
-user.className =
-'admin-id';
-
-user.textContent =
-registration.user_id;
+  const search =
+    ($('registrationSearch').value || '')
+      .trim()
+      .toLowerCase();
 
 
-const event =
-document.createElement('td');
-
-event.textContent =
-registration.events?.title ||
-'Unknown event';
+  const eventFilter =
+    $('registrationEventFilter').value;
 
 
-const registered =
-document.createElement('td');
-
-registered.textContent =
-registration.created_at
-? new Date(
-registration.created_at
-).toLocaleString()
-: '—';
+  const sort =
+    $('registrationSort').value;
 
 
-row.append(
-user,
-event,
-registered
-);
+  let filtered =
+    allRegistrations.filter(registration => {
+
+      if(
+        eventFilter &&
+        String(registration.event_id) !==
+          String(eventFilter)
+      ){
+        return false;
+      }
 
 
-return row;
+      if(!search) return true;
 
-})
 
-);
+      return (
+        String(registration.user_id)
+          .toLowerCase()
+          .includes(search)
+        ||
+        String(
+          registration.events?.title || ''
+        )
+          .toLowerCase()
+          .includes(search)
+      );
+
+    });
+
+
+  if(sort === 'oldest'){
+
+    filtered.sort(
+      (a,b) =>
+        new Date(a.created_at || 0) -
+        new Date(b.created_at || 0)
+    );
+
+  }
+
+  else{
+
+    filtered.sort(
+      (a,b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
+
+  }
+
+
+  const pageItems =
+    paginate(
+      filtered,
+      registrationPage
+    );
+
+
+  if(!pageItems.length){
+
+    $('registrationsTable').innerHTML = `
+      <tr>
+        <td colspan="4" class="loading">
+          No registrations found.
+        </td>
+      </tr>
+    `;
+
+  }
+
+  else{
+
+    $('registrationsTable').innerHTML =
+      pageItems.map(registration => `
+
+        <tr>
+
+          <td class="admin-id">
+            ${escapeHtml(
+              registration.user_id
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              registration.events?.title ||
+              'Unknown event'
+            )}
+          </td>
+
+          <td>
+            ${
+              registration.created_at
+                ? new Date(
+                    registration.created_at
+                  ).toLocaleString()
+                : '—'
+            }
+          </td>
+
+          <td>
+
+            <button
+              class="admin-small-btn admin-danger"
+              onclick="deleteRegistration(
+                '${registration.id}'
+              )"
+            >
+              Remove
+            </button>
+
+          </td>
+
+        </tr>
+
+      `).join('');
+
+  }
+
+
+  renderPagination(
+    'registrationPagination',
+    registrationPage,
+    filtered.length,
+    page => {
+
+      registrationPage =
+        Math.max(
+          1,
+          Math.min(
+            page,
+            Math.ceil(
+              filtered.length / PAGE_SIZE
+            ) || 1
+          )
+        );
+
+      renderRegistrations();
+
+    }
+  );
 
 }
 
 
-registrationSearch.addEventListener(
-'input',
-renderRegistrations
-);
+function populateEventFilter(){
+
+  const select =
+    $('registrationEventFilter');
+
+
+  if(!select) return;
+
+
+  const current =
+    select.value;
+
+
+  select.innerHTML =
+    '<option value="">All events</option>';
+
+
+  allEvents.forEach(event => {
+
+    const option =
+      document.createElement('option');
+
+    option.value =
+      event.id;
+
+    option.textContent =
+      event.title;
+
+    select.appendChild(option);
+
+  });
+
+
+  select.value =
+    current;
+
+}
+
+
+async function deleteRegistration(id){
+
+  const registration =
+    allRegistrations.find(
+      item => item.id === id
+    );
+
+
+  if(!confirm(
+    'Remove this event registration?'
+  )){
+    return;
+  }
+
+
+  try{
+
+    const { error } =
+      await supabaseClient
+        .from('event_registrations')
+        .delete()
+        .eq('id',id);
+
+
+    if(error) throw error;
+
+
+    await logAdminAction(
+      'Admin deleted registration',
+      'registration',
+      id,
+      {
+        user_id:
+          registration?.user_id || null,
+        event_id:
+          registration?.event_id || null
+      }
+    );
+
+
+    showMessage(
+      'Registration removed.',
+      'good'
+    );
+
+
+    await loadRegistrations();
+
+    await loadEvents();
+
+    await loadActivity();
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    showMessage(
+      error.message ||
+      'Could not remove registration.'
+    );
+
+  }
+
+}
 
 
 /* =====================================================
    CSV EXPORT
 ===================================================== */
 
-document.getElementById(
-'exportRegistrationsBtn'
-).addEventListener(
-'click',
-() => {
+$('exportCsvBtn')
+  .addEventListener(
+    'click',
+    () => {
 
-if (!allRegistrations.length) {
+      if(!allRegistrations.length){
 
-showMessage(
-'There are no registrations to export.'
-);
+        showMessage(
+          'There are no registrations to export.'
+        );
 
-return;
+        return;
+
+      }
+
+
+      const rows = [
+        [
+          'User ID',
+          'Event',
+          'Registered'
+        ]
+      ];
+
+
+      allRegistrations.forEach(item => {
+
+        rows.push([
+          item.user_id || '',
+          item.events?.title || '',
+          item.created_at || ''
+        ]);
+
+      });
+
+
+      const csv =
+        rows
+          .map(row =>
+            row
+              .map(value =>
+                `"${String(value)
+                  .replaceAll('"','""')}"`
+              )
+              .join(',')
+          )
+          .join('\n');
+
+
+      const blob =
+        new Blob(
+          [csv],
+          {
+            type:'text/csv;charset=utf-8;'
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(blob);
+
+
+      const link =
+        document.createElement('a');
+
+      link.href =
+        url;
+
+      link.download =
+        `technova-registrations-${new Date()
+          .toISOString()
+          .slice(0,10)}.csv`;
+
+
+      link.click();
+
+
+      URL.revokeObjectURL(url);
+
+    }
+  );
+
+
+/* =====================================================
+   ARTICLES
+===================================================== */
+
+async function loadArticles(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from('articles')
+      .select(`
+        id,
+        title,
+        category,
+        excerpt,
+        content,
+        image_url,
+        published,
+        created_at,
+        updated_at
+      `)
+      .order(
+        'created_at',
+        {ascending:false}
+      );
+
+
+  if(error) throw error;
+
+
+  allArticles =
+    data || [];
+
+
+  $('publishedArticleCount').textContent =
+    allArticles.filter(
+      item => item.published
+    ).length;
+
+
+  renderArticles();
 
 }
 
 
-const rows = [
+function renderArticles(){
 
-[
-'User ID',
-'Event',
-'Registered'
-],
-
-...allRegistrations.map(item => [
-
-item.user_id || '',
-
-item.events?.title || 'Unknown event',
-
-item.created_at
-? new Date(
-item.created_at
-).toLocaleString()
-: ''
-
-])
-
-];
+  const search =
+    ($('articleSearch').value || '')
+      .trim()
+      .toLowerCase();
 
 
-const csv =
-rows.map(row =>
-row.map(value =>
-`"${String(value)
-.replaceAll('"','""')}"`
-).join(',')
-).join('\n');
+  const status =
+    $('articleStatusFilter').value;
 
 
-const blob =
-new Blob(
-[csv],
-{
-type:'text/csv;charset=utf-8;'
+  let filtered =
+    allArticles.filter(article => {
+
+      if(
+        status !== '' &&
+        String(article.published) !== status
+      ){
+        return false;
+      }
+
+
+      if(!search) return true;
+
+
+      return (
+        String(article.title || '')
+          .toLowerCase()
+          .includes(search)
+        ||
+        String(article.category || '')
+          .toLowerCase()
+          .includes(search)
+      );
+
+    });
+
+
+  const pageItems =
+    paginate(
+      filtered,
+      articlePage
+    );
+
+
+  if(!pageItems.length){
+
+    $('articlesTable').innerHTML = `
+      <tr>
+        <td colspan="5" class="loading">
+          No articles found.
+        </td>
+      </tr>
+    `;
+
+  }
+
+  else{
+
+    $('articlesTable').innerHTML =
+      pageItems.map(article => `
+
+        <tr>
+
+          <td>
+            <strong>
+              ${escapeHtml(
+                article.title
+              )}
+            </strong>
+          </td>
+
+          <td>
+            ${escapeHtml(
+              article.category || 'Technology'
+            )}
+          </td>
+
+          <td>
+            ${
+              article.published
+                ? '<span class="admin-badge badge-green">PUBLISHED</span>'
+                : '<span class="admin-badge badge-yellow">DRAFT</span>'
+            }
+          </td>
+
+          <td>
+            ${
+              article.created_at
+                ? new Date(
+                    article.created_at
+                  ).toLocaleDateString()
+                : '—'
+            }
+          </td>
+
+          <td>
+
+            <div class="admin-actions-cell">
+
+              <button
+                class="admin-small-btn"
+                onclick="editArticle('${article.id}')"
+              >
+                Edit
+              </button>
+
+              <button
+                class="admin-small-btn admin-danger"
+                onclick="deleteArticle('${article.id}')"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      `).join('');
+
+  }
+
+
+  renderPagination(
+    'articlePagination',
+    articlePage,
+    filtered.length,
+    page => {
+
+      articlePage =
+        Math.max(
+          1,
+          Math.min(
+            page,
+            Math.ceil(
+              filtered.length / PAGE_SIZE
+            ) || 1
+          )
+        );
+
+      renderArticles();
+
+    }
+  );
+
 }
-);
 
 
-const url =
-URL.createObjectURL(blob);
+function openArticleEditor(article=null){
+
+  $('articleEditor')
+    .classList.add('show');
 
 
-const link =
-document.createElement('a');
+  $('articleId').value =
+    article?.id || '';
 
-link.href =
-url;
+  $('articleTitle').value =
+    article?.title || '';
 
-link.download =
-`technova-registrations-${new Date()
-.toISOString()
-.slice(0,10)}.csv`;
+  $('articleCategory').value =
+    article?.category ||
+    'Technology';
+
+  $('articleExcerpt').value =
+    article?.excerpt || '';
+
+  $('articleContent').value =
+    article?.content || '';
+
+  $('articleImage').value =
+    article?.image_url || '';
+
+  $('articlePublished').value =
+    String(
+      Boolean(article?.published)
+    );
 
 
-document.body.appendChild(link);
-
-link.click();
-
-link.remove();
-
-URL.revokeObjectURL(url);
+  $('articleEditorTitle')
+    .textContent =
+      article
+        ? 'Edit article'
+        : 'Add article';
 
 
-showMessage(
-'Registrations exported successfully.',
-'good'
-);
+  $('articleEditor')
+    .scrollIntoView({
+      behavior:'smooth',
+      block:'start'
+    });
 
 }
-);
+
+
+function editArticle(id){
+
+  const article =
+    allArticles.find(
+      item => item.id === id
+    );
+
+
+  if(article){
+    openArticleEditor(article);
+  }
+
+}
+
+
+$('addArticleBtn')
+  .addEventListener(
+    'click',
+    () => openArticleEditor()
+  );
+
+
+$('cancelArticleEdit')
+  .addEventListener(
+    'click',
+    () => {
+
+      $('articleEditor')
+        .classList.remove('show');
+
+      $('articleForm').reset();
+
+    }
+  );
+
+
+$('articleForm')
+  .addEventListener(
+    'submit',
+    async event => {
+
+      event.preventDefault();
+
+
+      const id =
+        $('articleId').value;
+
+
+      const articleData = {
+
+        title:
+          $('articleTitle')
+            .value
+            .trim(),
+
+        category:
+          $('articleCategory')
+            .value
+            .trim() ||
+          'Technology',
+
+        excerpt:
+          $('articleExcerpt')
+            .value
+            .trim(),
+
+        content:
+          $('articleContent')
+            .value,
+
+        image_url:
+          $('articleImage')
+            .value
+            .trim(),
+
+        published:
+          $('articlePublished')
+            .value === 'true',
+
+        updated_at:
+          new Date().toISOString()
+
+      };
+
+
+      try{
+
+        if(id){
+
+          const { error } =
+            await supabaseClient
+              .from('articles')
+              .update(articleData)
+              .eq('id',id);
+
+
+          if(error) throw error;
+
+
+          await logAdminAction(
+            'Admin edited article',
+            'article',
+            id,
+            {
+              title:
+                articleData.title
+            }
+          );
+
+
+          showMessage(
+            'Article updated.',
+            'good'
+          );
+
+        }
+
+        else{
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient
+              .from('articles')
+              .insert({
+                ...articleData,
+                author_id:
+                  currentAdmin.id
+              })
+              .select('id')
+              .single();
+
+
+          if(error) throw error;
+
+
+          await logAdminAction(
+            'Admin created article',
+            'article',
+            data?.id || null,
+            {
+              title:
+                articleData.title
+            }
+          );
+
+
+          showMessage(
+            'Article created.',
+            'good'
+          );
+
+        }
+
+
+        $('articleEditor')
+          .classList.remove('show');
+
+
+        $('articleForm').reset();
+
+
+        await loadArticles();
+
+        await loadActivity();
+
+      }
+      catch(error){
+
+        console.error(error);
+
+        showMessage(
+          error.message ||
+          'Could not save article.'
+        );
+
+      }
+
+    }
+  );
+
+
+async function deleteArticle(id){
+
+  const article =
+    allArticles.find(
+      item => item.id === id
+    );
+
+
+  if(!confirm(
+    `Delete "${article?.title || 'this article'}"?`
+  )){
+    return;
+  }
+
+
+  try{
+
+    const { error } =
+      await supabaseClient
+        .from('articles')
+        .delete()
+        .eq('id',id);
+
+
+    if(error) throw error;
+
+
+    await logAdminAction(
+      'Admin deleted article',
+      'article',
+      id,
+      {
+        title:
+          article?.title || ''
+      }
+    );
+
+
+    showMessage(
+      'Article deleted.',
+      'good'
+    );
+
+
+    await loadArticles();
+
+    await loadActivity();
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    showMessage(
+      error.message ||
+      'Could not delete article.'
+    );
+
+  }
+
+}
 
 
 /* =====================================================
    ROLES
 ===================================================== */
 
-async function loadRoles() {
+async function loadRoles(){
 
-const {
-data,
-error
-} =
-await supabaseClient
-.from('user_roles')
-.select(
-'user_id,role'
-)
-.order(
-'role',
-{ ascending:true }
-);
-
-
-if (error) throw error;
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from('user_roles')
+      .select(
+        'user_id,role'
+      )
+      .order(
+        'role',
+        {ascending:true}
+      );
 
 
-const roles =
-data || [];
+  if(error) throw error;
 
 
-adminCount.textContent =
-roles.filter(
-item =>
-item.role === 'admin'
-).length;
+  allRoles =
+    data || [];
 
 
-if (!roles.length) {
+  $('adminCount').textContent =
+    allRoles.filter(
+      item => item.role === 'admin'
+    ).length;
 
-rolesTable.innerHTML = `
-<tr>
-<td colspan="2" class="empty-state">
-No roles found.
-</td>
-</tr>
-`;
 
-return;
+  renderRoles();
 
 }
 
 
-rolesTable.replaceChildren(
+function renderRoles(){
 
-...roles.map(item => {
+  if(!allRoles.length){
 
-const row =
-document.createElement('tr');
+    $('rolesTable').innerHTML = `
+      <tr>
+        <td colspan="3" class="loading">
+          No roles found.
+        </td>
+      </tr>
+    `;
 
+    return;
 
-const user =
-document.createElement('td');
-
-user.className =
-'admin-id';
-
-user.textContent =
-item.user_id;
-
-
-const role =
-document.createElement('td');
+  }
 
 
-if (
-item.role === 'admin'
-) {
+  $('rolesTable').innerHTML =
+    allRoles.map(item => `
 
-const badge =
-document.createElement('span');
+      <tr>
 
-badge.className =
-'admin-badge';
+        <td class="admin-id">
+          ${escapeHtml(
+            item.user_id
+          )}
+        </td>
 
-badge.textContent =
-'ADMIN';
+        <td>
 
-role.appendChild(badge);
+          ${
+            item.role === 'admin'
+              ? '<span class="admin-badge">ADMIN</span>'
+              : '<span class="admin-badge badge-green">USER</span>'
+          }
 
-} else {
+        </td>
 
-role.textContent =
-item.role ||
-'user';
+        <td>
+
+          <button
+            class="admin-small-btn"
+            onclick="changeRole(
+              '${item.user_id}',
+              '${item.role === 'admin' ? 'user' : 'admin'}'
+            )"
+          >
+            Make ${
+              item.role === 'admin'
+                ? 'user'
+                : 'admin'
+            }
+          </button>
+
+        </td>
+
+      </tr>
+
+    `).join('');
 
 }
 
 
-row.append(
-user,
-role
-);
+async function changeRole(
+  userId,
+  newRole
+){
+
+  if(userId === currentAdmin.id){
+
+    showMessage(
+      'You cannot change your own administrator role.'
+    );
+
+    return;
+
+  }
 
 
-return row;
+  if(!confirm(
+    `Change this user to ${newRole}?`
+  )){
+    return;
+  }
 
-})
 
-);
+  try{
+
+    const { error } =
+      await supabaseClient
+        .from('user_roles')
+        .update({
+          role:newRole
+        })
+        .eq(
+          'user_id',
+          userId
+        );
+
+
+    if(error) throw error;
+
+
+    await logAdminAction(
+      'Admin changed user role',
+      'user',
+      userId,
+      {
+        new_role:newRole
+      }
+    );
+
+
+    showMessage(
+      `User role changed to ${newRole}.`,
+      'good'
+    );
+
+
+    await loadRoles();
+
+    await loadActivity();
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    showMessage(
+      error.message ||
+      'Could not change role.'
+    );
+
+  }
 
 }
 
 
 /* =====================================================
-   REFRESH
+   SITE CONTENT
 ===================================================== */
 
-document.getElementById(
-'refreshBtn'
-).addEventListener(
-'click',
-async () => {
+async function loadSiteContent(){
 
-const button =
-document.getElementById(
-'refreshBtn'
-);
-
-button.disabled = true;
-
-button.textContent =
-'↻ Loading...';
-
-
-try {
-
-await Promise.all([
-loadUsers(),
-loadEvents(),
-loadRegistrations(),
-loadRoles()
-]);
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from('site_content')
+      .select(
+        'id,content_key,content_value'
+      )
+      .order(
+        'content_key',
+        {ascending:true}
+      );
 
 
-showMessage(
-'Dashboard refreshed.',
-'good'
-);
+  if(error) throw error;
 
 
-} catch (error) {
+  const container =
+    $('contentEditorList');
 
-console.error(error);
 
-showMessage(
-error?.message ||
-'Could not refresh dashboard.'
-);
+  container.replaceChildren();
 
-} finally {
 
-button.disabled = false;
+  if(!data?.length){
 
-button.textContent =
-'↻ Refresh';
+    container.innerHTML = `
+      <p class="loading">
+        No site content has been created yet.
+      </p>
+    `;
+
+    return;
+
+  }
+
+
+  data.forEach(item => {
+
+    const wrapper =
+      document.createElement('div');
+
+    wrapper.className =
+      'admin-card';
+
+    wrapper.style.marginBottom =
+      '15px';
+
+
+    const label =
+      document.createElement('label');
+
+    label.textContent =
+      item.content_key;
+
+    label.style.display =
+      'block';
+
+    label.style.marginBottom =
+      '8px';
+
+    label.style.fontWeight =
+      '700';
+
+
+    const textarea =
+      document.createElement('textarea');
+
+    textarea.className =
+      'admin-textarea';
+
+    textarea.value =
+      item.content_value || '';
+
+
+    const button =
+      document.createElement('button');
+
+    button.className =
+      'btn primary';
+
+    button.type =
+      'button';
+
+    button.textContent =
+      'Save';
+
+
+    button.style.marginTop =
+      '10px';
+
+
+    button.addEventListener(
+      'click',
+      async () => {
+
+        try{
+
+          const { error } =
+            await supabaseClient
+              .from('site_content')
+              .update({
+                content_value:
+                  textarea.value,
+                updated_at:
+                  new Date().toISOString(),
+                updated_by:
+                  currentAdmin.id
+              })
+              .eq(
+                'id',
+                item.id
+              );
+
+
+          if(error) throw error;
+
+
+          await logAdminAction(
+            'Admin edited website content',
+            'site_content',
+            item.id,
+            {
+              content_key:
+                item.content_key
+            }
+          );
+
+
+          showMessage(
+            `${item.content_key} updated.`,
+            'good'
+          );
+
+
+          await loadActivity();
+
+        }
+        catch(error){
+
+          console.error(error);
+
+          showMessage(
+            error.message ||
+            'Could not update website content.'
+          );
+
+        }
+
+      }
+    );
+
+
+    wrapper.append(
+      label,
+      textarea,
+      button
+    );
+
+
+    container.appendChild(wrapper);
+
+  });
 
 }
 
+
+async function saveSiteKey(
+  key,
+  value
+){
+
+  const {
+    data: existing,
+    error: findError
+  } =
+    await supabaseClient
+      .from('site_content')
+      .select('id')
+      .eq(
+        'content_key',
+        key
+      )
+      .maybeSingle();
+
+
+  if(findError) throw findError;
+
+
+  if(existing){
+
+    const { error } =
+      await supabaseClient
+        .from('site_content')
+        .update({
+          content_value:value,
+          updated_at:
+            new Date().toISOString(),
+          updated_by:
+            currentAdmin.id
+        })
+        .eq(
+          'id',
+          existing.id
+        );
+
+
+    if(error) throw error;
+
+  }
+  else{
+
+    const { error } =
+      await supabaseClient
+        .from('site_content')
+        .insert({
+          content_key:key,
+          content_value:value,
+          updated_by:
+            currentAdmin.id
+        });
+
+
+    if(error) throw error;
+
+  }
+
+
+  await logAdminAction(
+    'Admin updated site setting',
+    'site_content',
+    key
+  );
+
 }
-);
+
+
+$('saveAnnouncementBtn')
+  .addEventListener(
+    'click',
+    async () => {
+
+      try{
+
+        await saveSiteKey(
+          'announcement',
+          $('announcementText').value
+        );
+
+
+        showMessage(
+          'Announcement saved.',
+          'good'
+        );
+
+
+        await loadSiteContent();
+
+        await loadActivity();
+
+      }
+      catch(error){
+
+        showMessage(
+          error.message ||
+          'Could not save announcement.'
+        );
+
+      }
+
+    }
+  );
+
+
+async function loadAnnouncement(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from('site_content')
+      .select('content_value')
+      .eq(
+        'content_key',
+        'announcement'
+      )
+      .maybeSingle();
+
+
+  if(error) throw error;
+
+
+  $('announcementText').value =
+    data?.content_value || '';
+
+}
+
+
+async function populateFeaturedEvents(){
+
+  const select =
+    $('featuredEventSelect');
+
+
+  if(!select) return;
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from('site_content')
+      .select('content_value')
+      .eq(
+        'content_key',
+        'featured_event_id'
+      )
+      .maybeSingle();
+
+
+  if(error) throw error;
+
+
+  const current =
+    data?.content_value || '';
+
+
+  select.innerHTML =
+    '<option value="">No featured event</option>';
+
+
+  allEvents.forEach(event => {
+
+    const option =
+      document.createElement('option');
+
+    option.value =
+      event.id;
+
+    option.textContent =
+      event.title;
+
+    select.appendChild(option);
+
+  });
+
+
+  select.value =
+    current;
+
+}
+
+
+$('saveFeaturedEventBtn')
+  .addEventListener(
+    'click',
+    async () => {
+
+      try{
+
+        await saveSiteKey(
+          'featured_event_id',
+          $('featuredEventSelect').value
+        );
+
+
+        showMessage(
+          'Featured event saved.',
+          'good'
+        );
+
+
+        await loadActivity();
+
+      }
+      catch(error){
+
+        showMessage(
+          error.message ||
+          'Could not save featured event.'
+        );
+
+      }
+
+    }
+  );
 
 
 /* =====================================================
-   LOG OUT
+   ACTIVITY LOG
 ===================================================== */
 
-document.getElementById(
-'logoutBtn'
-).addEventListener(
-'click',
-async () => {
+async function loadActivity(){
 
-const {
-error
-} =
-await supabaseClient.auth.signOut();
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from('admin_activity_log')
+      .select(`
+        id,
+        admin_user_id,
+        action,
+        target_type,
+        target_id,
+        details,
+        created_at
+      `)
+      .order(
+        'created_at',
+        {ascending:false}
+      )
+      .limit(100);
 
 
-if (error) {
+  if(error) throw error;
 
-showMessage(
-error.message ||
-'Could not log out.'
-);
 
-return;
+  allActivity =
+    data || [];
+
+
+  renderActivity();
 
 }
 
 
-window.location.href =
-'../index.html';
+function renderActivity(){
+
+  const container =
+    $('activityList');
+
+
+  if(!allActivity.length){
+
+    container.innerHTML = `
+      <p class="loading">
+        No administrator activity yet.
+      </p>
+    `;
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    allActivity.map(item => `
+
+      <div class="activity-item">
+
+        <div class="activity-icon">
+          📝
+        </div>
+
+        <div class="activity-content">
+
+          <div class="activity-action">
+            ${escapeHtml(
+              item.action
+            )}
+          </div>
+
+          <div class="activity-meta">
+
+            ${
+              item.created_at
+                ? new Date(
+                    item.created_at
+                  ).toLocaleString()
+                : ''
+            }
+
+            ${
+              item.target_type
+                ? ` · ${escapeHtml(
+                    item.target_type
+                  )}`
+                : ''
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+    `).join('');
 
 }
-);
+
+
+/* =====================================================
+   OVERVIEW
+===================================================== */
+
+async function loadPopularEvents(){
+
+  const container =
+    $('popularEvents');
+
+
+  if(!allEvents.length){
+
+    container.innerHTML =
+      '<p class="loading">No events.</p>';
+
+    return;
+
+  }
+
+
+  const ranked =
+    allEvents
+      .map(event => ({
+        event,
+        count:
+          getRegistrationCountForEvent(
+            event.id
+          )
+      }))
+      .sort(
+        (a,b) =>
+          b.count - a.count
+      )
+      .slice(0,5);
+
+
+  container.innerHTML =
+    ranked.map(item => `
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          gap:15px;
+          padding:13px 0;
+          border-bottom:1px solid #243955;
+        "
+      >
+
+        <span>
+          ${escapeHtml(
+            item.event.title
+          )}
+        </span>
+
+        <span class="admin-badge">
+          ${item.count} registered
+        </span>
+
+      </div>
+
+    `).join('');
+
+}
+
+
+function renderRecentUsers(){
+
+  const container =
+    $('recentUsers');
+
+
+  const users =
+    [...allUsers]
+      .sort(
+        (a,b) =>
+          new Date(b.created_at || 0) -
+          new Date(a.created_at || 0)
+      )
+      .slice(0,5);
+
+
+  if(!users.length){
+
+    container.innerHTML =
+      '<p class="loading">No users.</p>';
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    users.map(user => `
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          gap:15px;
+          padding:13px 0;
+          border-bottom:1px solid #243955;
+        "
+      >
+
+        <span>
+          ${escapeHtml(
+            user.display_name ||
+            'Unnamed user'
+          )}
+        </span>
+
+        <span style="color:#91a0b7">
+          ${
+            user.created_at
+              ? new Date(
+                  user.created_at
+                ).toLocaleDateString()
+              : '—'
+          }
+        </span>
+
+      </div>
+
+    `).join('');
+
+}
+
+
+function renderOverview(){
+
+  renderOverviewUsers();
+
+  renderRecentUsers();
+
+  loadPopularEvents();
+
+}
+
+
+/* =====================================================
+   SEARCH / FILTER EVENTS
+===================================================== */
+
+$('eventSearch')
+  .addEventListener(
+    'input',
+    () => {
+
+      eventPage = 1;
+
+      renderEvents();
+
+    }
+  );
+
+
+$('eventSort')
+  .addEventListener(
+    'change',
+    () => {
+
+      eventPage = 1;
+
+      renderEvents();
+
+    }
+  );
+
+
+/* =====================================================
+   SEARCH USERS
+===================================================== */
+
+$('userSearch')
+  .addEventListener(
+    'input',
+    () => {
+
+      userPage = 1;
+
+      renderUsers();
+
+    }
+  );
+
+
+$('userSort')
+  .addEventListener(
+    'change',
+    () => {
+
+      userPage = 1;
+
+      renderUsers();
+
+    }
+  );
+
+
+/* =====================================================
+   REGISTRATION FILTERS
+===================================================== */
+
+$('registrationSearch')
+  .addEventListener(
+    'input',
+    () => {
+
+      registrationPage = 1;
+
+      renderRegistrations();
+
+    }
+  );
+
+
+$('registrationEventFilter')
+  .addEventListener(
+    'change',
+    () => {
+
+      registrationPage = 1;
+
+      renderRegistrations();
+
+    }
+  );
+
+
+$('registrationSort')
+  .addEventListener(
+    'change',
+    () => {
+
+      registrationPage = 1;
+
+      renderRegistrations();
+
+    }
+  );
+
+
+/* =====================================================
+   ARTICLE FILTERS
+===================================================== */
+
+$('articleSearch')
+  .addEventListener(
+    'input',
+    () => {
+
+      articlePage = 1;
+
+      renderArticles();
+
+    }
+  );
+
+
+$('articleStatusFilter')
+  .addEventListener(
+    'change',
+    () => {
+
+      articlePage = 1;
+
+      renderArticles();
+
+    }
+  );
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+$('logoutBtn')
+  .addEventListener(
+    'click',
+    async () => {
+
+      await supabaseClient.auth.signOut();
+
+      window.location.href =
+        '../index.html';
+
+    }
+  );
 
 
 /* =====================================================
    START
 ===================================================== */
 
-async function loadDashboard() {
+async function loadDashboard(){
 
-const user =
-await checkAdmin();
-
-
-if (!user) return;
+  const user =
+    await checkAdmin();
 
 
-try {
-
-await Promise.all([
-
-loadUsers(),
-
-loadEvents(),
-
-loadRegistrations(),
-
-loadRoles()
-
-]);
+  if(!user) return;
 
 
-showMessage(
-'Admin dashboard loaded successfully.',
-'good'
-);
+  try{
+
+    await Promise.all([
+      loadUsers(),
+      loadEvents(),
+      loadRegistrations(),
+      loadRoles(),
+      loadArticles(),
+      loadSiteContent(),
+      loadAnnouncement(),
+      loadActivity()
+    ]);
 
 
-setTimeout(() => {
-
-adminMessage.classList.remove(
-'show'
-);
-
-}, 3500);
+    renderOverview();
 
 
-} catch (error) {
-
-console.error(
-'Admin dashboard error:',
-error
-);
+    showMessage(
+      'Admin dashboard loaded successfully.',
+      'good'
+    );
 
 
-showMessage(
-error?.message ||
-'Some administrator data could not be loaded.'
-);
+    setTimeout(
+      clearMessage,
+      3500
+    );
 
-}
+  }
+  catch(error){
+
+    console.error(
+      'TechNova admin error:',
+      error
+    );
+
+
+    showMessage(
+      error?.message ||
+      'Some administrator data could not be loaded.'
+    );
+
+  }
 
 }
 
 
 document.addEventListener(
-'DOMContentLoaded',
-loadDashboard
+  'DOMContentLoaded',
+  loadDashboard
 );
 
 </script>
