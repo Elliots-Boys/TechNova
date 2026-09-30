@@ -23,4 +23,68 @@
 <form id="loginForm"><div class="field"><label for="email">Email address</label><input id="email" type="email" autocomplete="email" required placeholder="you@example.com"></div><div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Your password"></div><button id="loginBtn" class="btn primary auth-submit" type="submit">Log in</button></form>
 <div id="authMessage" class="auth-message" aria-live="polite"></div><div class="auth-links"><a href="signup.html">Create an account</a><a href="#" id="forgotPassword">Forgot password?</a></div><a class="back-home" href="../index.html">← Back to TechNova</a></section></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/supabase-config.js"></script><script src="../js/auth.js"></script><script src="../js/script.js"></script>
+  <script>
+const phoneLoginForm = document.getElementById('phoneLoginForm');
+const otpForm = document.getElementById('otpForm');
+const phoneInput = document.getElementById('phone');
+const otpInput = document.getElementById('otp');
+const authMessage = document.getElementById('authMessage');
+
+let loginPhone = '';
+
+phoneLoginForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  loginPhone = phoneInput.value.trim();
+
+  if (!loginPhone) {
+    authMessage.textContent = 'Please enter your phone number.';
+    authMessage.classList.add('show');
+    return;
+  }
+
+  const { error } = await supabase.auth.signInWithOtp({
+    phone: loginPhone
+  });
+
+  if (error) {
+    authMessage.textContent = error.message;
+    authMessage.classList.add('show');
+    return;
+  }
+
+  authMessage.textContent =
+    'Verification code sent! Check your phone.';
+  authMessage.classList.add('show', 'good');
+
+  phoneLoginForm.style.display = 'none';
+  otpForm.style.display = 'block';
+  otpInput.focus();
+});
+
+otpForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const code = otpInput.value.trim();
+
+  const {
+    data,
+    error
+  } = await supabase.auth.verifyOtp({
+    phone: loginPhone,
+    token: code,
+    type: 'sms'
+  });
+
+  if (error) {
+    authMessage.textContent = error.message;
+    authMessage.classList.add('show');
+    return;
+  }
+
+  if (data.session) {
+    window.location.href = 'account.html';
+  }
+});
+</script>
 </body></html>
