@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Admin Dashboard · TechNova</title>
 
@@ -78,6 +78,7 @@ body {
   padding: 24px;
   margin-bottom: 25px;
   box-shadow: 0 15px 45px #0004;
+  overflow-x: auto;
 }
 
 .admin-card h2 {
@@ -96,6 +97,18 @@ body {
 
 .admin-card-header h2 {
   margin: 0;
+}
+
+.admin-toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.admin-search {
+  flex: 1;
+  min-width: 220px;
 }
 
 .admin-table-wrap {
@@ -259,20 +272,27 @@ body {
   color: var(--muted) !important;
 }
 
-#eventEditor {
-  display: none;
-}
-
-#eventEditor.show {
-  display: block;
-}
-
+#eventEditor,
 #profileEditor {
   display: none;
 }
 
+#eventEditor.show,
 #profileEditor.show {
   display: block;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+}
+
+.admin-info {
+  color: #91a0b7;
+  font-size: 13px;
+  margin-top: 12px;
+  line-height: 1.6;
 }
 
 @media(max-width:950px) {
@@ -291,10 +311,7 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .admin-field.full {
-    grid-column: auto;
-  }
-
+  .admin-field.full,
   .admin-form-actions {
     grid-column: auto;
   }
@@ -329,25 +346,55 @@ body {
 
 <div>
 <div class="eyebrow">TECHNOVA ADMIN</div>
+
 <h1>Admin Dashboard</h1>
-<p id="adminWelcome">Checking administrator access…</p>
+
+<p id="adminWelcome">
+Checking administrator access…
+</p>
 </div>
 
 <div class="admin-actions">
-<a class="btn" href="../index.html">View website</a>
-<a class="btn" href="account.html">My account</a>
-<button id="logoutBtn" class="btn admin-danger" type="button">
+
+<a class="btn" href="../index.html">
+View website
+</a>
+
+<a class="btn" href="account.html">
+My account
+</a>
+
+<button
+id="refreshBtn"
+class="btn"
+type="button"
+>
+↻ Refresh
+</button>
+
+<button
+id="logoutBtn"
+class="btn admin-danger"
+type="button"
+>
 Log out
 </button>
+
 </div>
 
 </header>
 
 
-<div id="adminMessage" class="admin-message" aria-live="polite"></div>
+<div
+id="adminMessage"
+class="admin-message"
+aria-live="polite"
+></div>
 
 
-<!-- STATISTICS -->
+<!-- =====================================================
+     STATISTICS
+===================================================== -->
 
 <section class="admin-grid">
 
@@ -374,87 +421,137 @@ Log out
 </section>
 
 
-<!-- EVENT EDITOR -->
+<!-- =====================================================
+     EVENT EDITOR
+===================================================== -->
 
-<section id="eventEditor" class="admin-card">
+<section
+id="eventEditor"
+class="admin-card"
+>
 
 <div class="admin-card-header">
+
 <div>
 <p class="eyebrow">EVENT MANAGEMENT</p>
-<h2 id="eventEditorTitle">Add event</h2>
+<h2 id="eventEditorTitle">
+Add event
+</h2>
 </div>
 
-<button id="cancelEventEdit" class="btn" type="button">
+<button
+id="cancelEventEdit"
+class="btn"
+type="button"
+>
 Cancel
 </button>
+
 </div>
 
 
-<form id="eventForm" class="admin-form">
+<form
+id="eventForm"
+class="admin-form"
+>
 
-<input type="hidden" id="eventId">
+<input
+type="hidden"
+id="eventId"
+>
+
 
 <div class="admin-field">
-<label for="eventTitle">Event title</label>
+
+<label for="eventTitle">
+Event title
+</label>
+
 <input
 id="eventTitle"
 class="admin-input"
 type="text"
 required
 >
+
 </div>
 
 
 <div class="admin-field">
-<label for="eventType">Event type</label>
+
+<label for="eventType">
+Event type
+</label>
+
 <input
 id="eventType"
 class="admin-input"
 type="text"
 placeholder="Conference, workshop, exhibition..."
 >
+
 </div>
 
 
 <div class="admin-field">
-<label for="eventDate">Date</label>
+
+<label for="eventDate">
+Date
+</label>
+
 <input
 id="eventDate"
 class="admin-input"
 type="date"
 required
 >
+
 </div>
 
 
 <div class="admin-field">
-<label for="eventTime">Time</label>
+
+<label for="eventTime">
+Time
+</label>
+
 <input
 id="eventTime"
 class="admin-input"
 type="text"
 placeholder="10:00 AM"
 >
+
 </div>
 
 
 <div class="admin-field">
-<label for="eventLocation">Location</label>
+
+<label for="eventLocation">
+Location
+</label>
+
 <input
 id="eventLocation"
 class="admin-input"
 type="text"
 >
+
 </div>
 
 
 <div class="admin-field full">
-<label for="eventDescription">Description</label>
+
+<label for="eventDescription">
+Description
+</label>
+
 <textarea
 id="eventDescription"
 class="admin-textarea"
 placeholder="Event description..."
 ></textarea>
+
 </div>
 
 
@@ -484,14 +581,16 @@ Delete event
 </section>
 
 
-<!-- EVENTS -->
+<!-- =====================================================
+     EVENTS
+===================================================== -->
 
 <section class="admin-card">
 
 <div class="admin-card-header">
 
 <div>
-<p class="eyebrow">CONTENT</p>
+<p class="eyebrow">CONTENT MANAGEMENT</p>
 <h2>Events</h2>
 </div>
 
@@ -506,11 +605,24 @@ type="button"
 </div>
 
 
+<div class="admin-toolbar">
+
+<input
+id="eventSearch"
+class="admin-input admin-search"
+type="search"
+placeholder="Search events..."
+>
+
+</div>
+
+
 <div class="admin-table-wrap">
 
 <table class="admin-table">
 
 <thead>
+
 <tr>
 <th>Event</th>
 <th>Date</th>
@@ -519,12 +631,16 @@ type="button"
 <th>Type</th>
 <th>Actions</th>
 </tr>
+
 </thead>
 
 <tbody id="eventsTable">
 
 <tr>
-<td colspan="6" class="loading">
+<td
+colspan="6"
+class="loading"
+>
 Loading events…
 </td>
 </tr>
@@ -538,9 +654,14 @@ Loading events…
 </section>
 
 
-<!-- PROFILE EDITOR -->
+<!-- =====================================================
+     PROFILE EDITOR
+===================================================== -->
 
-<section id="profileEditor" class="admin-card">
+<section
+id="profileEditor"
+class="admin-card"
+>
 
 <div class="admin-card-header">
 
@@ -549,16 +670,27 @@ Loading events…
 <h2>Edit profile</h2>
 </div>
 
-<button id="cancelProfileEdit" class="btn" type="button">
+<button
+id="cancelProfileEdit"
+class="btn"
+type="button"
+>
 Cancel
 </button>
 
 </div>
 
 
-<form id="profileForm" class="admin-form">
+<form
+id="profileForm"
+class="admin-form"
+>
 
-<input type="hidden" id="profileId">
+<input
+type="hidden"
+id="profileId"
+>
+
 
 <div class="admin-field">
 
@@ -621,7 +753,9 @@ Save profile
 </section>
 
 
-<!-- USERS -->
+<!-- =====================================================
+     USERS
+===================================================== -->
 
 <section class="admin-card">
 
@@ -635,23 +769,40 @@ Save profile
 </div>
 
 
+<div class="admin-toolbar">
+
+<input
+id="userSearch"
+class="admin-input admin-search"
+type="search"
+placeholder="Search by name or user ID..."
+>
+
+</div>
+
+
 <div class="admin-table-wrap">
 
 <table class="admin-table">
 
 <thead>
+
 <tr>
 <th>Name</th>
 <th>User ID</th>
 <th>Joined</th>
 <th>Actions</th>
 </tr>
+
 </thead>
 
 <tbody id="usersTable">
 
 <tr>
-<td colspan="4" class="loading">
+<td
+colspan="4"
+class="loading"
+>
 Loading users…
 </td>
 </tr>
@@ -665,7 +816,9 @@ Loading users…
 </section>
 
 
-<!-- REGISTRATIONS -->
+<!-- =====================================================
+     REGISTRATIONS
+===================================================== -->
 
 <section class="admin-card">
 
@@ -676,6 +829,26 @@ Loading users…
 <h2>Event registrations</h2>
 </div>
 
+<button
+id="exportRegistrationsBtn"
+class="btn primary"
+type="button"
+>
+📥 Export CSV
+</button>
+
+</div>
+
+
+<div class="admin-toolbar">
+
+<input
+id="registrationSearch"
+class="admin-input admin-search"
+type="search"
+placeholder="Search registrations..."
+>
+
 </div>
 
 
@@ -684,17 +857,22 @@ Loading users…
 <table class="admin-table">
 
 <thead>
+
 <tr>
 <th>User ID</th>
 <th>Event</th>
 <th>Registered</th>
 </tr>
+
 </thead>
 
 <tbody id="registrationsTable">
 
 <tr>
-<td colspan="3" class="loading">
+<td
+colspan="3"
+class="loading"
+>
 Loading registrations…
 </td>
 </tr>
@@ -708,7 +886,9 @@ Loading registrations…
 </section>
 
 
-<!-- ROLES -->
+<!-- =====================================================
+     ROLES
+===================================================== -->
 
 <section class="admin-card">
 
@@ -727,16 +907,21 @@ Loading registrations…
 <table class="admin-table">
 
 <thead>
+
 <tr>
 <th>User ID</th>
 <th>Role</th>
 </tr>
+
 </thead>
 
 <tbody id="rolesTable">
 
 <tr>
-<td colspan="2" class="loading">
+<td
+colspan="2"
+class="loading"
+>
 Loading roles…
 </td>
 </tr>
@@ -747,12 +932,14 @@ Loading roles…
 
 </div>
 
-<p style="color:#91a0b7;font-size:13px;margin-top:15px">
-Roles are intentionally displayed here but are not editable from the browser.
-Keep role changes protected by your Supabase SQL/RLS policies.
+
+<p class="admin-info">
+Roles are deliberately read-only in this page.
+Keep role changes protected by Supabase RLS/database security.
 </p>
 
 </section>
+
 
 </main>
 
@@ -771,10 +958,20 @@ Keep role changes protected by your Supabase SQL/RLS policies.
 ===================================================== */
 
 const supabaseClient =
-  window.supabase.createClient(
-    window.TECHNOVA_SUPABASE_URL,
-    window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
-  );
+window.supabase.createClient(
+  window.TECHNOVA_SUPABASE_URL,
+  window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
+);
+
+
+/* =====================================================
+   STATE
+===================================================== */
+
+let allUsers = [];
+let allEvents = [];
+let allRegistrations = [];
+let allRoles = [];
 
 
 /* =====================================================
@@ -782,58 +979,71 @@ const supabaseClient =
 ===================================================== */
 
 const adminMessage =
-  document.getElementById('adminMessage');
+document.getElementById('adminMessage');
 
 const adminWelcome =
-  document.getElementById('adminWelcome');
+document.getElementById('adminWelcome');
 
 const userCount =
-  document.getElementById('userCount');
+document.getElementById('userCount');
 
 const eventCount =
-  document.getElementById('eventCount');
+document.getElementById('eventCount');
 
 const registrationCount =
-  document.getElementById('registrationCount');
+document.getElementById('registrationCount');
 
 const adminCount =
-  document.getElementById('adminCount');
+document.getElementById('adminCount');
 
 const usersTable =
-  document.getElementById('usersTable');
+document.getElementById('usersTable');
 
 const eventsTable =
-  document.getElementById('eventsTable');
+document.getElementById('eventsTable');
 
 const registrationsTable =
-  document.getElementById('registrationsTable');
+document.getElementById('registrationsTable');
 
 const rolesTable =
-  document.getElementById('rolesTable');
+document.getElementById('rolesTable');
 
 const eventEditor =
-  document.getElementById('eventEditor');
+document.getElementById('eventEditor');
 
 const profileEditor =
-  document.getElementById('profileEditor');
+document.getElementById('profileEditor');
 
 const eventForm =
-  document.getElementById('eventForm');
+document.getElementById('eventForm');
 
 const profileForm =
-  document.getElementById('profileForm');
+document.getElementById('profileForm');
+
+const userSearch =
+document.getElementById('userSearch');
+
+const eventSearch =
+document.getElementById('eventSearch');
+
+const registrationSearch =
+document.getElementById('registrationSearch');
 
 
 /* =====================================================
-   MESSAGES
+   MESSAGE
 ===================================================== */
 
-function showMessage(message, type = 'error') {
+function showMessage(
+message,
+type = 'error'
+) {
 
-  adminMessage.textContent = message;
+adminMessage.textContent =
+message;
 
-  adminMessage.className =
-    `admin-message show ${type}`;
+adminMessage.className =
+`admin-message show ${type}`;
 
 }
 
@@ -844,186 +1054,232 @@ function showMessage(message, type = 'error') {
 
 async function checkAdmin() {
 
-  const {
-    data: { user },
-    error
-  } = await supabaseClient.auth.getUser();
+const {
+data: { user },
+error
+} =
+await supabaseClient.auth.getUser();
 
 
-  if (error || !user) {
+if (error || !user) {
 
-    window.location.href =
-      'login.html';
+window.location.href =
+'login.html';
 
-    return null;
+return null;
 
-  }
-
-
-  const {
-    data: role,
-    error: roleError
-  } = await supabaseClient
-    .from('user_roles')
-    .select('role')
-    .eq('user_id', user.id)
-    .maybeSingle();
+}
 
 
-  if (roleError) {
-
-    console.error(roleError);
-
-    showMessage(
-      'Could not verify administrator permissions.'
-    );
-
-    return null;
-
-  }
+const {
+data: role,
+error: roleError
+} =
+await supabaseClient
+.from('user_roles')
+.select('role')
+.eq('user_id', user.id)
+.maybeSingle();
 
 
-  if (!role || role.role !== 'admin') {
+if (roleError) {
 
-    window.location.href =
-      'account.html';
+console.error(roleError);
 
-    return null;
+showMessage(
+'Could not verify administrator permissions.'
+);
 
-  }
+return null;
+
+}
 
 
-  adminWelcome.textContent =
-    `Signed in as ${user.email || 'administrator'}`;
+if (!role || role.role !== 'admin') {
+
+window.location.href =
+'account.html';
+
+return null;
+
+}
 
 
-  return user;
+adminWelcome.textContent =
+`Signed in as ${user.email || 'administrator'}`;
+
+
+return user;
 
 }
 
 
 /* =====================================================
-   LOAD USERS
+   USERS
 ===================================================== */
 
 async function loadUsers() {
 
-  const {
-    data,
-    error
-  } = await supabaseClient
-    .from('profiles')
-    .select(
-      'id,display_name,avatar_url,bio,created_at'
-    )
-    .order(
-      'created_at',
-      { ascending:false }
-    );
+const {
+data,
+error
+} =
+await supabaseClient
+.from('profiles')
+.select(
+'id,display_name,avatar_url,bio,created_at'
+)
+.order(
+'created_at',
+{ ascending:false }
+);
 
 
-  if (error) throw error;
+if (error) throw error;
 
 
-  const users = data || [];
-
-  userCount.textContent =
-    users.length;
+allUsers =
+data || [];
 
 
-  if (!users.length) {
-
-    usersTable.innerHTML = `
-      <tr>
-        <td colspan="4" class="loading">
-          No users found.
-        </td>
-      </tr>
-    `;
-
-    return;
-
-  }
+userCount.textContent =
+allUsers.length;
 
 
-  usersTable.replaceChildren(
-    ...users.map(user => {
-
-      const row =
-        document.createElement('tr');
-
-
-      const name =
-        document.createElement('td');
-
-      name.textContent =
-        user.display_name ||
-        'Unnamed user';
-
-
-      const id =
-        document.createElement('td');
-
-      id.className =
-        'admin-id';
-
-      id.textContent =
-        user.id;
-
-
-      const joined =
-        document.createElement('td');
-
-      joined.textContent =
-        user.created_at
-          ? new Date(
-              user.created_at
-            ).toLocaleDateString()
-          : '—';
-
-
-      const actions =
-        document.createElement('td');
-
-      actions.className =
-        'admin-actions-cell';
-
-
-      const edit =
-        document.createElement('button');
-
-      edit.className =
-        'admin-small-btn';
-
-      edit.type =
-        'button';
-
-      edit.textContent =
-        'Edit';
-
-      edit.addEventListener(
-        'click',
-        () => openProfileEditor(user)
-      );
-
-
-      actions.appendChild(edit);
-
-
-      row.append(
-        name,
-        id,
-        joined,
-        actions
-      );
-
-
-      return row;
-
-    })
-  );
+renderUsers();
 
 }
+
+
+function renderUsers() {
+
+const search =
+(userSearch.value || '')
+.toLowerCase()
+.trim();
+
+
+const users =
+allUsers.filter(user => {
+
+const name =
+(user.display_name || '')
+.toLowerCase();
+
+const id =
+(user.id || '')
+.toLowerCase();
+
+return (
+!search ||
+name.includes(search) ||
+id.includes(search)
+);
+
+});
+
+
+if (!users.length) {
+
+usersTable.innerHTML = `
+<tr>
+<td colspan="4" class="empty-state">
+No users found.
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+
+usersTable.replaceChildren(
+
+...users.map(user => {
+
+const row =
+document.createElement('tr');
+
+
+const name =
+document.createElement('td');
+
+name.textContent =
+user.display_name ||
+'Unnamed user';
+
+
+const id =
+document.createElement('td');
+
+id.className =
+'admin-id';
+
+id.textContent =
+user.id;
+
+
+const joined =
+document.createElement('td');
+
+joined.textContent =
+user.created_at
+? new Date(
+user.created_at
+).toLocaleDateString()
+: '—';
+
+
+const actions =
+document.createElement('td');
+
+actions.className =
+'admin-actions-cell';
+
+
+const edit =
+document.createElement('button');
+
+edit.type =
+'button';
+
+edit.className =
+'admin-small-btn';
+
+edit.textContent =
+'Edit';
+
+edit.addEventListener(
+'click',
+() => openProfileEditor(user)
+);
+
+
+actions.appendChild(edit);
+
+
+row.append(
+name,
+id,
+joined,
+actions
+);
+
+
+return row;
+
+})
+
+);
+
+}
+
+
+userSearch.addEventListener(
+'input',
+renderUsers
+);
 
 
 /* =====================================================
@@ -1032,71 +1288,82 @@ async function loadUsers() {
 
 function openEventEditor(event = null) {
 
-  eventEditor.classList.add('show');
-
-  document.getElementById('eventId').value =
-    event?.id || '';
-
-  document.getElementById('eventTitle').value =
-    event?.title || '';
-
-  document.getElementById('eventType').value =
-    event?.event_type || '';
-
-  document.getElementById('eventDate').value =
-    event?.event_date || '';
-
-  document.getElementById('eventTime').value =
-    event?.event_time || '';
-
-  document.getElementById('eventLocation').value =
-    event?.location || '';
-
-  document.getElementById('eventDescription').value =
-    event?.description || '';
+eventEditor.classList.add('show');
 
 
-  document.getElementById('eventEditorTitle')
-    .textContent =
-      event ? 'Edit event' : 'Add event';
+document.getElementById('eventId').value =
+event?.id || '';
+
+document.getElementById('eventTitle').value =
+event?.title || '';
+
+document.getElementById('eventType').value =
+event?.event_type || '';
+
+document.getElementById('eventDate').value =
+event?.event_date || '';
+
+document.getElementById('eventTime').value =
+event?.event_time || '';
+
+document.getElementById('eventLocation').value =
+event?.location || '';
+
+document.getElementById('eventDescription').value =
+event?.description || '';
 
 
-  document.getElementById('deleteEventBtn')
-    .style.display =
-      event ? 'inline-block' : 'none';
+document.getElementById(
+'eventEditorTitle'
+).textContent =
+event
+? 'Edit event'
+: 'Add event';
 
 
-  eventEditor.scrollIntoView({
-    behavior:'smooth',
-    block:'start'
-  });
+document.getElementById(
+'deleteEventBtn'
+).style.display =
+event
+? 'inline-block'
+: 'none';
+
+
+eventEditor.scrollIntoView({
+behavior:'smooth',
+block:'start'
+});
 
 }
 
 
 function closeEventEditor() {
 
-  eventEditor.classList.remove('show');
+eventEditor.classList.remove('show');
 
-  eventForm.reset();
+eventForm.reset();
 
-  document.getElementById('eventId').value = '';
+document.getElementById(
+'eventId'
+).value = '';
 
 }
 
 
-document.getElementById('addEventBtn')
-  .addEventListener(
-    'click',
-    () => openEventEditor()
-  );
+document.getElementById(
+'addEventBtn'
+).addEventListener(
+'click',
+() => openEventEditor()
+);
 
 
-document.getElementById('cancelEventEdit')
-  .addEventListener(
-    'click',
-    closeEventEditor
-  );
+document.getElementById(
+'cancelEventEdit'
+).addEventListener(
+'click',
+closeEventEditor
+);
 
 
 /* =====================================================
@@ -1104,95 +1371,112 @@ document.getElementById('cancelEventEdit')
 ===================================================== */
 
 eventForm.addEventListener(
-  'submit',
-  async event => {
+'submit',
+async event => {
 
-    event.preventDefault();
-
-
-    const id =
-      document.getElementById('eventId').value;
+event.preventDefault();
 
 
-    const eventData = {
-
-      title:
-        document.getElementById('eventTitle').value.trim(),
-
-      event_type:
-        document.getElementById('eventType').value.trim(),
-
-      event_date:
-        document.getElementById('eventDate').value,
-
-      event_time:
-        document.getElementById('eventTime').value.trim(),
-
-      location:
-        document.getElementById('eventLocation').value.trim(),
-
-      description:
-        document.getElementById('eventDescription').value.trim()
-
-    };
+const id =
+document.getElementById(
+'eventId'
+).value;
 
 
-    try {
+const eventData = {
 
-      if (id) {
+title:
+document.getElementById(
+'eventTitle'
+).value.trim(),
 
-        const {
-          error
-        } = await supabaseClient
-          .from('events')
-          .update(eventData)
-          .eq('id', id);
+event_type:
+document.getElementById(
+'eventType'
+).value.trim(),
 
+event_date:
+document.getElementById(
+'eventDate'
+).value,
 
-        if (error) throw error;
+event_time:
+document.getElementById(
+'eventTime'
+).value.trim(),
 
+location:
+document.getElementById(
+'eventLocation'
+).value.trim(),
 
-        showMessage(
-          'Event updated successfully.',
-          'good'
-        );
+description:
+document.getElementById(
+'eventDescription'
+).value.trim()
 
-      } else {
-
-        const {
-          error
-        } = await supabaseClient
-          .from('events')
-          .insert(eventData);
-
-
-        if (error) throw error;
-
-
-        showMessage(
-          'Event created successfully.',
-          'good'
-        );
-
-      }
+};
 
 
-      closeEventEditor();
+try {
 
-      await loadEvents();
+if (id) {
 
-    } catch (error) {
+const {
+error
+} =
+await supabaseClient
+.from('events')
+.update(eventData)
+.eq('id', id);
 
-      console.error(error);
 
-      showMessage(
-        error.message ||
-        'Could not save the event.'
-      );
+if (error) throw error;
 
-    }
 
-  }
+showMessage(
+'Event updated successfully.',
+'good'
+);
+
+} else {
+
+const {
+error
+} =
+await supabaseClient
+.from('events')
+.insert(eventData);
+
+
+if (error) throw error;
+
+
+showMessage(
+'Event created successfully.',
+'good'
+);
+
+}
+
+
+closeEventEditor();
+
+await loadEvents();
+
+
+} catch (error) {
+
+console.error(error);
+
+showMessage(
+error?.message ||
+'Could not save the event.'
+);
+
+}
+
+}
 );
 
 
@@ -1200,199 +1484,253 @@ eventForm.addEventListener(
    DELETE EVENT
 ===================================================== */
 
-document.getElementById('deleteEventBtn')
-  .addEventListener(
-    'click',
-    async () => {
+document.getElementById(
+'deleteEventBtn'
+).addEventListener(
+'click',
+async () => {
 
-      const id =
-        document.getElementById('eventId').value;
-
-
-      if (!id) return;
-
-
-      if (
-        !confirm(
-          'Delete this event? This cannot be undone.'
-        )
-      ) {
-        return;
-      }
+const id =
+document.getElementById(
+'eventId'
+).value;
 
 
-      try {
-
-        const {
-          error
-        } = await supabaseClient
-          .from('events')
-          .delete()
-          .eq('id', id);
+if (!id) return;
 
 
-        if (error) throw error;
+if (
+!confirm(
+'Delete this event? This cannot be undone.'
+)
+) {
+return;
+}
 
 
-        showMessage(
-          'Event deleted.',
-          'good'
-        );
+try {
+
+const {
+error
+} =
+await supabaseClient
+.from('events')
+.delete()
+.eq('id', id);
 
 
-        closeEventEditor();
+if (error) throw error;
 
-        await loadEvents();
 
-        await loadRegistrations();
+showMessage(
+'Event deleted.',
+'good'
+);
 
-      } catch (error) {
 
-        console.error(error);
+closeEventEditor();
 
-        showMessage(
-          error.message ||
-          'Could not delete the event.'
-        );
+await loadEvents();
 
-      }
+await loadRegistrations();
 
-    }
-  );
+
+} catch (error) {
+
+console.error(error);
+
+showMessage(
+error?.message ||
+'Could not delete the event.'
+);
+
+}
+
+}
+);
 
 
 /* =====================================================
-   LOAD EVENTS
+   EVENTS
 ===================================================== */
 
 async function loadEvents() {
 
-  const {
-    data,
-    error
-  } = await supabaseClient
-    .from('events')
-    .select(
-      'id,title,event_date,event_time,location,event_type,description'
-    )
-    .order(
-      'event_date',
-      { ascending:true }
-    );
+const {
+data,
+error
+} =
+await supabaseClient
+.from('events')
+.select(
+'id,title,event_date,event_time,location,event_type,description'
+)
+.order(
+'event_date',
+{ ascending:true }
+);
 
 
-  if (error) throw error;
+if (error) throw error;
 
 
-  const events =
-    data || [];
+allEvents =
+data || [];
 
 
-  eventCount.textContent =
-    events.length;
+eventCount.textContent =
+allEvents.length;
 
 
-  if (!events.length) {
-
-    eventsTable.innerHTML = `
-      <tr>
-        <td colspan="6" class="loading">
-          No events found.
-        </td>
-      </tr>
-    `;
-
-    return;
-
-  }
-
-
-  eventsTable.replaceChildren(
-    ...events.map(event => {
-
-      const row =
-        document.createElement('tr');
-
-
-      const title =
-        document.createElement('td');
-
-      title.textContent =
-        event.title || 'Untitled event';
-
-
-      const date =
-        document.createElement('td');
-
-      date.textContent =
-        event.event_date || '—';
-
-
-      const time =
-        document.createElement('td');
-
-      time.textContent =
-        event.event_time || '—';
-
-
-      const location =
-        document.createElement('td');
-
-      location.textContent =
-        event.location || '—';
-
-
-      const type =
-        document.createElement('td');
-
-      type.textContent =
-        event.event_type || '—';
-
-
-      const actions =
-        document.createElement('td');
-
-      actions.className =
-        'admin-actions-cell';
-
-
-      const edit =
-        document.createElement('button');
-
-      edit.type =
-        'button';
-
-      edit.className =
-        'admin-small-btn';
-
-      edit.textContent =
-        'Edit';
-
-      edit.addEventListener(
-        'click',
-        () => openEventEditor(event)
-      );
-
-
-      actions.appendChild(edit);
-
-
-      row.append(
-        title,
-        date,
-        time,
-        location,
-        type,
-        actions
-      );
-
-
-      return row;
-
-    })
-  );
+renderEvents();
 
 }
+
+
+function renderEvents() {
+
+const search =
+(eventSearch.value || '')
+.toLowerCase()
+.trim();
+
+
+const events =
+allEvents.filter(event => {
+
+const text = [
+
+event.title,
+event.location,
+event.event_type,
+event.description
+
+]
+.filter(Boolean)
+.join(' ')
+.toLowerCase();
+
+
+return !search ||
+text.includes(search);
+
+});
+
+
+if (!events.length) {
+
+eventsTable.innerHTML = `
+<tr>
+<td colspan="6" class="empty-state">
+No events found.
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+
+eventsTable.replaceChildren(
+
+...events.map(event => {
+
+const row =
+document.createElement('tr');
+
+
+const title =
+document.createElement('td');
+
+title.textContent =
+event.title ||
+'Untitled event';
+
+
+const date =
+document.createElement('td');
+
+date.textContent =
+event.event_date ||
+'—';
+
+
+const time =
+document.createElement('td');
+
+time.textContent =
+event.event_time ||
+'—';
+
+
+const location =
+document.createElement('td');
+
+location.textContent =
+event.location ||
+'—';
+
+
+const type =
+document.createElement('td');
+
+type.textContent =
+event.event_type ||
+'—';
+
+
+const actions =
+document.createElement('td');
+
+actions.className =
+'admin-actions-cell';
+
+
+const edit =
+document.createElement('button');
+
+edit.type =
+'button';
+
+edit.className =
+'admin-small-btn';
+
+edit.textContent =
+'Edit';
+
+edit.addEventListener(
+'click',
+() => openEventEditor(event)
+);
+
+
+actions.appendChild(edit);
+
+
+row.append(
+title,
+date,
+time,
+location,
+type,
+actions
+);
+
+
+return row;
+
+})
+
+);
+
+}
+
+
+eventSearch.addEventListener(
+'input',
+renderEvents
+);
 
 
 /* =====================================================
@@ -1401,47 +1739,60 @@ async function loadEvents() {
 
 function openProfileEditor(user) {
 
-  profileEditor.classList.add('show');
+profileEditor.classList.add('show');
 
 
-  document.getElementById('profileId').value =
-    user.id;
-
-  document.getElementById('profileName').value =
-    user.display_name || '';
-
-  document.getElementById('profileAvatar').value =
-    user.avatar_url || '';
-
-  document.getElementById('profileBio').value =
-    user.bio || '';
+document.getElementById(
+'profileId'
+).value =
+user.id;
 
 
-  profileEditor.scrollIntoView({
-    behavior:'smooth',
-    block:'start'
-  });
+document.getElementById(
+'profileName'
+).value =
+user.display_name || '';
+
+
+document.getElementById(
+'profileAvatar'
+).value =
+user.avatar_url || '';
+
+
+document.getElementById(
+'profileBio'
+).value =
+user.bio || '';
+
+
+profileEditor.scrollIntoView({
+behavior:'smooth',
+block:'start'
+});
 
 }
 
 
 function closeProfileEditor() {
 
-  profileEditor.classList.remove('show');
+profileEditor.classList.remove('show');
 
-  profileForm.reset();
+profileForm.reset();
 
-  document.getElementById('profileId').value =
-    '';
+document.getElementById(
+'profileId'
+).value = '';
 
 }
 
 
-document.getElementById('cancelProfileEdit')
-  .addEventListener(
-    'click',
-    closeProfileEditor
-  );
+document.getElementById(
+'cancelProfileEdit'
+).addEventListener(
+'click',
+closeProfileEditor
+);
 
 
 /* =====================================================
@@ -1449,293 +1800,528 @@ document.getElementById('cancelProfileEdit')
 ===================================================== */
 
 profileForm.addEventListener(
-  'submit',
-  async event => {
+'submit',
+async event => {
 
-    event.preventDefault();
-
-
-    const id =
-      document.getElementById('profileId').value;
+event.preventDefault();
 
 
-    if (!id) return;
+const id =
+document.getElementById(
+'profileId'
+).value;
 
 
-    const profileData = {
-
-      display_name:
-        document.getElementById('profileName').value.trim(),
-
-      avatar_url:
-        document.getElementById('profileAvatar').value.trim(),
-
-      bio:
-        document.getElementById('profileBio').value.trim(),
-
-      updated_at:
-        new Date().toISOString()
-
-    };
+if (!id) return;
 
 
-    try {
+const profileData = {
 
-      const {
-        error
-      } = await supabaseClient
-        .from('profiles')
-        .update(profileData)
-        .eq('id', id);
+display_name:
+document.getElementById(
+'profileName'
+).value.trim(),
+
+avatar_url:
+document.getElementById(
+'profileAvatar'
+).value.trim(),
+
+bio:
+document.getElementById(
+'profileBio'
+).value.trim(),
+
+updated_at:
+new Date().toISOString()
+
+};
 
 
-      if (error) throw error;
+try {
+
+const {
+error
+} =
+await supabaseClient
+.from('profiles')
+.update(profileData)
+.eq('id', id);
 
 
-      showMessage(
-        'Profile updated successfully.',
-        'good'
-      );
+if (error) throw error;
 
 
-      closeProfileEditor();
+showMessage(
+'Profile updated successfully.',
+'good'
+);
 
-      await loadUsers();
 
-    } catch (error) {
+closeProfileEditor();
 
-      console.error(error);
+await loadUsers();
 
-      showMessage(
-        error.message ||
-        'Could not update the profile.'
-      );
 
-    }
+} catch (error) {
 
-  }
+console.error(error);
+
+showMessage(
+error?.message ||
+'Could not update the profile.'
+);
+
+}
+
+}
 );
 
 
 /* =====================================================
-   LOAD REGISTRATIONS
+   REGISTRATIONS
 ===================================================== */
 
 async function loadRegistrations() {
 
-  const {
-    data,
-    error
-  } = await supabaseClient
-    .from('event_registrations')
-    .select(`
-      user_id,
-      created_at,
-      events (
-        title
-      )
-    `)
-    .order(
-      'created_at',
-      { ascending:false }
-    );
+const {
+data,
+error
+} =
+await supabaseClient
+.from('event_registrations')
+.select(`
+user_id,
+created_at,
+events (
+title
+)
+`)
+.order(
+'created_at',
+{ ascending:false }
+);
 
 
-  if (error) throw error;
+if (error) throw error;
 
 
-  const registrations =
-    data || [];
+allRegistrations =
+data || [];
 
 
-  registrationCount.textContent =
-    registrations.length;
+registrationCount.textContent =
+allRegistrations.length;
 
 
-  if (!registrations.length) {
+renderRegistrations();
 
-    registrationsTable.innerHTML = `
-      <tr>
-        <td colspan="3" class="loading">
-          No registrations found.
-        </td>
-      </tr>
-    `;
-
-    return;
-
-  }
+}
 
 
-  registrationsTable.replaceChildren(
-    ...registrations.map(registration => {
+function renderRegistrations() {
 
-      const row =
-        document.createElement('tr');
-
-
-      const user =
-        document.createElement('td');
-
-      user.className =
-        'admin-id';
-
-      user.textContent =
-        registration.user_id;
+const search =
+(registrationSearch.value || '')
+.toLowerCase()
+.trim();
 
 
-      const event =
-        document.createElement('td');
+const registrations =
+allRegistrations.filter(reg => {
 
-      event.textContent =
-        registration.events?.title ||
-        'Unknown event';
+const userId =
+(reg.user_id || '')
+.toLowerCase();
 
+const eventTitle =
+(reg.events?.title || '')
+.toLowerCase();
 
-      const registered =
-        document.createElement('td');
+return (
+!search ||
+userId.includes(search) ||
+eventTitle.includes(search)
+);
 
-      registered.textContent =
-        registration.created_at
-          ? new Date(
-              registration.created_at
-            ).toLocaleString()
-          : '—';
-
-
-      row.append(
-        user,
-        event,
-        registered
-      );
+});
 
 
-      return row;
+if (!registrations.length) {
 
-    })
-  );
+registrationsTable.innerHTML = `
+<tr>
+<td colspan="3" class="empty-state">
+No registrations found.
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+
+registrationsTable.replaceChildren(
+
+...registrations.map(registration => {
+
+const row =
+document.createElement('tr');
+
+
+const user =
+document.createElement('td');
+
+user.className =
+'admin-id';
+
+user.textContent =
+registration.user_id;
+
+
+const event =
+document.createElement('td');
+
+event.textContent =
+registration.events?.title ||
+'Unknown event';
+
+
+const registered =
+document.createElement('td');
+
+registered.textContent =
+registration.created_at
+? new Date(
+registration.created_at
+).toLocaleString()
+: '—';
+
+
+row.append(
+user,
+event,
+registered
+);
+
+
+return row;
+
+})
+
+);
+
+}
+
+
+registrationSearch.addEventListener(
+'input',
+renderRegistrations
+);
+
+
+/* =====================================================
+   CSV EXPORT
+===================================================== */
+
+document.getElementById(
+'exportRegistrationsBtn'
+).addEventListener(
+'click',
+() => {
+
+if (!allRegistrations.length) {
+
+showMessage(
+'There are no registrations to export.'
+);
+
+return;
+
+}
+
+
+const rows = [
+
+[
+'User ID',
+'Event',
+'Registered'
+],
+
+...allRegistrations.map(item => [
+
+item.user_id || '',
+
+item.events?.title || 'Unknown event',
+
+item.created_at
+? new Date(
+item.created_at
+).toLocaleString()
+: ''
+
+])
+
+];
+
+
+const csv =
+rows.map(row =>
+row.map(value =>
+`"${String(value)
+.replaceAll('"','""')}"`
+).join(',')
+).join('\n');
+
+
+const blob =
+new Blob(
+[csv],
+{
+type:'text/csv;charset=utf-8;'
+}
+);
+
+
+const url =
+URL.createObjectURL(blob);
+
+
+const link =
+document.createElement('a');
+
+link.href =
+url;
+
+link.download =
+`technova-registrations-${new Date()
+.toISOString()
+.slice(0,10)}.csv`;
+
+
+document.body.appendChild(link);
+
+link.click();
+
+link.remove();
+
+URL.revokeObjectURL(url);
+
+
+showMessage(
+'Registrations exported successfully.',
+'good'
+);
+
+}
+);
+
+
+/* =====================================================
+   ROLES
+===================================================== */
+
+async function loadRoles() {
+
+const {
+data,
+error
+} =
+await supabaseClient
+.from('user_roles')
+.select(
+'user_id,role'
+)
+.order(
+'role',
+{ ascending:true }
+);
+
+
+if (error) throw error;
+
+
+const roles =
+data || [];
+
+
+adminCount.textContent =
+roles.filter(
+item =>
+item.role === 'admin'
+).length;
+
+
+if (!roles.length) {
+
+rolesTable.innerHTML = `
+<tr>
+<td colspan="2" class="empty-state">
+No roles found.
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+
+rolesTable.replaceChildren(
+
+...roles.map(item => {
+
+const row =
+document.createElement('tr');
+
+
+const user =
+document.createElement('td');
+
+user.className =
+'admin-id';
+
+user.textContent =
+item.user_id;
+
+
+const role =
+document.createElement('td');
+
+
+if (
+item.role === 'admin'
+) {
+
+const badge =
+document.createElement('span');
+
+badge.className =
+'admin-badge';
+
+badge.textContent =
+'ADMIN';
+
+role.appendChild(badge);
+
+} else {
+
+role.textContent =
+item.role ||
+'user';
+
+}
+
+
+row.append(
+user,
+role
+);
+
+
+return row;
+
+})
+
+);
 
 }
 
 
 /* =====================================================
-   LOAD ROLES
+   REFRESH
 ===================================================== */
 
-async function loadRoles() {
+document.getElementById(
+'refreshBtn'
+).addEventListener(
+'click',
+async () => {
 
-  const {
-    data,
-    error
-  } = await supabaseClient
-    .from('user_roles')
-    .select('user_id,role')
-    .order(
-      'role',
-      { ascending:true }
-    );
+const button =
+document.getElementById(
+'refreshBtn'
+);
 
+button.disabled = true;
 
-  if (error) throw error;
-
-
-  const roles =
-    data || [];
+button.textContent =
+'↻ Loading...';
 
 
-  adminCount.textContent =
-    roles.filter(
-      item => item.role === 'admin'
-    ).length;
+try {
+
+await Promise.all([
+loadUsers(),
+loadEvents(),
+loadRegistrations(),
+loadRoles()
+]);
 
 
-  if (!roles.length) {
-
-    rolesTable.innerHTML = `
-      <tr>
-        <td colspan="2" class="loading">
-          No roles found.
-        </td>
-      </tr>
-    `;
-
-    return;
-
-  }
+showMessage(
+'Dashboard refreshed.',
+'good'
+);
 
 
-  rolesTable.replaceChildren(
-    ...roles.map(item => {
+} catch (error) {
 
-      const row =
-        document.createElement('tr');
+console.error(error);
 
+showMessage(
+error?.message ||
+'Could not refresh dashboard.'
+);
 
-      const user =
-        document.createElement('td');
+} finally {
 
-      user.className =
-        'admin-id';
+button.disabled = false;
 
-      user.textContent =
-        item.user_id;
-
-
-      const role =
-        document.createElement('td');
-
-
-      if (item.role === 'admin') {
-
-        const badge =
-          document.createElement('span');
-
-        badge.className =
-          'admin-badge';
-
-        badge.textContent =
-          'ADMIN';
-
-        role.appendChild(badge);
-
-      } else {
-
-        role.textContent =
-          item.role || 'user';
-
-      }
-
-
-      row.append(
-        user,
-        role
-      );
-
-
-      return row;
-
-    })
-  );
+button.textContent =
+'↻ Refresh';
 
 }
+
+}
+);
 
 
 /* =====================================================
    LOG OUT
 ===================================================== */
 
-document.getElementById('logoutBtn')
-  .addEventListener(
-    'click',
-    async () => {
+document.getElementById(
+'logoutBtn'
+).addEventListener(
+'click',
+async () => {
 
-      await supabaseClient.auth.signOut();
+const {
+error
+} =
+await supabaseClient.auth.signOut();
 
-      window.location.href =
-        '../index.html';
 
-    }
-  );
+if (error) {
+
+showMessage(
+error.message ||
+'Could not log out.'
+);
+
+return;
+
+}
+
+
+window.location.href =
+'../index.html';
+
+}
+);
 
 
 /* =====================================================
@@ -1744,55 +2330,64 @@ document.getElementById('logoutBtn')
 
 async function loadDashboard() {
 
-  const user =
-    await checkAdmin();
+const user =
+await checkAdmin();
 
 
-  if (!user) return;
+if (!user) return;
 
 
-  try {
+try {
 
-    await Promise.all([
-      loadUsers(),
-      loadEvents(),
-      loadRegistrations(),
-      loadRoles()
-    ]);
+await Promise.all([
 
+loadUsers(),
 
-    showMessage(
-      'Admin dashboard loaded successfully.',
-      'good'
-    );
+loadEvents(),
 
+loadRegistrations(),
 
-    setTimeout(() => {
-      adminMessage.classList.remove('show');
-    }, 3500);
+loadRoles()
+
+]);
 
 
-  } catch (error) {
-
-    console.error(
-      'Admin dashboard error:',
-      error
-    );
+showMessage(
+'Admin dashboard loaded successfully.',
+'good'
+);
 
 
-    showMessage(
-      error?.message ||
-      'Some administrator data could not be loaded.'
-    );
+setTimeout(() => {
 
-  }
+adminMessage.classList.remove(
+'show'
+);
+
+}, 3500);
+
+
+} catch (error) {
+
+console.error(
+'Admin dashboard error:',
+error
+);
+
+
+showMessage(
+error?.message ||
+'Some administrator data could not be loaded.'
+);
+
+}
 
 }
 
 
 document.addEventListener(
-  'DOMContentLoaded',
-  loadDashboard
+'DOMContentLoaded',
+loadDashboard
 );
 
 </script>
