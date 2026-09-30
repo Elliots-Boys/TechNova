@@ -1,5 +1,88 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reports · TechNova Admin</title><link rel="stylesheet" href="../css/style.css"><style>.page{max-width:1250px;margin:auto;padding:45px 22px 80px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:850px}.table th,.table td{padding:12px;border-bottom:1px solid #243955;text-align:left;vertical-align:top}.table th{color:#8fa5c0}.muted{color:#91a0b7}.status{padding:5px 8px;border-radius:8px;background:#123047;color:#32d6ff;font-size:12px}.status.resolved{background:#0c342b;color:#75efc2}.status.rejected{background:#421820;color:#ff9aaa}</style></head>
-<body><main class="page"><div style="display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap"><div><p class="eyebrow">MODERATION</p><h1>Reports</h1><p class="lead">Review reports submitted by TechNova users.</p></div><a class="btn" href="admin.html">← Admin dashboard</a></div><div class="toolbar"><input id="search" class="input" placeholder="Search reports…"><select id="filter" class="select"><option value="">All statuses</option><option>open</option><option>resolved</option><option>rejected</option></select></div><div class="panel table-wrap"><table class="table"><thead><tr><th>Target</th><th>Reason</th><th>Details</th><th>Status</th><th>Created</th><th>Action</th></tr></thead><tbody id="rows"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody></table></div></main><footer>© 2026 TechNova</footer><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/supabase-config.js"></script><script src="../js/script.js"></script><script>
-const client=window.supabase.createClient(window.TECHNOVA_SUPABASE_URL,window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);let reports=[];const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));async function init(){const {data:{user}}=await client.auth.getUser();if(!user){location.href='login.html';return}const {data:role}=await client.from('user_roles').select('role').eq('user_id',user.id).maybeSingle();if(role?.role!=='admin'){location.href='account.html';return}const {data,error}=await client.from('reports').select('*').order('created_at',{ascending:false});if(error){document.getElementById('rows').innerHTML='<tr><td colspan="6" class="muted">Reports could not be loaded.</td></tr>';console.error(error);return}reports=data||[];render()}function render(){const q=document.getElementById('search').value.toLowerCase(),f=document.getElementById('filter').value;const list=reports.filter(r=>(!f||r.status===f)&&(!q||JSON.stringify(r).toLowerCase().includes(q)));document.getElementById('rows').innerHTML=list.length?list.map(r=>`<tr><td>${esc(r.target_type||'general')}<br><small>${esc(r.target_id||'')}</small></td><td>${esc(r.reason)}</td><td>${esc(r.details)}</td><td><span class="status ${esc(r.status||'open')}">${esc(r.status||'open')}</span></td><td>${r.created_at?new Date(r.created_at).toLocaleString():'—'}</td><td>${r.status!=='resolved'?`<button class="btn" data-id="${esc(r.id)}">Resolve</button>`:'—'}</td></tr>`).join(''):'<tr><td colspan="6" class="muted">No reports found.</td></tr>';document.querySelectorAll('[data-id]').forEach(b=>b.onclick=async()=>{const {error}=await client.from('reports').update({status:'resolved',resolved_at:new Date().toISOString()}).eq('id',b.dataset.id);if(error)alert(error.message);else init()})}document.getElementById('search').oninput=render;document.getElementById('filter').onchange=render;init();
-</script></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reports · TechNova Admin</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.page{max-width:1250px;margin:auto;padding:45px 22px 80px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+.toolbar input,.toolbar select{background:#07101c;color:#fff;border:1px solid #29415e;border-radius:9px;padding:10px 12px;font:inherit}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:900px}.table th,.table td{padding:12px;border-bottom:1px solid #243955;text-align:left;vertical-align:top}.table th{color:#8fa5c0}.muted{color:#91a0b7}
+.status{padding:5px 8px;border-radius:8px;background:#123047;color:#32d6ff;font-size:12px}.status.reviewing{background:#332d0d;color:#ffd76a}.status.resolved{background:#0c342b;color:#75efc2}.status.dismissed{background:#421820;color:#ff9aaa}
+.error{display:none;background:#421820;color:#ff9aaa;border:1px solid #71303c;padding:13px;border-radius:10px;margin:15px 0}.error.show{display:block}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.small{padding:8px 10px;border:1px solid #29415e;background:#102136;color:#dbe7f5;border-radius:8px;cursor:pointer}.small:hover{border-color:var(--cyan);color:var(--cyan)}
+</style>
+</head>
+<body>
+<main class="page">
+<div style="display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap">
+<div><p class="eyebrow">MODERATION</p><h1>Reports</h1><p class="lead">Review reports submitted by TechNova users.</p></div>
+<a class="btn" href="admin.html">← Admin dashboard</a>
+</div>
+<div id="error" class="error"></div>
+<div class="toolbar">
+<input id="search" placeholder="Search reports…">
+<select id="filter"><option value="">All statuses</option><option value="open">Open</option><option value="reviewing">Reviewing</option><option value="resolved">Resolved</option><option value="dismissed">Dismissed</option></select>
+<button id="refresh" class="btn" type="button">Refresh</button>
+</div>
+<div class="panel table-wrap">
+<table class="table">
+<thead><tr><th>Target</th><th>Reason</th><th>Details</th><th>Status</th><th>Reporter</th><th>Created</th><th>Action</th></tr></thead>
+<tbody id="rows"><tr><td colspan="7" class="muted">Loading reports…</td></tr></tbody>
+</table>
+</div>
+</main>
+<footer>© 2026 TechNova</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/script.js"></script>
+<script>
+'use strict';
+const client=window.supabase.createClient(window.TECHNOVA_SUPABASE_URL,window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
+let reports=[];
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+function showError(message){const el=document.getElementById('error');el.textContent=message;el.classList.add('show')}
+async function checkAdmin(){
+ const {data:{user},error:userError}=await client.auth.getUser();
+ if(userError||!user){location.href='login.html';return false}
+ const {data:role,error}=await client.from('user_roles').select('role').eq('user_id',user.id).maybeSingle();
+ if(error){showError('Could not verify administrator permissions: '+error.message);return false}
+ if(role?.role!=='admin'){location.href='account.html';return false}
+ return true;
+}
+async function loadReports(){
+ document.getElementById('error').classList.remove('show');
+ document.getElementById('rows').innerHTML='<tr><td colspan="7" class="muted">Loading reports…</td></tr>';
+ const {data,error}=await client.from('reports').select('id,reporter_id,target_type,target_id,reason,details,status,created_at,resolved_at').order('created_at',{ascending:false});
+ if(error){console.error('Reports query failed:',error);showError('Reports could not be loaded: '+error.message);document.getElementById('rows').innerHTML='<tr><td colspan="7" class="muted">Could not load reports.</td></tr>';return}
+ reports=data||[];render();
+}
+function render(){
+ const q=document.getElementById('search').value.toLowerCase().trim(),f=document.getElementById('filter').value;
+ const list=reports.filter(r=>(!f||r.status===f)&&(!q||JSON.stringify(r).toLowerCase().includes(q)));
+ const rows=document.getElementById('rows');
+ if(!list.length){rows.innerHTML='<tr><td colspan="7" class="muted">No reports found.</td></tr>';return}
+ rows.innerHTML=list.map(r=>`<tr>
+<td><strong>${esc(r.target_type||'unknown')}</strong><br><small>${esc(r.target_id)}</small></td>
+<td>${esc(r.reason)}</td><td>${esc(r.details)||'—'}</td>
+<td><span class="status ${esc(r.status||'open')}">${esc(r.status||'open')}</span></td>
+<td><small>${esc(r.reporter_id)}</small></td>
+<td>${r.created_at?new Date(r.created_at).toLocaleString():'—'}</td>
+<td><div class="actions">${r.status!=='resolved'&&r.status!=='dismissed'?`<button class="small" data-action="reviewing" data-id="${esc(r.id)}">Review</button><button class="small" data-action="resolved" data-id="${esc(r.id)}">Resolve</button><button class="small" data-action="dismissed" data-id="${esc(r.id)}">Dismiss</button>`:'—'}</div></td>
+</tr>`).join('');
+ document.querySelectorAll('[data-id]').forEach(button=>button.addEventListener('click',async()=>{
+   const id=button.dataset.id,status=button.dataset.action;
+   const {error}=await client.from('reports').update({status}).eq('id',id);
+   if(error){showError('Could not update report: '+error.message);return}
+   await loadReports();
+ }));
+}
+document.getElementById('search').addEventListener('input',render);
+document.getElementById('filter').addEventListener('change',render);
+document.getElementById('refresh').addEventListener('click',loadReports);
+(async()=>{if(await checkAdmin()) await loadReports()})();
+</script>
+</body>
+</html>
