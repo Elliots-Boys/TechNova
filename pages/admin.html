@@ -1,445 +1,785 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <title>Admin Dashboard · TechNova</title>
+<title>Admin Dashboard · TechNova</title>
 
-  <link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/style.css">
 
-  <style>
-    body {
-      min-height: 100vh;
-    }
+<style>
+body {
+  min-height: 100vh;
+}
 
-    .admin-page {
-      width: min(1400px, 100%);
-      margin: 0 auto;
-      padding: 35px 25px 60px;
-    }
+.admin-page {
+  width: min(1400px, 100%);
+  margin: 0 auto;
+  padding: 35px 25px 70px;
+}
 
-    .admin-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 25px;
-      margin-bottom: 30px;
-    }
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 30px;
+}
 
-    .admin-header h1 {
-      margin: 5px 0 8px;
-      font-size: clamp(36px, 5vw, 56px);
-      line-height: 1;
-    }
+.admin-header h1 {
+  margin: 5px 0 8px;
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1;
+}
 
-    .admin-header p {
-      color: var(--muted);
-      margin: 0;
-    }
+.admin-header p {
+  color: var(--muted);
+  margin: 0;
+}
 
-    .admin-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
-    .admin-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-      margin-bottom: 28px;
-    }
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 28px;
+}
 
-    .admin-stat {
-      background: linear-gradient(180deg, #101b2d, #09111d);
-      border: 1px solid #243955;
-      border-radius: 18px;
-      padding: 22px;
-      box-shadow: 0 15px 45px #0005;
-    }
+.admin-stat {
+  background: linear-gradient(180deg,#101b2d,#09111d);
+  border: 1px solid #243955;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 15px 45px #0005;
+}
 
-    .admin-stat h3 {
-      margin: 0 0 8px;
-      color: #9db0c9;
-      font-size: 14px;
-      font-weight: 700;
-    }
+.admin-stat h3 {
+  margin: 0 0 8px;
+  color: #9db0c9;
+  font-size: 14px;
+}
 
-    .admin-stat strong {
-      display: block;
-      font-size: 36px;
-      color: var(--cyan);
-    }
+.admin-stat strong {
+  display: block;
+  font-size: 36px;
+  color: var(--cyan);
+}
 
-    .admin-card {
-      background: linear-gradient(180deg, #101b2d, #09111d);
-      border: 1px solid #243955;
-      border-radius: 18px;
-      padding: 24px;
-      margin-bottom: 25px;
-      box-shadow: 0 15px 45px #0004;
-      overflow-x: auto;
-    }
+.admin-card {
+  background: linear-gradient(180deg,#101b2d,#09111d);
+  border: 1px solid #243955;
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 25px;
+  box-shadow: 0 15px 45px #0004;
+}
 
-    .admin-card h2 {
-      margin: 0 0 20px;
-      font-size: 25px;
-    }
+.admin-card h2 {
+  margin: 0 0 20px;
+  font-size: 25px;
+}
 
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 650px;
-    }
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
 
-    .admin-table th,
-    .admin-table td {
-      text-align: left;
-      padding: 13px;
-      border-bottom: 1px solid #243955;
-      vertical-align: top;
-    }
+.admin-card-header h2 {
+  margin: 0;
+}
 
-    .admin-table th {
-      color: #8fa5c0;
-      font-size: 13px;
-      font-weight: 700;
-    }
+.admin-table-wrap {
+  overflow-x: auto;
+}
 
-    .admin-table td {
-      color: #dbe7f5;
-      font-size: 14px;
-    }
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 850px;
+}
 
-    .admin-table tr:last-child td {
-      border-bottom: 0;
-    }
+.admin-table th,
+.admin-table td {
+  text-align: left;
+  padding: 13px;
+  border-bottom: 1px solid #243955;
+  vertical-align: top;
+}
 
-    .admin-message {
-      display: none;
-      padding: 14px 16px;
-      border-radius: 12px;
-      margin-bottom: 22px;
-      border: 1px solid transparent;
-    }
+.admin-table th {
+  color: #8fa5c0;
+  font-size: 13px;
+}
 
-    .admin-message.show {
-      display: block;
-    }
+.admin-table td {
+  color: #dbe7f5;
+  font-size: 14px;
+}
 
-    .admin-message.error {
-      background: #421820;
-      color: #ff9aaa;
-      border-color: #71303c;
-    }
+.admin-table tr:last-child td {
+  border-bottom: 0;
+}
 
-    .admin-message.good {
-      background: #0c342b;
-      color: #75efc2;
-      border-color: #185d4e;
-    }
+.admin-input,
+.admin-textarea,
+.admin-select {
+  width: 100%;
+  box-sizing: border-box;
+  background: #07101c;
+  border: 1px solid #29415e;
+  color: white;
+  border-radius: 9px;
+  padding: 10px 11px;
+  outline: none;
+  font: inherit;
+}
 
-    .loading {
-      color: var(--muted) !important;
-    }
+.admin-input:focus,
+.admin-textarea:focus,
+.admin-select:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px #32d6ff16;
+}
 
-    .admin-badge {
-      display: inline-block;
-      padding: 5px 9px;
-      border-radius: 8px;
-      background: #123047;
-      color: var(--cyan);
-      font-size: 12px;
-      font-weight: 700;
-    }
+.admin-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
 
-    .admin-danger {
-      background: #4a1820 !important;
-      color: #ffb4c0 !important;
-      border-color: #77303c !important;
-    }
+.admin-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 15px;
+}
 
-    .admin-danger:hover {
-      background: #5b202a !important;
-    }
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
 
-    .admin-id {
-      font-family: monospace;
-      font-size: 12px !important;
-      color: #91a5bd !important;
-      word-break: break-all;
-    }
+.admin-field.full {
+  grid-column: 1 / -1;
+}
 
-    @media (max-width: 950px) {
-      .admin-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+.admin-field label {
+  color: #aebfd4;
+  font-size: 13px;
+  font-weight: 700;
+}
 
-      .admin-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
+.admin-form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
-    @media (max-width: 600px) {
-      .admin-page {
-        padding: 22px 15px 45px;
-      }
+.admin-message {
+  display: none;
+  padding: 14px 16px;
+  border-radius: 12px;
+  margin-bottom: 22px;
+}
 
-      .admin-grid {
-        grid-template-columns: 1fr;
-      }
+.admin-message.show {
+  display: block;
+}
 
-      .admin-actions {
-        width: 100%;
-      }
+.admin-message.error {
+  background: #421820;
+  color: #ff9aaa;
+  border: 1px solid #71303c;
+}
 
-      .admin-actions .btn {
-        flex: 1;
-        text-align: center;
-      }
-    }
-  </style>
+.admin-message.good {
+  background: #0c342b;
+  color: #75efc2;
+  border: 1px solid #185d4e;
+}
+
+.admin-badge {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 8px;
+  background: #123047;
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admin-id {
+  font-family: monospace;
+  font-size: 12px !important;
+  color: #91a5bd !important;
+  word-break: break-all;
+}
+
+.admin-actions-cell {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.admin-small-btn {
+  border: 1px solid #29415e;
+  background: #102136;
+  color: #dbe7f5;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.admin-small-btn:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.admin-danger {
+  background: #4a1820 !important;
+  color: #ffb4c0 !important;
+  border-color: #77303c !important;
+}
+
+.admin-danger:hover {
+  background: #5b202a !important;
+}
+
+.loading {
+  color: var(--muted) !important;
+}
+
+#eventEditor {
+  display: none;
+}
+
+#eventEditor.show {
+  display: block;
+}
+
+#profileEditor {
+  display: none;
+}
+
+#profileEditor.show {
+  display: block;
+}
+
+@media(max-width:950px) {
+  .admin-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media(max-width:700px) {
+  .admin-form {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-field.full {
+    grid-column: auto;
+  }
+
+  .admin-form-actions {
+    grid-column: auto;
+  }
+}
+
+@media(max-width:600px) {
+  .admin-page {
+    padding: 22px 15px 45px;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-actions {
+    width: 100%;
+  }
+
+  .admin-actions .btn {
+    flex: 1;
+    text-align: center;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <main class="admin-page">
 
-  <!-- HEADER -->
-  <header class="admin-header">
+<header class="admin-header">
 
-    <div>
-      <div class="eyebrow">TECHNOVA ADMIN</div>
+<div>
+<div class="eyebrow">TECHNOVA ADMIN</div>
+<h1>Admin Dashboard</h1>
+<p id="adminWelcome">Checking administrator access…</p>
+</div>
 
-      <h1>Admin Dashboard</h1>
+<div class="admin-actions">
+<a class="btn" href="../index.html">View website</a>
+<a class="btn" href="account.html">My account</a>
+<button id="logoutBtn" class="btn admin-danger" type="button">
+Log out
+</button>
+</div>
 
-      <p id="adminWelcome">
-        Checking administrator access…
-      </p>
-    </div>
-
-    <div class="admin-actions">
-
-      <a
-        class="btn"
-        href="../index.html"
-      >
-        View website
-      </a>
-
-      <button
-        id="logoutBtn"
-        class="btn admin-danger"
-        type="button"
-      >
-        Log out
-      </button>
-
-    </div>
-
-  </header>
+</header>
 
 
-  <!-- MESSAGE -->
-  <div
-    id="adminMessage"
-    class="admin-message"
-    aria-live="polite"
-  ></div>
+<div id="adminMessage" class="admin-message" aria-live="polite"></div>
 
 
-  <!-- STATISTICS -->
-  <section class="admin-grid">
+<!-- STATISTICS -->
 
-    <div class="admin-stat">
-      <h3>Total users</h3>
-      <strong id="userCount">—</strong>
-    </div>
+<section class="admin-grid">
 
-    <div class="admin-stat">
-      <h3>Total events</h3>
-      <strong id="eventCount">—</strong>
-    </div>
+<div class="admin-stat">
+<h3>Total users</h3>
+<strong id="userCount">—</strong>
+</div>
 
-    <div class="admin-stat">
-      <h3>Registrations</h3>
-      <strong id="registrationCount">—</strong>
-    </div>
+<div class="admin-stat">
+<h3>Total events</h3>
+<strong id="eventCount">—</strong>
+</div>
 
-    <div class="admin-stat">
-      <h3>Administrators</h3>
-      <strong id="adminCount">—</strong>
-    </div>
+<div class="admin-stat">
+<h3>Registrations</h3>
+<strong id="registrationCount">—</strong>
+</div>
 
-  </section>
+<div class="admin-stat">
+<h3>Administrators</h3>
+<strong id="adminCount">—</strong>
+</div>
 
-
-  <!-- USERS -->
-  <section class="admin-card">
-
-    <h2>Users</h2>
-
-    <table class="admin-table">
-
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>User ID</th>
-          <th>Joined</th>
-        </tr>
-      </thead>
-
-      <tbody id="usersTable">
-
-        <tr>
-          <td
-            colspan="3"
-            class="loading"
-          >
-            Loading users…
-          </td>
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </section>
+</section>
 
 
-  <!-- EVENTS -->
-  <section class="admin-card">
+<!-- EVENT EDITOR -->
 
-    <h2>Events</h2>
+<section id="eventEditor" class="admin-card">
 
-    <table class="admin-table">
+<div class="admin-card-header">
+<div>
+<p class="eyebrow">EVENT MANAGEMENT</p>
+<h2 id="eventEditorTitle">Add event</h2>
+</div>
 
-      <thead>
-        <tr>
-          <th>Event</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Location</th>
-          <th>Type</th>
-        </tr>
-      </thead>
-
-      <tbody id="eventsTable">
-
-        <tr>
-          <td
-            colspan="5"
-            class="loading"
-          >
-            Loading events…
-          </td>
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </section>
+<button id="cancelEventEdit" class="btn" type="button">
+Cancel
+</button>
+</div>
 
 
-  <!-- REGISTRATIONS -->
-  <section class="admin-card">
+<form id="eventForm" class="admin-form">
 
-    <h2>Event Registrations</h2>
+<input type="hidden" id="eventId">
 
-    <table class="admin-table">
-
-      <thead>
-        <tr>
-          <th>User ID</th>
-          <th>Event</th>
-          <th>Registered</th>
-        </tr>
-      </thead>
-
-      <tbody id="registrationsTable">
-
-        <tr>
-          <td
-            colspan="3"
-            class="loading"
-          >
-            Loading registrations…
-          </td>
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </section>
+<div class="admin-field">
+<label for="eventTitle">Event title</label>
+<input
+id="eventTitle"
+class="admin-input"
+type="text"
+required
+>
+</div>
 
 
-  <!-- ROLES -->
-  <section class="admin-card">
+<div class="admin-field">
+<label for="eventType">Event type</label>
+<input
+id="eventType"
+class="admin-input"
+type="text"
+placeholder="Conference, workshop, exhibition..."
+>
+</div>
 
-    <h2>User Roles</h2>
 
-    <table class="admin-table">
+<div class="admin-field">
+<label for="eventDate">Date</label>
+<input
+id="eventDate"
+class="admin-input"
+type="date"
+required
+>
+</div>
 
-      <thead>
-        <tr>
-          <th>User ID</th>
-          <th>Role</th>
-        </tr>
-      </thead>
 
-      <tbody id="rolesTable">
+<div class="admin-field">
+<label for="eventTime">Time</label>
+<input
+id="eventTime"
+class="admin-input"
+type="text"
+placeholder="10:00 AM"
+>
+</div>
 
-        <tr>
-          <td
-            colspan="2"
-            class="loading"
-          >
-            Loading roles…
-          </td>
-        </tr>
 
-      </tbody>
+<div class="admin-field">
+<label for="eventLocation">Location</label>
+<input
+id="eventLocation"
+class="admin-input"
+type="text"
+>
+</div>
 
-    </table>
 
-  </section>
+<div class="admin-field full">
+<label for="eventDescription">Description</label>
+<textarea
+id="eventDescription"
+class="admin-textarea"
+placeholder="Event description..."
+></textarea>
+</div>
+
+
+<div class="admin-form-actions">
+
+<button
+id="saveEventBtn"
+class="btn primary"
+type="submit"
+>
+Save event
+</button>
+
+<button
+id="deleteEventBtn"
+class="btn admin-danger"
+type="button"
+style="display:none"
+>
+Delete event
+</button>
+
+</div>
+
+</form>
+
+</section>
+
+
+<!-- EVENTS -->
+
+<section class="admin-card">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">CONTENT</p>
+<h2>Events</h2>
+</div>
+
+<button
+id="addEventBtn"
+class="btn primary"
+type="button"
+>
++ Add event
+</button>
+
+</div>
+
+
+<div class="admin-table-wrap">
+
+<table class="admin-table">
+
+<thead>
+<tr>
+<th>Event</th>
+<th>Date</th>
+<th>Time</th>
+<th>Location</th>
+<th>Type</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="eventsTable">
+
+<tr>
+<td colspan="6" class="loading">
+Loading events…
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- PROFILE EDITOR -->
+
+<section id="profileEditor" class="admin-card">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">USER MANAGEMENT</p>
+<h2>Edit profile</h2>
+</div>
+
+<button id="cancelProfileEdit" class="btn" type="button">
+Cancel
+</button>
+
+</div>
+
+
+<form id="profileForm" class="admin-form">
+
+<input type="hidden" id="profileId">
+
+<div class="admin-field">
+
+<label for="profileName">
+Display name
+</label>
+
+<input
+id="profileName"
+class="admin-input"
+type="text"
+>
+
+</div>
+
+
+<div class="admin-field">
+
+<label for="profileAvatar">
+Avatar URL
+</label>
+
+<input
+id="profileAvatar"
+class="admin-input"
+type="url"
+placeholder="https://..."
+>
+
+</div>
+
+
+<div class="admin-field full">
+
+<label for="profileBio">
+Bio
+</label>
+
+<textarea
+id="profileBio"
+class="admin-textarea"
+></textarea>
+
+</div>
+
+
+<div class="admin-form-actions">
+
+<button
+class="btn primary"
+type="submit"
+>
+Save profile
+</button>
+
+</div>
+
+</form>
+
+</section>
+
+
+<!-- USERS -->
+
+<section class="admin-card">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">ACCOUNTS</p>
+<h2>Users</h2>
+</div>
+
+</div>
+
+
+<div class="admin-table-wrap">
+
+<table class="admin-table">
+
+<thead>
+<tr>
+<th>Name</th>
+<th>User ID</th>
+<th>Joined</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="usersTable">
+
+<tr>
+<td colspan="4" class="loading">
+Loading users…
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- REGISTRATIONS -->
+
+<section class="admin-card">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">ACTIVITY</p>
+<h2>Event registrations</h2>
+</div>
+
+</div>
+
+
+<div class="admin-table-wrap">
+
+<table class="admin-table">
+
+<thead>
+<tr>
+<th>User ID</th>
+<th>Event</th>
+<th>Registered</th>
+</tr>
+</thead>
+
+<tbody id="registrationsTable">
+
+<tr>
+<td colspan="3" class="loading">
+Loading registrations…
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- ROLES -->
+
+<section class="admin-card">
+
+<div class="admin-card-header">
+
+<div>
+<p class="eyebrow">SECURITY</p>
+<h2>User roles</h2>
+</div>
+
+</div>
+
+
+<div class="admin-table-wrap">
+
+<table class="admin-table">
+
+<thead>
+<tr>
+<th>User ID</th>
+<th>Role</th>
+</tr>
+</thead>
+
+<tbody id="rolesTable">
+
+<tr>
+<td colspan="2" class="loading">
+Loading roles…
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<p style="color:#91a0b7;font-size:13px;margin-top:15px">
+Roles are intentionally displayed here but are not editable from the browser.
+Keep role changes protected by your Supabase SQL/RLS policies.
+</p>
+
+</section>
 
 </main>
 
 
-<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="../js/supabase-config.js"></script>
 
 
-<!-- ADMIN JAVASCRIPT -->
 <script>
 
 'use strict';
 
 
-/*
-=========================================================
-SUPABASE CONNECTION
-=========================================================
-*/
+/* =====================================================
+   SUPABASE
+===================================================== */
 
-const supabaseClient = window.supabase.createClient(
-  window.TECHNOVA_SUPABASE_URL,
-  window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
-);
+const supabaseClient =
+  window.supabase.createClient(
+    window.TECHNOVA_SUPABASE_URL,
+    window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
+  );
 
 
-/*
-=========================================================
-ELEMENTS
-=========================================================
-*/
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
 const adminMessage =
   document.getElementById('adminMessage');
@@ -471,57 +811,54 @@ const registrationsTable =
 const rolesTable =
   document.getElementById('rolesTable');
 
+const eventEditor =
+  document.getElementById('eventEditor');
 
-/*
-=========================================================
-MESSAGE
-=========================================================
-*/
+const profileEditor =
+  document.getElementById('profileEditor');
 
-function showMessage(text, type = 'error') {
+const eventForm =
+  document.getElementById('eventForm');
 
-  if (!adminMessage) return;
+const profileForm =
+  document.getElementById('profileForm');
 
-  adminMessage.textContent = text;
+
+/* =====================================================
+   MESSAGES
+===================================================== */
+
+function showMessage(message, type = 'error') {
+
+  adminMessage.textContent = message;
 
   adminMessage.className =
     `admin-message show ${type}`;
+
 }
 
 
-/*
-=========================================================
-CHECK ADMIN
-=========================================================
-*/
+/* =====================================================
+   ADMIN CHECK
+===================================================== */
 
 async function checkAdmin() {
 
   const {
-    data: {
-      user
-    },
-    error: userError
+    data: { user },
+    error
   } = await supabaseClient.auth.getUser();
 
 
-  if (userError || !user) {
+  if (error || !user) {
 
     window.location.href =
       'login.html';
 
     return null;
+
   }
 
-
-  /*
-    IMPORTANT:
-
-    The database/RLS is the real security boundary.
-
-    This query is only used to decide whether
-    the admin interface should be displayed.
-  */
 
   const {
     data: role,
@@ -535,16 +872,14 @@ async function checkAdmin() {
 
   if (roleError) {
 
-    console.error(
-      'Admin role check failed:',
-      roleError
-    );
+    console.error(roleError);
 
     showMessage(
       'Could not verify administrator permissions.'
     );
 
     return null;
+
   }
 
 
@@ -554,6 +889,7 @@ async function checkAdmin() {
       'account.html';
 
     return null;
+
   }
 
 
@@ -562,14 +898,13 @@ async function checkAdmin() {
 
 
   return user;
+
 }
 
 
-/*
-=========================================================
-LOAD USERS
-=========================================================
-*/
+/* =====================================================
+   LOAD USERS
+===================================================== */
 
 async function loadUsers() {
 
@@ -579,23 +914,18 @@ async function loadUsers() {
   } = await supabaseClient
     .from('profiles')
     .select(
-      'id, display_name, created_at'
+      'id,display_name,avatar_url,bio,created_at'
     )
     .order(
       'created_at',
-      {
-        ascending: false
-      }
+      { ascending:false }
     );
 
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
 
   const users = data || [];
-
 
   userCount.textContent =
     users.length;
@@ -605,21 +935,18 @@ async function loadUsers() {
 
     usersTable.innerHTML = `
       <tr>
-        <td
-          colspan="3"
-          class="loading"
-        >
+        <td colspan="4" class="loading">
           No users found.
         </td>
       </tr>
     `;
 
     return;
+
   }
 
 
   usersTable.replaceChildren(
-
     ...users.map(user => {
 
       const row =
@@ -655,24 +982,288 @@ async function loadUsers() {
           : '—';
 
 
+      const actions =
+        document.createElement('td');
+
+      actions.className =
+        'admin-actions-cell';
+
+
+      const edit =
+        document.createElement('button');
+
+      edit.className =
+        'admin-small-btn';
+
+      edit.type =
+        'button';
+
+      edit.textContent =
+        'Edit';
+
+      edit.addEventListener(
+        'click',
+        () => openProfileEditor(user)
+      );
+
+
+      actions.appendChild(edit);
+
+
       row.append(
         name,
         id,
-        joined
+        joined,
+        actions
       );
 
 
       return row;
+
     })
   );
+
 }
 
 
-/*
-=========================================================
-LOAD EVENTS
-=========================================================
-*/
+/* =====================================================
+   EVENT EDITOR
+===================================================== */
+
+function openEventEditor(event = null) {
+
+  eventEditor.classList.add('show');
+
+  document.getElementById('eventId').value =
+    event?.id || '';
+
+  document.getElementById('eventTitle').value =
+    event?.title || '';
+
+  document.getElementById('eventType').value =
+    event?.event_type || '';
+
+  document.getElementById('eventDate').value =
+    event?.event_date || '';
+
+  document.getElementById('eventTime').value =
+    event?.event_time || '';
+
+  document.getElementById('eventLocation').value =
+    event?.location || '';
+
+  document.getElementById('eventDescription').value =
+    event?.description || '';
+
+
+  document.getElementById('eventEditorTitle')
+    .textContent =
+      event ? 'Edit event' : 'Add event';
+
+
+  document.getElementById('deleteEventBtn')
+    .style.display =
+      event ? 'inline-block' : 'none';
+
+
+  eventEditor.scrollIntoView({
+    behavior:'smooth',
+    block:'start'
+  });
+
+}
+
+
+function closeEventEditor() {
+
+  eventEditor.classList.remove('show');
+
+  eventForm.reset();
+
+  document.getElementById('eventId').value = '';
+
+}
+
+
+document.getElementById('addEventBtn')
+  .addEventListener(
+    'click',
+    () => openEventEditor()
+  );
+
+
+document.getElementById('cancelEventEdit')
+  .addEventListener(
+    'click',
+    closeEventEditor
+  );
+
+
+/* =====================================================
+   SAVE EVENT
+===================================================== */
+
+eventForm.addEventListener(
+  'submit',
+  async event => {
+
+    event.preventDefault();
+
+
+    const id =
+      document.getElementById('eventId').value;
+
+
+    const eventData = {
+
+      title:
+        document.getElementById('eventTitle').value.trim(),
+
+      event_type:
+        document.getElementById('eventType').value.trim(),
+
+      event_date:
+        document.getElementById('eventDate').value,
+
+      event_time:
+        document.getElementById('eventTime').value.trim(),
+
+      location:
+        document.getElementById('eventLocation').value.trim(),
+
+      description:
+        document.getElementById('eventDescription').value.trim()
+
+    };
+
+
+    try {
+
+      if (id) {
+
+        const {
+          error
+        } = await supabaseClient
+          .from('events')
+          .update(eventData)
+          .eq('id', id);
+
+
+        if (error) throw error;
+
+
+        showMessage(
+          'Event updated successfully.',
+          'good'
+        );
+
+      } else {
+
+        const {
+          error
+        } = await supabaseClient
+          .from('events')
+          .insert(eventData);
+
+
+        if (error) throw error;
+
+
+        showMessage(
+          'Event created successfully.',
+          'good'
+        );
+
+      }
+
+
+      closeEventEditor();
+
+      await loadEvents();
+
+    } catch (error) {
+
+      console.error(error);
+
+      showMessage(
+        error.message ||
+        'Could not save the event.'
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   DELETE EVENT
+===================================================== */
+
+document.getElementById('deleteEventBtn')
+  .addEventListener(
+    'click',
+    async () => {
+
+      const id =
+        document.getElementById('eventId').value;
+
+
+      if (!id) return;
+
+
+      if (
+        !confirm(
+          'Delete this event? This cannot be undone.'
+        )
+      ) {
+        return;
+      }
+
+
+      try {
+
+        const {
+          error
+        } = await supabaseClient
+          .from('events')
+          .delete()
+          .eq('id', id);
+
+
+        if (error) throw error;
+
+
+        showMessage(
+          'Event deleted.',
+          'good'
+        );
+
+
+        closeEventEditor();
+
+        await loadEvents();
+
+        await loadRegistrations();
+
+      } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+          error.message ||
+          'Could not delete the event.'
+        );
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   LOAD EVENTS
+===================================================== */
 
 async function loadEvents() {
 
@@ -682,19 +1273,15 @@ async function loadEvents() {
   } = await supabaseClient
     .from('events')
     .select(
-      'title,event_date,event_time,location,event_type'
+      'id,title,event_date,event_time,location,event_type,description'
     )
     .order(
       'event_date',
-      {
-        ascending: true
-      }
+      { ascending:true }
     );
 
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
 
   const events =
@@ -709,21 +1296,18 @@ async function loadEvents() {
 
     eventsTable.innerHTML = `
       <tr>
-        <td
-          colspan="5"
-          class="loading"
-        >
+        <td colspan="6" class="loading">
           No events found.
         </td>
       </tr>
     `;
 
     return;
+
   }
 
 
   eventsTable.replaceChildren(
-
     ...events.map(event => {
 
       const row =
@@ -734,40 +1318,63 @@ async function loadEvents() {
         document.createElement('td');
 
       title.textContent =
-        event.title ||
-        'Untitled event';
+        event.title || 'Untitled event';
 
 
       const date =
         document.createElement('td');
 
       date.textContent =
-        event.event_date ||
-        '—';
+        event.event_date || '—';
 
 
       const time =
         document.createElement('td');
 
       time.textContent =
-        event.event_time ||
-        '—';
+        event.event_time || '—';
 
 
       const location =
         document.createElement('td');
 
       location.textContent =
-        event.location ||
-        '—';
+        event.location || '—';
 
 
       const type =
         document.createElement('td');
 
       type.textContent =
-        event.event_type ||
-        '—';
+        event.event_type || '—';
+
+
+      const actions =
+        document.createElement('td');
+
+      actions.className =
+        'admin-actions-cell';
+
+
+      const edit =
+        document.createElement('button');
+
+      edit.type =
+        'button';
+
+      edit.className =
+        'admin-small-btn';
+
+      edit.textContent =
+        'Edit';
+
+      edit.addEventListener(
+        'click',
+        () => openEventEditor(event)
+      );
+
+
+      actions.appendChild(edit);
 
 
       row.append(
@@ -775,21 +1382,144 @@ async function loadEvents() {
         date,
         time,
         location,
-        type
+        type,
+        actions
       );
 
 
       return row;
+
     })
   );
+
 }
 
 
-/*
-=========================================================
-LOAD REGISTRATIONS
-=========================================================
-*/
+/* =====================================================
+   PROFILE EDITOR
+===================================================== */
+
+function openProfileEditor(user) {
+
+  profileEditor.classList.add('show');
+
+
+  document.getElementById('profileId').value =
+    user.id;
+
+  document.getElementById('profileName').value =
+    user.display_name || '';
+
+  document.getElementById('profileAvatar').value =
+    user.avatar_url || '';
+
+  document.getElementById('profileBio').value =
+    user.bio || '';
+
+
+  profileEditor.scrollIntoView({
+    behavior:'smooth',
+    block:'start'
+  });
+
+}
+
+
+function closeProfileEditor() {
+
+  profileEditor.classList.remove('show');
+
+  profileForm.reset();
+
+  document.getElementById('profileId').value =
+    '';
+
+}
+
+
+document.getElementById('cancelProfileEdit')
+  .addEventListener(
+    'click',
+    closeProfileEditor
+  );
+
+
+/* =====================================================
+   SAVE PROFILE
+===================================================== */
+
+profileForm.addEventListener(
+  'submit',
+  async event => {
+
+    event.preventDefault();
+
+
+    const id =
+      document.getElementById('profileId').value;
+
+
+    if (!id) return;
+
+
+    const profileData = {
+
+      display_name:
+        document.getElementById('profileName').value.trim(),
+
+      avatar_url:
+        document.getElementById('profileAvatar').value.trim(),
+
+      bio:
+        document.getElementById('profileBio').value.trim(),
+
+      updated_at:
+        new Date().toISOString()
+
+    };
+
+
+    try {
+
+      const {
+        error
+      } = await supabaseClient
+        .from('profiles')
+        .update(profileData)
+        .eq('id', id);
+
+
+      if (error) throw error;
+
+
+      showMessage(
+        'Profile updated successfully.',
+        'good'
+      );
+
+
+      closeProfileEditor();
+
+      await loadUsers();
+
+    } catch (error) {
+
+      console.error(error);
+
+      showMessage(
+        error.message ||
+        'Could not update the profile.'
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   LOAD REGISTRATIONS
+===================================================== */
 
 async function loadRegistrations() {
 
@@ -807,15 +1537,11 @@ async function loadRegistrations() {
     `)
     .order(
       'created_at',
-      {
-        ascending: false
-      }
+      { ascending:false }
     );
 
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
 
   const registrations =
@@ -830,21 +1556,18 @@ async function loadRegistrations() {
 
     registrationsTable.innerHTML = `
       <tr>
-        <td
-          colspan="3"
-          class="loading"
-        >
+        <td colspan="3" class="loading">
           No registrations found.
         </td>
       </tr>
     `;
 
     return;
+
   }
 
 
   registrationsTable.replaceChildren(
-
     ...registrations.map(registration => {
 
       const row =
@@ -869,10 +1592,10 @@ async function loadRegistrations() {
         'Unknown event';
 
 
-      const created =
+      const registered =
         document.createElement('td');
 
-      created.textContent =
+      registered.textContent =
         registration.created_at
           ? new Date(
               registration.created_at
@@ -883,21 +1606,21 @@ async function loadRegistrations() {
       row.append(
         user,
         event,
-        created
+        registered
       );
 
 
       return row;
+
     })
   );
+
 }
 
 
-/*
-=========================================================
-LOAD ROLES
-=========================================================
-*/
+/* =====================================================
+   LOAD ROLES
+===================================================== */
 
 async function loadRoles() {
 
@@ -906,55 +1629,42 @@ async function loadRoles() {
     error
   } = await supabaseClient
     .from('user_roles')
-    .select(
-      'user_id,role'
-    )
+    .select('user_id,role')
     .order(
       'role',
-      {
-        ascending: true
-      }
+      { ascending:true }
     );
 
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
 
   const roles =
     data || [];
 
 
-  const admins =
+  adminCount.textContent =
     roles.filter(
       item => item.role === 'admin'
-    );
-
-
-  adminCount.textContent =
-    admins.length;
+    ).length;
 
 
   if (!roles.length) {
 
     rolesTable.innerHTML = `
       <tr>
-        <td
-          colspan="2"
-          class="loading"
-        >
+        <td colspan="2" class="loading">
           No roles found.
         </td>
       </tr>
     `;
 
     return;
+
   }
 
 
   rolesTable.replaceChildren(
-
     ...roles.map(item => {
 
       const row =
@@ -991,7 +1701,8 @@ async function loadRoles() {
       } else {
 
         role.textContent =
-          item.role;
+          item.role || 'user';
+
       }
 
 
@@ -1002,37 +1713,45 @@ async function loadRoles() {
 
 
       return row;
+
     })
   );
+
 }
 
 
-/*
-=========================================================
-LOAD DASHBOARD
-=========================================================
-*/
+/* =====================================================
+   LOG OUT
+===================================================== */
+
+document.getElementById('logoutBtn')
+  .addEventListener(
+    'click',
+    async () => {
+
+      await supabaseClient.auth.signOut();
+
+      window.location.href =
+        '../index.html';
+
+    }
+  );
+
+
+/* =====================================================
+   START
+===================================================== */
 
 async function loadDashboard() {
-
-  /*
-    First verify the logged-in user.
-  */
 
   const user =
     await checkAdmin();
 
 
-  if (!user) {
-    return;
-  }
+  if (!user) return;
 
 
   try {
-
-    /*
-      Load everything in parallel.
-    */
 
     await Promise.all([
       loadUsers(),
@@ -1048,23 +1767,15 @@ async function loadDashboard() {
     );
 
 
-    /*
-      Hide the success message after a few seconds.
-    */
-
     setTimeout(() => {
-
-      if (adminMessage) {
-        adminMessage.classList.remove('show');
-      }
-
-    }, 4000);
+      adminMessage.classList.remove('show');
+    }, 3500);
 
 
   } catch (error) {
 
     console.error(
-      'TechNova admin dashboard error:',
+      'Admin dashboard error:',
       error
     );
 
@@ -1073,54 +1784,11 @@ async function loadDashboard() {
       error?.message ||
       'Some administrator data could not be loaded.'
     );
+
   }
+
 }
 
-
-/*
-=========================================================
-LOG OUT
-=========================================================
-*/
-
-document
-  .getElementById('logoutBtn')
-  ?.addEventListener(
-    'click',
-    async () => {
-
-      const {
-        error
-      } = await supabaseClient.auth.signOut();
-
-
-      if (error) {
-
-        console.error(
-          'Logout error:',
-          error
-        );
-
-        showMessage(
-          error.message ||
-          'Could not log out.'
-        );
-
-        return;
-      }
-
-
-      window.location.href =
-        '../index.html';
-    }
-  );
-
-
-/*
-=========================================================
-START DASHBOARD
-=========================================================
-*/
 
 document.addEventListener(
   'DOMContentLoaded',
