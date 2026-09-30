@@ -47,7 +47,9 @@ const githubLogin = document.getElementById('github-login');
 
 if (githubLogin) {
     githubLogin.addEventListener('click', async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
+        console.log('GitHub login clicked');
+
+        const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'github',
             options: {
                 redirectTo: window.location.origin + '/pages/account.html'
@@ -55,8 +57,8 @@ if (githubLogin) {
         });
 
         if (error) {
-            console.error('GitHub login error:', error);
-            alert(error.message);
+            console.error('GitHub OAuth error:', error);
+            alert('GitHub login failed: ' + error.message);
         }
     });
 }
