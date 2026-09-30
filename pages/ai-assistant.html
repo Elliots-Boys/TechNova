@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TechNova AI Assistant</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.ai-page{max-width:1000px;margin:0 auto;padding:45px 20px 80px}.ai-card{background:linear-gradient(180deg,#101b2d,#09111d);border:1px solid #243955;border-radius:22px;padding:24px;box-shadow:0 15px 45px #0004}.ai-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:22px}.ai-head h1{font-size:clamp(38px,6vw,64px);margin:5px 0 8px}.ai-head p{color:var(--muted);margin:0}.ai-chat{height:520px;overflow:auto;border:1px solid #243955;border-radius:16px;padding:18px;background:#07101c;display:flex;flex-direction:column;gap:14px}.ai-msg{max-width:82%;padding:13px 15px;border-radius:15px;line-height:1.55;white-space:pre-wrap}.ai-msg.user{align-self:flex-end;background:#123047;color:#dff8ff}.ai-msg.assistant{align-self:flex-start;background:#101b2d;border:1px solid #29415e;color:#dbe7f5}.ai-compose{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:14px}.ai-input{width:100%;box-sizing:border-box;min-height:54px;max-height:160px;resize:vertical;background:#07101c;color:white;border:1px solid #29415e;border-radius:12px;padding:14px;font:inherit}.ai-input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px #32d6ff16}.ai-status{margin-top:10px;color:#91a0b7;font-size:13px}.ai-prompts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.ai-prompt{border:1px solid #29415e;background:#0c1929;color:#cfe0f2;border-radius:999px;padding:8px 12px;cursor:pointer}.ai-prompt:hover{border-color:var(--cyan);color:var(--cyan)}@media(max-width:650px){.ai-compose{grid-template-columns:1fr}.ai-msg{max-width:92%}.ai-chat{height:480px}}
+</style>
+</head>
+<body>
+<header><a class="brand" href="../index.html">✦ TECHNOVA</a><button id="menu" aria-label="Open menu" type="button">☰</button><nav><a href="../index.html">Home</a><a href="events.html">Events</a><a href="technology.html">Technology</a><a href="innovation.html">Innovation</a><a href="news.html">News</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="account.html">My account</a></nav></header>
+<main class="ai-page"><section class="ai-card"><div class="ai-head"><div><p class="eyebrow">TECHNOVA AI</p><h1>Ask TechNova.</h1><p>Get explanations, event suggestions, technology ideas and help finding your way around the site.</p></div></div><div class="ai-prompts"><button class="ai-prompt" type="button">What events are coming up?</button><button class="ai-prompt" type="button">Explain AI simply</button><button class="ai-prompt" type="button">Suggest a technology project</button><button class="ai-prompt" type="button">What is TechNova?</button></div><div id="aiChat" class="ai-chat" aria-live="polite"><div class="ai-msg assistant">Hi! I'm the TechNova AI assistant. Ask me anything about technology, TechNova, events or project ideas.</div></div><form id="aiForm" class="ai-compose"><textarea id="aiInput" class="ai-input" rows="2" placeholder="Ask something…" maxlength="4000" required></textarea><button class="btn primary" type="submit">Ask AI →</button></form><div id="aiStatus" class="ai-status"></div></section></main>
+<footer></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/supabase-config.js"></script><script src="../js/script.js"></script><script src="../js/ai-assistant.js"></script>
+</body></html>
