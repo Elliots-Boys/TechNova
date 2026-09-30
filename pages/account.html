@@ -588,108 +588,88 @@ document.addEventListener(
       return;
     }
 
-
-    try {
-
-      /*
-       * Get the currently authenticated user.
-       */
-
-      const {
-        data: {
-          user
-        },
-        error: userError
-      } = await supabaseClient.auth.getUser();
+    /*
+     * Get the currently authenticated user.
+     */
+    const {
+      data: {
+        user
+      },
+      error: userError
+    } = await supabaseClient.auth.getUser();
 
 
-      if (userError || !user) {
+    /*
+     * Not signed in = no admin button.
+     */
+    if (userError || !user) {
 
-        adminLink.style.display =
-          'none';
+      adminLink.style.display =
+        'none';
 
-        return;
-      }
-
-
-      /*
-       * Only even consider showing the
-       * admin button for Elliot's account.
-       */
-
-      if (
-        user.email?.toLowerCase() !==
-        'elliotbranwood@gmail.com'
-      ) {
-
-        adminLink.style.display =
-          'none';
-
-        return;
-      }
+      return;
+    }
 
 
-      /*
-       * Check the database role as well.
-       *
-       * The email check controls visibility.
-       * The database/RLS controls actual
-       * administrator access.
-       */
-
-      const {
-        data: role,
-        error: roleError
-      } = await supabaseClient
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-
-      if (roleError) {
-
-        console.error(
-          'Could not check admin role:',
-          roleError
-        );
-
-        adminLink.style.display =
-          'none';
-
-        return;
-      }
+    /*
+     * Check the user's database role.
+     *
+     * IMPORTANT:
+     * Do NOT check a specific email address here.
+     *
+     * Anyone whose user_roles.role is "admin"
+     * should be able to see the admin dashboard.
+     */
+    const {
+      data: role,
+      error: roleError
+    } = await supabaseClient
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .maybeSingle();
 
 
-      if (
-        role &&
-        role.role === 'admin'
-      ) {
-
-        adminLink.style.display =
-          'inline-block';
-
-      } else {
-
-        adminLink.style.display =
-          'none';
-      }
-
-    } catch (error) {
+    /*
+     * If the role cannot be checked,
+     * keep the admin button hidden.
+     */
+    if (roleError) {
 
       console.error(
-        'Admin link error:',
-        error
+        'Could not check admin role:',
+        roleError
       );
 
       adminLink.style.display =
         'none';
+
+      return;
+    }
+
+
+    /*
+     * Show the dashboard link to ANY
+     * user whose database role is admin.
+     */
+    if (
+      role &&
+      role.role === 'admin'
+    ) {
+
+      adminLink.style.display =
+        'inline-block';
+
+    } else {
+
+      adminLink.style.display =
+        'none';
+
     }
 
   }
 );
 
 </script>
-
 </body>
 </html>
