@@ -10,12 +10,13 @@
     ['🎟️', 'My Tickets', 'tickets.html'],
     ['📅', 'My Calendar', 'calendar.html'],
     ['❤️', 'Saved Events', 'bookmarks.html'],
-    ['🔔', 'Notifications', 'notifications.html']
+    ['🔔', 'Notifications', 'notifications.html'],
+    ['🧠', 'Tech Quiz', 'quiz.html']
   ];
 
   function addDrawerLinks() {
     const drawerContent = document.querySelector('.site-drawer-content');
-    if (!drawerContent || drawerContent.querySelector('.technova-feature-section')) return;
+    if (!drawerContent || drawerContent.querySelector('.technova-feature-section')) return false;
 
     const section = document.createElement('section');
     section.className = 'drawer-section technova-feature-section';
@@ -26,10 +27,12 @@
       const a = document.createElement('a');
       a.href = pageRoot + file;
       a.innerHTML = `<span class="drawer-icon" aria-hidden="true">${icon}</span><span>${label}</span>`;
+      if (location.pathname.endsWith('/' + file)) a.classList.add('active');
       list.appendChild(a);
     });
 
     drawerContent.prepend(section);
+    return true;
   }
 
   function addAIButton() {
@@ -46,8 +49,13 @@
   }
 
   function init() {
-    addDrawerLinks();
     addAIButton();
+    if (addDrawerLinks()) return;
+    const observer = new MutationObserver(() => {
+      if (addDrawerLinks()) observer.disconnect();
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    setTimeout(() => observer.disconnect(), 10000);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
