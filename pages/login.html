@@ -4,87 +4,544 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Log in · TechNova</title>
+
 <link rel="stylesheet" href="../css/style.css">
+
 <style>
-.auth-page{min-height:100vh;display:grid;grid-template-columns:1fr 520px;max-width:1200px;margin:auto;padding:34px 22px;gap:60px;align-items:center}.auth-brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;letter-spacing:.08em;margin-bottom:45px}.auth-brand-mark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#32d6ff,#9b6cff);color:#06101d;font-size:22px}.auth-copy h1{font-size:clamp(48px,6vw,76px);margin:0 0 20px;line-height:.98}.auth-copy h1 span{color:var(--cyan)}.auth-copy p{max-width:560px;font-size:18px;color:var(--muted)}.auth-points{display:grid;gap:12px;margin-top:30px}.auth-point{display:flex;gap:12px;align-items:center;color:#c8d4e5}.auth-point b{width:30px;height:30px;border-radius:9px;background:#10263c;display:grid;place-items:center;color:var(--cyan)}.auth-card{background:linear-gradient(180deg,#101b2d,#09111d);border:1px solid #243955;border-radius:24px;padding:32px;box-shadow:0 30px 100px #0008}.auth-card h2{font-size:30px;margin:0 0 8px}.auth-card .sub{color:var(--muted);margin:0 0 25px}.field{margin-bottom:17px}.field label{display:block;font-size:13px;font-weight:700;color:#b7c5d9;margin-bottom:7px}.field input{width:100%;background:#07101c;border:1px solid #253a55;color:#fff;padding:13px 14px;border-radius:11px;outline:0}.field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #32d6ff16}.auth-submit{width:100%;margin-top:3px}.google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:11px;margin-top:12px;background:#fff;color:#172033;border:1px solid #d8dee8;font-weight:800}.google-btn:hover{background:#f4f6f9;color:#172033}.google-icon{width:20px;height:20px}.divider{display:flex;align-items:center;gap:12px;color:#71829a;font-size:12px;margin:20px 0}.divider::before,.divider::after{content:"";height:1px;background:#243955;flex:1}.auth-links{display:flex;justify-content:space-between;gap:12px;margin-top:18px;font-size:13px}.auth-links a{color:var(--cyan)}.auth-message{display:none;margin-top:15px;padding:12px;border-radius:11px;font-size:14px;background:#3a1620;color:#ff9aaa}.auth-message.show{display:block}.auth-message.good{background:#0b332b;color:#70f0c1}.back-home{display:block;text-align:center;margin-top:22px;color:var(--muted);font-size:13px}@media(max-width:800px){.auth-page{grid-template-columns:1fr;padding:22px}.auth-copy{display:none}.auth-card{margin-top:30px}}
+.auth-page{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 520px;
+  max-width:1200px;
+  margin:auto;
+  padding:34px 22px;
+  gap:60px;
+  align-items:center
+}
+
+.auth-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:900;
+  font-size:18px;
+  letter-spacing:.08em;
+  margin-bottom:45px
+}
+
+.auth-brand-mark{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#32d6ff,#9b6cff);
+  color:#06101d;
+  font-size:22px
+}
+
+.auth-copy h1{
+  font-size:clamp(48px,6vw,76px);
+  margin:0 0 20px;
+  line-height:.98
+}
+
+.auth-copy h1 span{
+  color:var(--cyan)
+}
+
+.auth-copy p{
+  max-width:560px;
+  font-size:18px;
+  color:var(--muted)
+}
+
+.auth-points{
+  display:grid;
+  gap:12px;
+  margin-top:30px
+}
+
+.auth-point{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  color:#c8d4e5
+}
+
+.auth-point b{
+  width:30px;
+  height:30px;
+  border-radius:9px;
+  background:#10263c;
+  display:grid;
+  place-items:center;
+  color:var(--cyan)
+}
+
+.auth-card{
+  background:linear-gradient(180deg,#101b2d,#09111d);
+  border:1px solid #243955;
+  border-radius:24px;
+  padding:32px;
+  box-shadow:0 30px 100px #0008
+}
+
+.auth-card h2{
+  font-size:30px;
+  margin:0 0 8px
+}
+
+.auth-card .sub{
+  color:var(--muted);
+  margin:0 0 25px
+}
+
+.field{
+  margin-bottom:17px
+}
+
+.field label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  color:#b7c5d9;
+  margin-bottom:7px
+}
+
+.field input{
+  width:100%;
+  box-sizing:border-box;
+  background:#07101c;
+  border:1px solid #253a55;
+  color:#fff;
+  padding:13px 14px;
+  border-radius:11px;
+  outline:0
+}
+
+.field input:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px #32d6ff16
+}
+
+.auth-submit{
+  width:100%;
+  margin-top:3px
+}
+
+/* Google */
+.google-btn{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:11px;
+  margin-top:12px;
+  background:#fff;
+  color:#172033;
+  border:1px solid #d8dee8;
+  font-weight:800
+}
+
+.google-btn:hover{
+  background:#f4f6f9;
+  color:#172033
+}
+
+.google-icon{
+  width:20px;
+  height:20px
+}
+
+/* GitHub */
+.github-btn{
+  width:100%;
+  height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-top:12px;
+  background:#24292f;
+  color:#fff;
+  border:1px solid #444c56;
+  border-radius:8px;
+  font-weight:800;
+  font-size:14px;
+  cursor:pointer
+}
+
+.github-btn:hover{
+  background:#32383f;
+  color:#fff
+}
+
+.github-icon{
+  width:18px;
+  height:18px;
+  flex:0 0 18px
+}
+
+/* Dividers */
+.divider{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:#71829a;
+  font-size:12px;
+  margin:20px 0
+}
+
+.divider::before,
+.divider::after{
+  content:"";
+  height:1px;
+  background:#243955;
+  flex:1
+}
+
+/* Messages */
+.auth-links{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:18px;
+  font-size:13px
+}
+
+.auth-links a{
+  color:var(--cyan)
+}
+
+.auth-message{
+  display:none;
+  margin-top:15px;
+  padding:12px;
+  border-radius:11px;
+  font-size:14px;
+  background:#3a1620;
+  color:#ff9aaa
+}
+
+.auth-message.show{
+  display:block
+}
+
+.auth-message.good{
+  background:#0b332b;
+  color:#70f0c1
+}
+
+.back-home{
+  display:block;
+  text-align:center;
+  margin-top:22px;
+  color:var(--muted);
+  font-size:13px
+}
+
+@media(max-width:800px){
+  .auth-page{
+    grid-template-columns:1fr;
+    padding:22px
+  }
+
+  .auth-copy{
+    display:none
+  }
+
+  .auth-card{
+    margin-top:30px
+  }
+}
 </style>
 </head>
+
 <body>
-<main class="auth-page"><section class="auth-copy"><a class="auth-brand" href="../index.html"><span class="auth-brand-mark">✦</span> TECHNOVA</a><p class="eyebrow">YOUR TECHNOLOGY HUB</p><h1>Welcome <span>back.</span></h1><p>Log in to keep your TechNova events, saved technology and profile all in one place.</p><div class="auth-points"><div class="auth-point"><b>✓</b><span>Manage your event registrations</span></div><div class="auth-point"><b>✓</b><span>Save technologies and resources</span></div><div class="auth-point"><b>✓</b><span>Keep your profile across devices</span></div></div></section>
-<section class="auth-card"><div class="eyebrow">TECHNOVA ACCOUNT</div><h2>Log in</h2><p class="sub">Use your TechNova account or continue securely with Google.</p>
-<button id="googleLoginBtn" class="btn google-btn" type="button"><svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.35 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.44h3.14c1.84-1.7 2.91-4.2 2.91-7.21z"/><path fill="#34A853" d="M12 21.7c2.63 0 4.84-.87 6.45-2.36l-3.14-2.44c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.29v2.52A9.74 9.74 0 0 0 12 21.7z"/><path fill="#FBBC05" d="M6.54 13.79A5.86 5.86 0 0 1 6.23 12c0-.62.11-1.23.31-1.79V7.69H3.29A9.74 9.74 0 0 0 2.25 12c0 1.57.38 3.05 1.04 4.31l3.25-2.52z"/><path fill="#EA4335" d="M12 6.18c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.22 14.63 2.3 12 2.3a9.74 9.74 0 0 0-8.71 5.39l3.25 2.52C7.31 7.9 9.46 6.18 12 6.18z"/></svg>Continue with Google</button>
-<button id="github-login" class="btn github-btn" type="button">
-  <svg class="github-icon" width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
-  <path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.17c-3.2.7-3.87-1.35-3.87-1.35-.53-1.34-1.28-1.7-1.28-1.7-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.73-1.53-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.47.11-3.06 0 0 .96-.31 3.15 1.18A10.9 10.9 0 0 1 12 6.01c.97 0 1.94.13 2.85.38 2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.77.11 3.06.73.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.67.41.36.78 1.07.78 2.16v3.2c0 .3.21.66.8.55C20.22 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"/>
-</svg>
-  Continue with GitHub
-</button>
-<div class="divider">OR USE EMAIL</div>
-<form id="loginForm"><div class="field"><label for="email">Email address</label><input id="email" type="email" autocomplete="email" required placeholder="you@example.com"></div><div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Your password"></div><button id="loginBtn" class="btn primary auth-submit" type="submit">Log in</button></form>
-<div id="authMessage" class="auth-message" aria-live="polite"></div><div class="auth-links"><a href="signup.html">Create an account</a><a href="#" id="forgotPassword">Forgot password?</a></div><a class="back-home" href="../index.html">← Back to TechNova</a></section></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/supabase-config.js"></script><script src="../js/auth.js"></script><script src="../js/script.js"></script>
-  <script>
-const phoneLoginForm = document.getElementById('phoneLoginForm');
-const otpForm = document.getElementById('otpForm');
-const phoneInput = document.getElementById('phone');
-const otpInput = document.getElementById('otp');
-const authMessage = document.getElementById('authMessage');
 
-let loginPhone = '';
+<main class="auth-page">
 
-phoneLoginForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
+  <!-- LEFT SIDE -->
+  <section class="auth-copy">
 
-  loginPhone = phoneInput.value.trim();
+    <a class="auth-brand" href="../index.html">
+      <span class="auth-brand-mark">✦</span>
+      TECHNOVA
+    </a>
 
-  if (!loginPhone) {
-    authMessage.textContent = 'Please enter your phone number.';
-    authMessage.classList.add('show');
-    return;
-  }
+    <p class="eyebrow">YOUR TECHNOLOGY HUB</p>
 
-  const { error } = await supabase.auth.signInWithOtp({
-    phone: loginPhone
-  });
+    <h1>
+      Welcome <span>back.</span>
+    </h1>
 
-  if (error) {
-    authMessage.textContent = error.message;
-    authMessage.classList.add('show');
-    return;
-  }
+    <p>
+      Log in to keep your TechNova events, saved technology
+      and profile all in one place.
+    </p>
 
-  authMessage.textContent =
-    'Verification code sent! Check your phone.';
-  authMessage.classList.add('show', 'good');
+    <div class="auth-points">
 
-  phoneLoginForm.style.display = 'none';
-  otpForm.style.display = 'block';
-  otpInput.focus();
-});
+      <div class="auth-point">
+        <b>✓</b>
+        <span>Manage your event registrations</span>
+      </div>
 
-otpForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
+      <div class="auth-point">
+        <b>✓</b>
+        <span>Save technologies and resources</span>
+      </div>
 
-  const code = otpInput.value.trim();
+      <div class="auth-point">
+        <b>✓</b>
+        <span>Keep your profile across devices</span>
+      </div>
 
-  const {
-    data,
-    error
-  } = await supabase.auth.verifyOtp({
-    phone: loginPhone,
-    token: code,
-    type: 'sms'
-  });
+    </div>
 
-  if (error) {
-    authMessage.textContent = error.message;
-    authMessage.classList.add('show');
-    return;
-  }
+  </section>
 
-  if (data.session) {
-    window.location.href = 'account.html';
-  }
-});
-</script>
-</body></html>
+
+  <!-- LOGIN CARD -->
+  <section class="auth-card">
+
+    <div class="eyebrow">TECHNOVA ACCOUNT</div>
+
+    <h2>Log in</h2>
+
+    <p class="sub">
+      Choose how you want to sign in to your TechNova account.
+    </p>
+
+
+    <!-- GOOGLE -->
+    <button
+      id="googleLoginBtn"
+      class="btn google-btn"
+      type="button"
+    >
+
+      <svg
+        class="google-icon"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          fill="#4285F4"
+          d="M21.35 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.44h3.14c1.84-1.7 2.91-4.2 2.91-7.21z"
+        />
+
+        <path
+          fill="#34A853"
+          d="M12 21.7c2.63 0 4.84-.87 6.45-2.36l-3.14-2.44c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.29v2.52A9.74 9.74 0 0 0 12 21.7z"
+        />
+
+        <path
+          fill="#FBBC05"
+          d="M6.54 13.79A5.86 5.86 0 0 1 6.23 12c0-.62.11-1.23.31-1.79V7.69H3.29A9.74 9.74 0 0 0 2.25 12c0 1.57.38 3.05 1.04 4.31l3.25-2.52z"
+        />
+
+        <path
+          fill="#EA4335"
+          d="M12 6.18c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.22 14.63 2.3 12 2.3a9.74 9.74 0 0 0-8.71 5.39l3.25 2.52C7.31 7.9 9.46 6.18 12 6.18z"
+        />
+      </svg>
+
+      Continue with Google
+
+    </button>
+
+
+    <!-- GITHUB -->
+    <button
+      id="github-login"
+      class="btn github-btn"
+      type="button"
+    >
+
+      <svg
+        class="github-icon"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          fill="currentColor"
+          d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.17c-3.2.7-3.87-1.35-3.87-1.35-.53-1.34-1.28-1.7-1.28-1.7-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.73-1.53-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.47.11-3.06 0 0 .96-.31 3.15 1.18A10.9 10.9 0 0 1 12 6.01c.97 0 1.94.13 2.85.38 2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.77.11 3.06.73.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.67.41.36.78 1.07.78 2.16v3.2c0 .3.21.66.8.55C20.22 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"
+        />
+      </svg>
+
+      Continue with GitHub
+
+    </button>
+
+
+    <!-- EMAIL -->
+    <div class="divider">
+      OR USE EMAIL
+    </div>
+
+    <form id="loginForm">
+
+      <div class="field">
+
+        <label for="email">
+          Email address
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          autocomplete="email"
+          required
+          placeholder="you@example.com"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label for="password">
+          Password
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required
+          placeholder="Your password"
+        >
+
+      </div>
+
+
+      <button
+        id="loginBtn"
+        class="btn primary auth-submit"
+        type="submit"
+      >
+        Log in
+      </button>
+
+    </form>
+
+
+    <!-- PHONE -->
+    <div class="divider">
+      OR USE PHONE
+    </div>
+
+    <form id="phoneLoginForm">
+
+      <div class="field">
+
+        <label for="phone">
+          Mobile phone number
+        </label>
+
+        <input
+          id="phone"
+          type="tel"
+          autocomplete="tel"
+          placeholder="+447700900123"
+          required
+        >
+
+      </div>
+
+      <button
+        id="sendOtpBtn"
+        class="btn primary auth-submit"
+        type="submit"
+      >
+        Send verification code
+      </button>
+
+    </form>
+
+
+    <!-- OTP -->
+    <form
+      id="otpForm"
+      style="display:none;"
+    >
+
+      <div class="field">
+
+        <label for="otp">
+          Verification code
+        </label>
+
+        <input
+          id="otp"
+          type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          maxlength="6"
+          placeholder="123456"
+          required
+        >
+
+      </div>
+
+      <button
+        id="verifyOtpBtn"
+        class="btn primary auth-submit"
+        type="submit"
+      >
+        Verify code & log in
+      </button>
+
+    </form>
+
+
+    <!-- MESSAGE -->
+    <div
+      id="authMessage"
+      class="auth-message"
+      aria-live="polite"
+    ></div>
+
+
+    <!-- LINKS -->
+    <div class="auth-links">
+
+      <a href="signup.html">
+        Create an account
+      </a>
+
+      <a href="#" id="forgotPassword">
+        Forgot password?
+      </a>
+
+    </div>
+
+
+    <a
+      class="back-home"
+      href="../index.html"
+    >
+      ← Back to TechNova
+    </a>
+
+  </section>
+
+</main>
+
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Your Supabase configuration -->
+<script src="../js/supabase-config.js"></script>
+
+<!-- Authentication -->
+<script src="../js/auth.js"></script>
+
+<!-- Main website JS -->
+<script src="../js/script.js"></script>
+
+</body>
+</html>
