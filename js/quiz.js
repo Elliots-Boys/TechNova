@@ -16,14 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const { data, error } = await supabaseClient.from('quiz_questions').select('id,question,options,correct_answer,explanation,points').eq('published',true).limit(10);
     if (!error && data?.length) {
-      questions = data.map(item => ({
-        id:item.id,
-        question:item.question,
-        options:Array.isArray(item.options) ? item.options : JSON.parse(item.options || '[]'),
-        correct:Number(item.correct_answer),
-        explanation:item.explanation || '',
-        points:Number(item.points || 10)
-      }));
+      questions = data.map(item => ({ id:item.id, question:item.question, options:Array.isArray(item.options) ? item.options : JSON.parse(item.options || '[]'), correct:Number(item.correct_answer), explanation:item.explanation || '', points:Number(item.points || 10) }));
     }
   } catch {}
 
@@ -63,7 +56,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
       const { data:{user} } = await supabaseClient.auth.getUser();
-      if (user) await supabaseClient.from('quiz_attempts').insert({user_id:user.id,score,total_questions:questions.length});
+      if (user) {
+        await supabaseClient.from('quiz_attempts').insert({user_id:user.id,score,total_questions:questions.length});
+        await supabaseClient.rpc('award_xp', { p_amount:score, p_achievement_key:null });
+      }
     } catch {}
 
     root.querySelector('#again').addEventListener('click', () => { index=0; score=0; selected=null; render(); });
