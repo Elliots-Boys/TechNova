@@ -6,13 +6,14 @@
 <title>Reports · TechNova Admin</title>
 <link rel="stylesheet" href="../css/style.css">
 <style>
-.page{max-width:1250px;margin:auto;padding:45px 22px 80px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.toolbar input,.toolbar select{background:#07101c;color:#fff;border:1px solid #29415e;border-radius:9px;padding:10px 12px;font:inherit}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:900px}.table th,.table td{padding:12px;border-bottom:1px solid #243955;text-align:left;vertical-align:top}.table th{color:#8fa5c0}.muted{color:#91a0b7}.status{padding:5px 8px;border-radius:8px;background:#123047;color:#32d6ff;font-size:12px}.status.reviewing{background:#332d0d;color:#ffd76a}.status.resolved{background:#0c342b;color:#75efc2}.status.dismissed{background:#421820;color:#ff9aaa}.error{display:none;background:#421820;color:#ff9aaa;border:1px solid #71303c;padding:13px;border-radius:10px;margin:15px 0}.error.show{display:block}.actions{display:flex;gap:7px;flex-wrap:wrap}.small{padding:8px 10px;border:1px solid #29415e;background:#102136;color:#dbe7f5;border-radius:8px;cursor:pointer}.small:hover{border-color:var(--cyan);color:var(--cyan)}
+.page{max-width:1250px;margin:auto;padding:45px 22px 80px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.toolbar input,.toolbar select{background:#07101c;color:#fff;border:1px solid #29415e;border-radius:9px;padding:10px 12px;font:inherit}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:900px}.table th,.table td{padding:12px;border-bottom:1px solid #243955;text-align:left;vertical-align:top}.table th{color:#8fa5c0}.muted{color:#91a0b7}.status{padding:5px 8px;border-radius:8px;background:#123047;color:#32d6ff;font-size:12px}.status.reviewing{background:#332d0d;color:#ffd76a}.status.resolved{background:#0c342b;color:#75efc2}.status.dismissed{background:#421820;color:#ff9aaa}.error{display:none;background:#421820;color:#ff9aaa;border:1px solid #71303c;padding:13px;border-radius:10px;margin:15px 0}.error.show{display:block}.success{display:none;background:#0c342b;color:#75efc2;border:1px solid #185d4e;padding:13px;border-radius:10px;margin:15px 0}.success.show{display:block}.actions{display:flex;gap:7px;flex-wrap:wrap}.small{padding:8px 10px;border:1px solid #29415e;background:#102136;color:#dbe7f5;border-radius:8px;cursor:pointer}.small:hover{border-color:var(--cyan);color:var(--cyan)}.small:disabled{opacity:.55;cursor:wait}
 </style>
 </head>
 <body>
 <main class="page">
 <div style="display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap"><div><p class="eyebrow">MODERATION</p><h1>Reports</h1><p class="lead">Review reports submitted by TechNova users.</p></div><a class="btn" href="admin.html">← Admin dashboard</a></div>
 <div id="error" class="error"></div>
+<div id="success" class="success"></div>
 <div class="toolbar"><input id="search" placeholder="Search reports…"><select id="filter"><option value="">All statuses</option><option value="open">Open</option><option value="reviewing">Reviewing</option><option value="resolved">Resolved</option><option value="dismissed">Dismissed</option></select><button id="refresh" class="btn" type="button">Refresh</button></div>
 <div class="panel table-wrap"><table class="table"><thead><tr><th>Target</th><th>Reason</th><th>Details</th><th>Status</th><th>Reporter</th><th>Created</th><th>Action</th></tr></thead><tbody id="rows"><tr><td colspan="7" class="muted">Loading reports…</td></tr></tbody></table></div>
 </main>
@@ -22,13 +23,128 @@
 <script src="../js/script.js"></script>
 <script>
 'use strict';
-const client=window.supabase.createClient(window.TECHNOVA_SUPABASE_URL,window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);let reports=[];
+
+const client=window.supabase.createClient(window.TECHNOVA_SUPABASE_URL,window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
+let reports=[];
+
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-function showError(message){const el=document.getElementById('error');el.textContent=message;el.classList.add('show')}
-async function checkAdmin(){const {data:{user},error:userError}=await client.auth.getUser();if(userError||!user){location.href='login.html';return false}const {data:role,error}=await client.from('user_roles').select('role').eq('user_id',user.id).maybeSingle();if(error){showError('Could not verify administrator permissions: '+error.message);return false}if(role?.role!=='admin'){location.href='account.html';return false}return true}
-async function loadReports(){document.getElementById('error').classList.remove('show');document.getElementById('rows').innerHTML='<tr><td colspan="7" class="muted">Loading reports…</td></tr>';const {data,error}=await client.from('reports').select('id,reporter_id,target_type,target_id,reason,details,status,created_at').order('created_at',{ascending:false});if(error){console.error('Reports query failed:',error);showError('Reports could not be loaded: '+error.message);document.getElementById('rows').innerHTML='<tr><td colspan="7" class="muted">Could not load reports.</td></tr>';return}reports=data||[];render()}
-function render(){const q=document.getElementById('search').value.toLowerCase().trim(),f=document.getElementById('filter').value;const list=reports.filter(r=>(!f||r.status===f)&&(!q||JSON.stringify(r).toLowerCase().includes(q)));const rows=document.getElementById('rows');if(!list.length){rows.innerHTML='<tr><td colspan="7" class="muted">No reports found.</td></tr>';return}rows.innerHTML=list.map(r=>`<tr><td><strong>${esc(r.target_type||'unknown')}</strong><br><small>${esc(r.target_id)}</small></td><td>${esc(r.reason)}</td><td>${esc(r.details)||'—'}</td><td><span class="status ${esc(r.status||'open')}">${esc(r.status||'open')}</span></td><td><small>${esc(r.reporter_id)}</small></td><td>${r.created_at?new Date(r.created_at).toLocaleString():'—'}</td><td><div class="actions">${r.status!=='resolved'&&r.status!=='dismissed'?`<button class="small" data-action="reviewing" data-id="${esc(r.id)}">Review</button><button class="small" data-action="resolved" data-id="${esc(r.id)}">Resolve</button><button class="small" data-action="dismissed" data-id="${esc(r.id)}">Dismiss</button>`:'—'}</div></td></tr>`).join('');document.querySelectorAll('[data-id]').forEach(button=>button.addEventListener('click',async()=>{const id=button.dataset.id,status=button.dataset.action;const {error}=await client.from('reports').update({status}).eq('id',id);if(error){showError('Could not update report: '+error.message);return}await loadReports()}))}
-document.getElementById('search').addEventListener('input',render);document.getElementById('filter').addEventListener('change',render);document.getElementById('refresh').addEventListener('click',loadReports);(async()=>{if(await checkAdmin())await loadReports()})();
+
+function showError(message){
+  const el=document.getElementById('error');
+  el.textContent=message;
+  el.classList.add('show');
+  document.getElementById('success').classList.remove('show');
+}
+
+function showSuccess(message){
+  const el=document.getElementById('success');
+  el.textContent=message;
+  el.classList.add('show');
+  document.getElementById('error').classList.remove('show');
+  setTimeout(()=>el.classList.remove('show'),3500);
+}
+
+async function checkAdmin(){
+  const {data:{user},error:userError}=await client.auth.getUser();
+  if(userError||!user){location.href='login.html';return false}
+
+  const {data:role,error}=await client.from('user_roles').select('role').eq('user_id',user.id).maybeSingle();
+  if(error){showError('Could not verify administrator permissions: '+error.message);return false}
+  if(role?.role!=='admin'){location.href='account.html';return false}
+  return true;
+}
+
+async function loadReports(){
+  document.getElementById('error').classList.remove('show');
+  document.getElementById('rows').innerHTML='<tr><td colspan="7" class="muted">Loading reports…</td></tr>';
+
+  const {data,error}=await client.from('reports').select('id,reporter_id,target_type,target_id,reason,details,status,created_at').order('created_at',{ascending:false});
+
+  if(error){
+    console.error('Reports query failed:',error);
+    showError('Reports could not be loaded: '+error.message);
+    document.getElementById('rows').innerHTML='<tr><td colspan="7" class="muted">Could not load reports.</td></tr>';
+    return;
+  }
+
+  reports=data||[];
+  render();
+}
+
+async function updateReportStatus(id,status,button){
+  if(!id||!status)return;
+
+  button.disabled=true;
+  const originalText=button.textContent;
+  button.textContent='Saving…';
+
+  document.getElementById('error').classList.remove('show');
+
+  try{
+    // Returning the updated row is intentional: Supabase can otherwise return
+    // no error when RLS prevents the UPDATE from affecting any rows.
+    const {data,error}=await client
+      .from('reports')
+      .update({status:status})
+      .eq('id',id)
+      .select('id,status')
+      .maybeSingle();
+
+    if(error)throw error;
+
+    if(!data){
+      throw new Error('The report was not updated. Your database RLS policy may be blocking administrators from updating reports. No SQL was changed by this page.');
+    }
+
+    showSuccess(`Report marked as ${status}.`);
+    await loadReports();
+  }catch(error){
+    console.error('Report status update failed:',error);
+    showError(error?.message||'Could not update the report.');
+    button.disabled=false;
+    button.textContent=originalText;
+  }
+}
+
+function render(){
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  const f=document.getElementById('filter').value;
+  const list=reports.filter(r=>(!f||r.status===f)&&(!q||JSON.stringify(r).toLowerCase().includes(q)));
+  const rows=document.getElementById('rows');
+
+  if(!list.length){
+    rows.innerHTML='<tr><td colspan="7" class="muted">No reports found.</td></tr>';
+    return;
+  }
+
+  rows.innerHTML=list.map(r=>`<tr>
+    <td><strong>${esc(r.target_type||'unknown')}</strong><br><small>${esc(r.target_id)}</small></td>
+    <td>${esc(r.reason)}</td>
+    <td>${esc(r.details)||'—'}</td>
+    <td><span class="status ${esc(r.status||'open')}">${esc(r.status||'open')}</span></td>
+    <td><small>${esc(r.reporter_id)}</small></td>
+    <td>${r.created_at?new Date(r.created_at).toLocaleString():'—'}</td>
+    <td><div class="actions">
+      ${r.status!=='resolved'&&r.status!=='dismissed'?`
+        <button class="small" data-action="reviewing" data-id="${esc(r.id)}">Review</button>
+        <button class="small" data-action="resolved" data-id="${esc(r.id)}">Resolve</button>
+        <button class="small" data-action="dismissed" data-id="${esc(r.id)}">Dismiss</button>
+      `:'—'}
+    </div></td>
+  </tr>`).join('');
+
+  document.querySelectorAll('[data-id]').forEach(button=>{
+    button.addEventListener('click',()=>updateReportStatus(button.dataset.id,button.dataset.action,button));
+  });
+}
+
+document.getElementById('search').addEventListener('input',render);
+document.getElementById('filter').addEventListener('change',render);
+document.getElementById('refresh').addEventListener('click',loadReports);
+
+(async()=>{
+  if(await checkAdmin())await loadReports();
+})();
 </script>
 </body>
 </html>
