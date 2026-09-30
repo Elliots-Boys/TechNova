@@ -62,6 +62,43 @@ if (githubLogin) {
         }
     });
 }
+<div class="divider">OR USE PHONE</div>
+
+<form id="phoneLoginForm">
+  <div class="field">
+    <label for="phone">Mobile phone number</label>
+    <input
+      id="phone"
+      type="tel"
+      autocomplete="tel"
+      placeholder="+447700900123"
+      required
+    >
+  </div>
+
+  <button id="sendOtpBtn" class="btn primary auth-submit" type="submit">
+    Send verification code
+  </button>
+</form>
+
+<form id="otpForm" style="display:none;">
+  <div class="field">
+    <label for="otp">Verification code</label>
+    <input
+      id="otp"
+      type="text"
+      inputmode="numeric"
+      autocomplete="one-time-code"
+      maxlength="6"
+      placeholder="123456"
+      required
+    >
+  </div>
+
+  <button id="verifyOtpBtn" class="btn primary auth-submit" type="submit">
+    Verify code & log in
+  </button>
+</form>
 async function signUp(event) {
   event?.preventDefault();
   const name = document.querySelector('#name')?.value.trim() || '';
