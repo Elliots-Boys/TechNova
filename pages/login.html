@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Log in · TechNova</title>
-
 <link rel="stylesheet" href="../css/style.css">
 
 <style>
@@ -130,7 +129,6 @@
   margin-top:3px
 }
 
-/* Google */
 .google-btn{
   width:100%;
   display:flex;
@@ -154,10 +152,8 @@
   height:20px
 }
 
-/* GitHub */
 .github-btn{
   width:100%;
-  height:46px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -166,24 +162,22 @@
   background:#24292f;
   color:#fff;
   border:1px solid #444c56;
-  border-radius:8px;
   font-weight:800;
-  font-size:14px;
+  padding:13px 14px;
+  border-radius:11px;
   cursor:pointer
 }
 
 .github-btn:hover{
-  background:#32383f;
-  color:#fff
+  background:#323941
 }
 
 .github-icon{
-  width:18px;
-  height:18px;
-  flex:0 0 18px
+  width:17px;
+  height:17px;
+  flex-shrink:0
 }
 
-/* Dividers */
 .divider{
   display:flex;
   align-items:center;
@@ -201,7 +195,34 @@
   flex:1
 }
 
-/* Messages */
+.phone-section{
+  margin-top:4px
+}
+
+.otp-section{
+  display:none;
+  margin-top:18px
+}
+
+.otp-section.show{
+  display:block
+}
+
+.phone-back{
+  width:100%;
+  margin-top:10px;
+  background:transparent;
+  color:#9aabc0;
+  border:1px solid #253a55;
+  padding:11px;
+  border-radius:11px;
+  cursor:pointer
+}
+
+.phone-back:hover{
+  background:#101c2d
+}
+
 .auth-links{
   display:flex;
   justify-content:space-between;
@@ -262,286 +283,699 @@
 
 <main class="auth-page">
 
-  <!-- LEFT SIDE -->
-  <section class="auth-copy">
+<section class="auth-copy">
 
-    <a class="auth-brand" href="../index.html">
-      <span class="auth-brand-mark">✦</span>
-      TECHNOVA
-    </a>
-
-    <p class="eyebrow">YOUR TECHNOLOGY HUB</p>
-
-    <h1>
-      Welcome <span>back.</span>
-    </h1>
+<a class="auth-brand" href="../index.html">
+  <span class="auth-brand-mark">✦</span>
+  TECHNOVA
+</a>
 
-    <p>
-      Log in to keep your TechNova events, saved technology
-      and profile all in one place.
-    </p>
+<p class="eyebrow">YOUR TECHNOLOGY HUB</p>
 
-    <div class="auth-points">
+<h1>Welcome <span>back.</span></h1>
 
-      <div class="auth-point">
-        <b>✓</b>
-        <span>Manage your event registrations</span>
-      </div>
+<p>
+  Log in to keep your TechNova events, saved technology
+  and profile all in one place.
+</p>
 
-      <div class="auth-point">
-        <b>✓</b>
-        <span>Save technologies and resources</span>
-      </div>
+<div class="auth-points">
 
-      <div class="auth-point">
-        <b>✓</b>
-        <span>Keep your profile across devices</span>
-      </div>
+<div class="auth-point">
+  <b>✓</b>
+  <span>Manage your event registrations</span>
+</div>
 
-    </div>
+<div class="auth-point">
+  <b>✓</b>
+  <span>Save technologies and resources</span>
+</div>
 
-  </section>
+<div class="auth-point">
+  <b>✓</b>
+  <span>Keep your profile across devices</span>
+</div>
 
+</div>
 
-  <!-- LOGIN CARD -->
-  <section class="auth-card">
+</section>
 
-    <div class="eyebrow">TECHNOVA ACCOUNT</div>
 
-    <h2>Log in</h2>
+<section class="auth-card">
 
-    <p class="sub">
-      Choose how you want to sign in to your TechNova account.
-    </p>
+<div class="eyebrow">TECHNOVA ACCOUNT</div>
 
+<h2>Log in</h2>
 
-    <!-- GOOGLE -->
-    <button
-      id="googleLoginBtn"
-      class="btn google-btn"
-      type="button"
-    >
+<p class="sub">
+  Use your TechNova account or continue securely with Google, GitHub or your phone.
+</p>
 
-      <svg
-        class="google-icon"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
-        <path
-          fill="#4285F4"
-          d="M21.35 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.44h3.14c1.84-1.7 2.91-4.2 2.91-7.21z"
-        />
 
-        <path
-          fill="#34A853"
-          d="M12 21.7c2.63 0 4.84-.87 6.45-2.36l-3.14-2.44c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.29v2.52A9.74 9.74 0 0 0 12 21.7z"
-        />
+<!-- GOOGLE -->
 
-        <path
-          fill="#FBBC05"
-          d="M6.54 13.79A5.86 5.86 0 0 1 6.23 12c0-.62.11-1.23.31-1.79V7.69H3.29A9.74 9.74 0 0 0 2.25 12c0 1.57.38 3.05 1.04 4.31l3.25-2.52z"
-        />
+<button
+  id="googleLoginBtn"
+  class="btn google-btn"
+  type="button"
+>
 
-        <path
-          fill="#EA4335"
-          d="M12 6.18c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.22 14.63 2.3 12 2.3a9.74 9.74 0 0 0-8.71 5.39l3.25 2.52C7.31 7.9 9.46 6.18 12 6.18z"
-        />
-      </svg>
+<svg
+  class="google-icon"
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+>
 
-      Continue with Google
+<path fill="#4285F4"
+d="M21.35 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.44h3.14c1.84-1.7 2.91-4.2 2.91-7.21z"/>
 
-    </button>
+<path fill="#34A853"
+d="M12 21.7c2.63 0 4.84-.87 6.45-2.36l-3.14-2.44c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.29v2.52A9.74 9.74 0 0 0 12 21.7z"/>
 
+<path fill="#FBBC05"
+d="M6.54 13.79A5.86 5.86 0 0 1 6.23 12c0-.62.11-1.23.31-1.79V7.69H3.29A9.74 9.74 0 0 0 2.25 12c0 1.57.38 3.05 1.04 4.31l3.25-2.52z"/>
 
-    <!-- GITHUB -->
-    <button
-      id="github-login"
-      class="btn github-btn"
-      type="button"
-    >
+<path fill="#EA4335"
+d="M12 6.18c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.22 14.63 2.3 12 2.3a9.74 9.74 0 0 0-8.71 5.39l3.25 2.52C7.31 7.9 9.46 6.18 12 6.18z"/>
 
-      <svg
-        class="github-icon"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
-        <path
-          fill="currentColor"
-          d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.17c-3.2.7-3.87-1.35-3.87-1.35-.53-1.34-1.28-1.7-1.28-1.7-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.73-1.53-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.47.11-3.06 0 0 .96-.31 3.15 1.18A10.9 10.9 0 0 1 12 6.01c.97 0 1.94.13 2.85.38 2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.77.11 3.06.73.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.67.41.36.78 1.07.78 2.16v3.2c0 .3.21.66.8.55C20.22 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"
-        />
-      </svg>
+</svg>
 
-      Continue with GitHub
+Continue with Google
 
-    </button>
+</button>
 
 
-    <!-- EMAIL -->
-    <div class="divider">
-      OR USE EMAIL
-    </div>
+<!-- GITHUB -->
 
-    <form id="loginForm">
+<button
+  id="github-login"
+  class="btn github-btn"
+  type="button"
+>
 
-      <div class="field">
+<svg
+  class="github-icon"
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+>
 
-        <label for="email">
-          Email address
-        </label>
+<path
+  fill="currentColor"
+  d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.17c-3.2.7-3.87-1.35-3.87-1.35-.53-1.34-1.28-1.7-1.28-1.7-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.73-1.53-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.47.11-3.06 0 0 .96-.31 3.15 1.18A10.9 10.9 0 0 1 12 6.01c.97 0 1.94.13 2.85.38 2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.77.11 3.06.73.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.67.41.36.78 1.07.78 2.16v3.2c0 .3.21.66.8.55C20.22 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"
+/>
 
-        <input
-          id="email"
-          type="email"
-          autocomplete="email"
-          required
-          placeholder="you@example.com"
-        >
+</svg>
 
-      </div>
+Continue with GitHub
 
+</button>
 
-      <div class="field">
 
-        <label for="password">
-          Password
-        </label>
+<div class="divider">OR USE EMAIL</div>
 
-        <input
-          id="password"
-          type="password"
-          autocomplete="current-password"
-          required
-          placeholder="Your password"
-        >
 
-      </div>
+<!-- EMAIL LOGIN -->
 
+<form id="loginForm">
 
-      <button
-        id="loginBtn"
-        class="btn primary auth-submit"
-        type="submit"
-      >
-        Log in
-      </button>
+<div class="field">
 
-    </form>
+<label for="email">Email address</label>
 
+<input
+  id="email"
+  type="email"
+  autocomplete="email"
+  required
+  placeholder="you@example.com"
+>
 
-    <!-- PHONE -->
-    <div class="divider">
-      OR USE PHONE
-    </div>
+</div>
 
-    <form id="phoneLoginForm">
 
-      <div class="field">
+<div class="field">
 
-        <label for="phone">
-          Mobile phone number
-        </label>
+<label for="password">Password</label>
 
-        <input
-          id="phone"
-          type="tel"
-          autocomplete="tel"
-          placeholder="+447700900123"
-          required
-        >
+<input
+  id="password"
+  type="password"
+  autocomplete="current-password"
+  required
+  placeholder="Your password"
+>
 
-      </div>
+</div>
 
-      <button
-        id="sendOtpBtn"
-        class="btn primary auth-submit"
-        type="submit"
-      >
-        Send verification code
-      </button>
 
-    </form>
+<button
+  id="loginBtn"
+  class="btn primary auth-submit"
+  type="submit"
+>
 
+Log in
 
-    <!-- OTP -->
-    <form
-      id="otpForm"
-      style="display:none;"
-    >
+</button>
 
-      <div class="field">
+</form>
 
-        <label for="otp">
-          Verification code
-        </label>
 
-        <input
-          id="otp"
-          type="text"
-          inputmode="numeric"
-          autocomplete="one-time-code"
-          maxlength="6"
-          placeholder="123456"
-          required
-        >
+<!-- PHONE LOGIN -->
 
-      </div>
+<div class="divider">OR USE PHONE</div>
 
-      <button
-        id="verifyOtpBtn"
-        class="btn primary auth-submit"
-        type="submit"
-      >
-        Verify code & log in
-      </button>
+<div class="phone-section">
 
-    </form>
+<form id="phoneLoginForm">
 
+<div class="field">
 
-    <!-- MESSAGE -->
-    <div
-      id="authMessage"
-      class="auth-message"
-      aria-live="polite"
-    ></div>
+<label for="phone">Mobile phone number</label>
 
+<input
+  id="phone"
+  type="tel"
+  autocomplete="tel"
+  placeholder="+447726834587"
+  required
+>
 
-    <!-- LINKS -->
-    <div class="auth-links">
+</div>
 
-      <a href="signup.html">
-        Create an account
-      </a>
 
-      <a href="#" id="forgotPassword">
-        Forgot password?
-      </a>
+<button
+  id="sendOtpBtn"
+  class="btn primary auth-submit"
+  type="submit"
+>
 
-    </div>
+Send verification code
 
+</button>
 
-    <a
-      class="back-home"
-      href="../index.html"
-    >
-      ← Back to TechNova
-    </a>
+</form>
 
-  </section>
+
+<!-- OTP FORM -->
+
+<div
+  id="otpSection"
+  class="otp-section"
+>
+
+<form id="otpForm">
+
+<div class="field">
+
+<label for="otp">
+  Verification code
+</label>
+
+<input
+  id="otp"
+  type="text"
+  inputmode="numeric"
+  autocomplete="one-time-code"
+  maxlength="6"
+  pattern="[0-9]{6}"
+  placeholder="123456"
+  required
+>
+
+</div>
+
+
+<button
+  id="verifyOtpBtn"
+  class="btn primary auth-submit"
+  type="submit"
+>
+
+Verify code & log in
+
+</button>
+
+</form>
+
+
+<button
+  id="phoneBackBtn"
+  class="phone-back"
+  type="button"
+>
+
+← Use a different phone number
+
+</button>
+
+</div>
+
+</div>
+
+
+<div
+  id="authMessage"
+  class="auth-message"
+  aria-live="polite"
+></div>
+
+
+<div class="auth-links">
+
+<a href="signup.html">
+  Create an account
+</a>
+
+<a href="#" id="forgotPassword">
+  Forgot password?
+</a>
+
+</div>
+
+
+<a
+  class="back-home"
+  href="../index.html"
+>
+  ← Back to TechNova
+</a>
+
+</section>
 
 </main>
 
 
-<!-- Supabase -->
+<!-- SUPABASE -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- Your Supabase configuration -->
 <script src="../js/supabase-config.js"></script>
 
-<!-- Authentication -->
 <script src="../js/auth.js"></script>
 
-<!-- Main website JS -->
 <script src="../js/script.js"></script>
+
+
+<script>
+
+/* =========================
+   PHONE OTP LOGIN
+========================= */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const phoneLoginForm =
+    document.getElementById('phoneLoginForm');
+
+  const otpForm =
+    document.getElementById('otpForm');
+
+  const phoneInput =
+    document.getElementById('phone');
+
+  const otpInput =
+    document.getElementById('otp');
+
+  const otpSection =
+    document.getElementById('otpSection');
+
+  const phoneBackBtn =
+    document.getElementById('phoneBackBtn');
+
+  const sendOtpBtn =
+    document.getElementById('sendOtpBtn');
+
+  const verifyOtpBtn =
+    document.getElementById('verifyOtpBtn');
+
+  const authMessage =
+    document.getElementById('authMessage');
+
+
+  let loginPhone = '';
+
+
+  function phoneMessage(message, good = false) {
+
+    if (!authMessage) return;
+
+    authMessage.textContent = message;
+
+    authMessage.className =
+      'auth-message show' +
+      (good ? ' good' : '');
+
+  }
+
+
+  /* SEND SMS */
+
+  phoneLoginForm?.addEventListener(
+    'submit',
+    async (event) => {
+
+      event.preventDefault();
+
+      loginPhone =
+        phoneInput.value.trim();
+
+
+      if (!loginPhone) {
+
+        phoneMessage(
+          'Please enter your phone number.'
+        );
+
+        return;
+
+      }
+
+
+      /* Make sure UK numbers work */
+
+      if (
+        loginPhone.startsWith('07')
+      ) {
+
+        loginPhone =
+          '+44' +
+          loginPhone.substring(1);
+
+      }
+
+
+      sendOtpBtn.disabled = true;
+
+      sendOtpBtn.textContent =
+        'Sending code…';
+
+
+      phoneMessage(
+        'Sending verification code…'
+      );
+
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient.auth.signInWithOtp({
+
+            phone: loginPhone
+
+          });
+
+
+        if (error) {
+
+          console.error(
+            'Phone OTP error:',
+            error
+          );
+
+          phoneMessage(
+            error.message ||
+            'Could not send the verification code.'
+          );
+
+          sendOtpBtn.disabled = false;
+
+          sendOtpBtn.textContent =
+            'Send verification code';
+
+          return;
+
+        }
+
+
+        /* Hide phone form */
+
+        phoneLoginForm.style.display =
+          'none';
+
+
+        /* Show OTP form */
+
+        otpSection.classList.add(
+          'show'
+        );
+
+
+        phoneMessage(
+          'Verification code sent! Check your phone.',
+          true
+        );
+
+
+        otpInput.focus();
+
+
+      } catch (error) {
+
+        console.error(
+          'Phone login error:',
+          error
+        );
+
+        phoneMessage(
+          error.message ||
+          'Something went wrong while sending the code.'
+        );
+
+        sendOtpBtn.disabled = false;
+
+        sendOtpBtn.textContent =
+          'Send verification code';
+
+      }
+
+    }
+  );
+
+
+  /* VERIFY CODE */
+
+  otpForm?.addEventListener(
+    'submit',
+    async (event) => {
+
+      event.preventDefault();
+
+      const code =
+        otpInput.value.trim();
+
+
+      if (!/^\d{6}$/.test(code)) {
+
+        phoneMessage(
+          'Please enter the 6-digit verification code.'
+        );
+
+        return;
+
+      }
+
+
+      verifyOtpBtn.disabled = true;
+
+      verifyOtpBtn.textContent =
+        'Verifying…';
+
+
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.verifyOtp({
+
+            phone: loginPhone,
+
+            token: code,
+
+            type: 'sms'
+
+          });
+
+
+        if (error) {
+
+          console.error(
+            'OTP verification error:',
+            error
+          );
+
+          phoneMessage(
+            error.message ||
+            'The verification code is incorrect or expired.'
+          );
+
+          verifyOtpBtn.disabled = false;
+
+          verifyOtpBtn.textContent =
+            'Verify code & log in';
+
+          return;
+
+        }
+
+
+        if (data?.session) {
+
+          phoneMessage(
+            'Login successful! Redirecting…',
+            true
+          );
+
+
+          setTimeout(() => {
+
+            window.location.href =
+              'account.html';
+
+          }, 500);
+
+        } else {
+
+          phoneMessage(
+            'The code was accepted, but no login session was created.'
+          );
+
+          verifyOtpBtn.disabled = false;
+
+          verifyOtpBtn.textContent =
+            'Verify code & log in';
+
+        }
+
+
+      } catch (error) {
+
+        console.error(
+          'OTP verification error:',
+          error
+        );
+
+        phoneMessage(
+          error.message ||
+          'Could not verify the code.'
+        );
+
+        verifyOtpBtn.disabled = false;
+
+        verifyOtpBtn.textContent =
+          'Verify code & log in';
+
+      }
+
+    }
+  );
+
+
+  /* CHANGE PHONE NUMBER */
+
+  phoneBackBtn?.addEventListener(
+    'click',
+    () => {
+
+      otpSection.classList.remove(
+        'show'
+      );
+
+      phoneLoginForm.style.display =
+        'block';
+
+      otpInput.value = '';
+
+      authMessage.className =
+        'auth-message';
+
+      sendOtpBtn.disabled = false;
+
+      sendOtpBtn.textContent =
+        'Send verification code';
+
+      phoneInput.focus();
+
+    }
+  );
+
+
+  /* GITHUB LOGIN */
+
+  document
+    .getElementById('github-login')
+    ?.addEventListener(
+      'click',
+      async () => {
+
+        const button =
+          document.getElementById(
+            'github-login'
+          );
+
+        button.disabled = true;
+
+        button.textContent =
+          'Connecting to GitHub…';
+
+
+        const {
+          error
+        } =
+          await supabaseClient.auth.signInWithOAuth({
+
+            provider: 'github',
+
+            options: {
+
+              redirectTo:
+                `${window.location.origin}/pages/account.html`
+
+            }
+
+          });
+
+
+        if (error) {
+
+          console.error(
+            'GitHub OAuth error:',
+            error
+          );
+
+          button.disabled = false;
+
+          button.innerHTML = `
+            <svg
+              class="github-icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                fill="currentColor"
+                d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.17c-3.2.7-3.87-1.35-3.87-1.35-.53-1.34-1.28-1.7-1.28-1.7-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.73-1.53-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.47.11-3.06 0 0 .96-.31 3.15 1.18A10.9 10.9 0 0 1 12 6.01c.97 0 1.94.13 2.85.38 2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.77.11 3.06.73.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.67.41.36.78 1.07.78 2.16v3.2c0 .3.21.66.8.55C20.22 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"
+              />
+            </svg>
+            Continue with GitHub
+          `;
+
+          phoneMessage(
+            error.message ||
+            'GitHub login could not be started.'
+          );
+
+        }
+
+      }
+    );
+
+});
+
+</script>
 
 </body>
 </html>
