@@ -26,6 +26,7 @@
 
 const client=window.supabase.createClient(window.TECHNOVA_SUPABASE_URL,window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
 let reports=[];
+let currentAdminId=null;
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 
@@ -48,6 +49,8 @@ async function checkAdmin(){
   const {data:{user},error:userError}=await client.auth.getUser();
   if(userError||!user){location.href='login.html';return false}
 
+  currentAdminId=user.id;
+
   const {data:role,error}=await client.from('user_roles').select('role').eq('user_id',user.id).maybeSingle();
   if(error){showError('Could not verify administrator permissions: '+error.message);return false}
   if(role?.role!=='admin'){location.href='account.html';return false}
@@ -58,7 +61,7 @@ async function loadReports(){
   document.getElementById('error').classList.remove('show');
   document.getElementById('rows').innerHTML='<tr><td colspan="7" class="muted">Loading reports…</td></tr>';
 
-  const {data,error}=await client.from('reports').select('id,reporter_id,target_type,target_id,reason,details,status,created_at').order('created_at',{ascending:false});
+  const {data,error}=await client.from('reports').select('id,reporter_id,target_type,target_id,reason,details,status,reviewed_by,reviewed_at,created_at').order('created_at',{ascending:false});
 
   if(error){
     console.error('Reports query failed:',error);
@@ -81,19 +84,26 @@ async function updateReportStatus(id,status,button){
   document.getElementById('error').classList.remove('show');
 
   try{
-    // Returning the updated row is intentional: Supabase can otherwise return
-    // no error when RLS prevents the UPDATE from affecting any rows.
+    const updateData={status};
+
+    // The reports table uses reviewed_by/reviewed_at rather than resolved_at.
+    // Keep the reviewer information for every moderation action.
+    if(currentAdminId){
+      updateData.reviewed_by=currentAdminId;
+      updateData.reviewed_at=new Date().toISOString();
+    }
+
     const {data,error}=await client
       .from('reports')
-      .update({status:status})
+      .update(updateData)
       .eq('id',id)
-      .select('id,status')
+      .select('id,status,reviewed_by,reviewed_at')
       .maybeSingle();
 
     if(error)throw error;
 
     if(!data){
-      throw new Error('The report was not updated. Your database RLS policy may be blocking administrators from updating reports. No SQL was changed by this page.');
+      throw new Error('The report was not updated. Check that the administrator UPDATE policy is active.');
     }
 
     showSuccess(`Report marked as ${status}.`);
