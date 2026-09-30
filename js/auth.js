@@ -171,13 +171,53 @@ async function registerForEvent(eventId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
   document.querySelector('#signupForm')?.addEventListener('submit', signUp);
+
   document.querySelector('#loginForm')?.addEventListener('submit', signIn);
-  document.querySelector('#googleLoginBtn, #googleSignupBtn')?.addEventListener('click', signInWithGoogle);
-  document.querySelector('#connectDriveBtn')?.addEventListener('click', connectGoogleDrive);
-  document.querySelector('#forgotPassword')?.addEventListener('click', resetPassword);
-  document.querySelector('#logoutBtn')?.addEventListener('click', signOut);
-  if (document.querySelector('#myEvents')) loadAccount();
+
+  document.querySelector('#googleLoginBtn, #googleSignupBtn')
+    ?.addEventListener('click', signInWithGoogle);
+
+  document.querySelector('#connectDriveBtn')
+    ?.addEventListener('click', connectGoogleDrive);
+
+  document.querySelector('#forgotPassword')
+    ?.addEventListener('click', resetPassword);
+
+  document.querySelector('#logoutBtn')
+    ?.addEventListener('click', signOut);
+
+  // GitHub login
+  document.querySelector('#github-login')?.addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    const button = document.querySelector('#github-login');
+
+    setBusy(button, true, 'Connecting to GitHub…');
+
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: `${window.location.origin}/pages/account.html`
+      }
+    });
+
+    if (error) {
+      console.error('GitHub OAuth error:', error);
+
+      setBusy(button, false, 'Continue with GitHub');
+
+      showAuthMessage(
+        error.message || 'GitHub login could not be started.'
+      );
+    }
+  });
+
+  if (document.querySelector('#myEvents')) {
+    loadAccount();
+  }
+
   finishPasswordReset();
 });
 
