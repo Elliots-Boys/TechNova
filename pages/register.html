@@ -1,1 +1,140 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Register · TechNova</title><link rel="stylesheet" href="../css/style.css"><style>.register-page{max-width:1050px;margin:0 auto;padding:55px 22px 80px}.register-hero{display:flex;justify-content:space-between;gap:25px;align-items:flex-end;flex-wrap:wrap;margin-bottom:22px}.selected-event{color:#fff;font-size:20px;font-weight:800}.form-shell{background:#09111e;border:1px solid #20324b;border-radius:22px;padding:18px;overflow:hidden}.form-shell iframe{width:100%;min-height:900px;border:0;background:transparent}.back-link{color:#91a0b7}.notice{margin:18px 0 0;color:#91a0b7;font-size:14px}@media(max-width:700px){.form-shell iframe{min-height:1050px}}</style></head><body><header><a class="brand" href="../index.html">✦ TECHNOVA</a><button id="menu">☰</button><nav><a href="../index.html">Home</a><a class="active" href="events.html">Events</a><a href="technology.html">Technology</a><a href="innovation.html">Innovation</a><a href="news.html">News</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="account.html">My account</a></nav></header><main class="register-page"><div class="register-hero"><div><p class="eyebrow">EVENT REGISTRATION</p><h1 style="font-size:clamp(42px,6vw,68px);margin:8px 0">Register for TechNova.</h1><div id="selectedEvent" class="selected-event">Select your event below.</div><p class="notice">Complete the form and you'll automatically return to the TechNova events page.</p></div><a class="back-link" href="events.html">← Back to events</a></div><section class="form-shell"><iframe id="registrationForm" title="TechNova event registration form" loading="eager" src="https://form.jotform.com/262664137150050"></iframe></section></main><footer>© 2026 TechNova</footer><script>document.addEventListener('DOMContentLoaded',()=>{const eventName=new URLSearchParams(location.search).get('event');const title=document.getElementById('selectedEvent');if(eventName) title.textContent='Event selected: '+eventName;const menu=document.getElementById('menu');const header=document.querySelector('header');menu?.addEventListener('click',()=>header?.classList.toggle('open'));});</script><script src="../js/script.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Register · TechNova</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.register-page{max-width:1050px;margin:0 auto;padding:55px 22px 80px}
+.register-hero{display:flex;justify-content:space-between;gap:25px;align-items:flex-end;flex-wrap:wrap;margin-bottom:22px}
+.selected-event{color:#fff;font-size:20px;font-weight:800}
+.form-shell{background:#09111e;border:1px solid #20324b;border-radius:22px;padding:24px}
+.register-form{display:grid;gap:16px}
+.register-form label{display:grid;gap:7px;color:#aebfd4;font-size:13px;font-weight:700}
+.register-form input{width:100%;box-sizing:border-box;background:#07101c;border:1px solid #29415e;color:white;border-radius:9px;padding:12px;font:inherit}
+.register-form input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px #32d6ff16}
+.notice{margin:18px 0 0;color:#91a0b7;font-size:14px}
+.register-message{display:none;padding:13px 15px;border-radius:12px;margin-top:15px}
+.register-message.show{display:block}
+.register-message.error{background:#421820;color:#ff9aaa;border:1px solid #71303c}
+.register-message.good{background:#0c342b;color:#75efc2;border:1px solid #185d4e}
+@media(max-width:700px){.register-page{padding:35px 16px 60px}}
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="../index.html">✦ TECHNOVA</a>
+<button id="menu" aria-label="Open menu" type="button">☰</button>
+<nav>
+<a href="../index.html">Home</a><a class="active" href="events.html">Events</a><a href="technology.html">Technology</a><a href="innovation.html">Innovation</a><a href="news.html">News</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="account.html">My account</a>
+</nav>
+</header>
+
+<main class="register-page">
+<div class="register-hero">
+<div>
+<p class="eyebrow">EVENT REGISTRATION</p>
+<h1 style="font-size:clamp(42px,6vw,68px);margin:8px 0">Register for TechNova.</h1>
+<div id="selectedEvent" class="selected-event">Loading event…</div>
+<p class="notice">Register directly with your TechNova account. Your registration creates your event ticket automatically.</p>
+</div>
+<a class="back-link" href="events.html">← Back to events</a>
+</div>
+
+<section class="form-shell">
+<form id="registrationForm" class="register-form">
+<label>Your TechNova account
+<input id="accountEmail" type="email" readonly>
+</label>
+
+<label>Selected event
+<input id="eventTitle" type="text" readonly>
+</label>
+
+<button id="registerBtn" class="btn primary" type="submit">Register for this event</button>
+</form>
+<div id="registerMessage" class="register-message" role="status" aria-live="polite"></div>
+</section>
+</main>
+
+<footer>© 2026 TechNova</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/script.js"></script>
+<script>
+'use strict';
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const client = window.supabaseClient || window.supabase.createClient(window.TECHNOVA_SUPABASE_URL, window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
+  window.supabaseClient = client;
+  const params = new URLSearchParams(location.search);
+  const eventId = params.get('id');
+  const selected = document.getElementById('selectedEvent');
+  const eventTitle = document.getElementById('eventTitle');
+  const email = document.getElementById('accountEmail');
+  const form = document.getElementById('registrationForm');
+  const message = document.getElementById('registerMessage');
+  const button = document.getElementById('registerBtn');
+
+  const show = (text, type) => {
+    message.textContent = text;
+    message.className = `register-message show ${type}`;
+  };
+
+  try {
+    const { data: { user }, error: authError } = await client.auth.getUser();
+    if (authError || !user) {
+      show('Please sign in before registering for an event.', 'error');
+      button.disabled = true;
+      return;
+    }
+    email.value = user.email || '';
+
+    if (!eventId) {
+      selected.textContent = 'No event selected.';
+      show('Please open registration from an event page.', 'error');
+      button.disabled = true;
+      return;
+    }
+
+    const { data: event, error: eventError } = await client.from('events').select('id,title,event_date,event_time,location,capacity').eq('id', eventId).single();
+    if (eventError) throw eventError;
+    eventTitle.value = event.title || 'Event';
+    selected.textContent = event.title || 'Selected event';
+
+    const { count } = await client.from('event_registrations').select('user_id', { count: 'exact', head: true }).eq('event_id', event.id);
+    if (event.capacity && count >= event.capacity) {
+      show('This event is currently full.', 'error');
+      button.disabled = true;
+      return;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      button.disabled = true;
+      button.textContent = 'Registering…';
+      message.className = 'register-message';
+      try {
+        const { error } = await client.rpc('register_for_event', { p_event_id: event.id });
+        if (error) throw error;
+        show('Registration complete! Your ticket is now available.', 'good');
+        button.textContent = 'Registered ✓';
+        setTimeout(() => { window.location.href = 'tickets.html'; }, 900);
+      } catch (error) {
+        console.error('Event registration failed:', error);
+        show(error?.message || 'Could not register for this event.', 'error');
+        button.disabled = false;
+        button.textContent = 'Register for this event';
+      }
+    });
+  } catch (error) {
+    console.error('Registration page failed:', error);
+    show(error?.message || 'Could not load the selected event.', 'error');
+    button.disabled = true;
+  }
+});
+</script>
+</body>
+</html>
