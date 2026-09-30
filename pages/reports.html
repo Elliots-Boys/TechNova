@@ -1,3 +1,146 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Report · TechNova</title><link rel="stylesheet" href="../css/style.css"><style>.report-page{max-width:800px;margin:auto;padding:55px 22px 80px}.report-card{padding:26px;border:1px solid #20324b;border-radius:20px;background:linear-gradient(180deg,#101b2d,#09111d)}.report-form{display:grid;gap:15px}.report-form label{display:grid;gap:7px;font-weight:700}.report-form input,.report-form select,.report-form textarea{background:#07101c;color:white;border:1px solid #29415e;border-radius:9px;padding:11px;font:inherit}.report-form textarea{min-height:130px}.status{display:none;padding:12px;border-radius:10px}.status.show{display:block}.status.good{background:#0c342b;color:#75efc2}.status.bad{background:#421820;color:#ff9aaa}</style></head>
-<body><header><a class="brand" href="../index.html">✦ TECHNOVA</a><button id="menu">☰</button><nav><a href="../index.html">Home</a><a href="events.html">Events</a><a href="technology.html">Technology</a><a href="innovation.html">Innovation</a><a href="news.html">News</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="account.html">My account</a></nav></header><main class="report-page"><p class="eyebrow">COMMUNITY SAFETY</p><h1>Report something</h1><p class="lead">Tell the TechNova team about content or activity that needs attention.</p><section class="report-card"><form id="reportForm" class="report-form"><label>What are you reporting?<select id="reason"><option>Spam</option><option>Harassment</option><option>Inappropriate content</option><option>Misleading information</option><option>Other</option></select></label><label>Details<textarea id="details" placeholder="Tell us what happened…"></textarea></label><button class="btn primary" type="submit">Submit report</button><div id="status" class="status"></div></form></section></main><footer>© 2026 TechNova</footer><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/supabase-config.js"></script><script src="../js/reports.js"></script><script src="../js/script.js"></script><script>const p=new URLSearchParams(location.search);document.getElementById('reportForm').addEventListener('submit',async e=>{e.preventDefault();const s=document.getElementById('status');try{await TechNovaReports.report(p.get('type')||'general',p.get('id')||null,document.getElementById('reason').value,document.getElementById('details').value);s.textContent='Report submitted successfully. Thank you.';s.className='status show good';e.target.reset()}catch(err){s.textContent=err.message||'Could not submit the report.';s.className='status show bad'}});</script></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Report · TechNova</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.report-page{max-width:800px;margin:auto;padding:55px 22px 80px}
+.report-card{padding:26px;border:1px solid #20324b;border-radius:20px;background:linear-gradient(180deg,#101b2d,#09111d)}
+.report-form{display:grid;gap:15px}
+.report-form label{display:grid;gap:7px;font-weight:700}
+.report-form input,.report-form select,.report-form textarea{background:#07101c;color:white;border:1px solid #29415e;border-radius:9px;padding:11px;font:inherit}
+.report-form input:focus,.report-form select:focus,.report-form textarea:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px #32d6ff16}
+.report-form textarea{min-height:130px;resize:vertical}
+.report-help{color:#91a0b7;font-size:14px;font-weight:400;line-height:1.5}
+.status{display:none;padding:12px;border-radius:10px}
+.status.show{display:block}
+.status.good{background:#0c342b;color:#75efc2;border:1px solid #185d4e}
+.status.bad{background:#421820;color:#ff9aaa;border:1px solid #71303c}
+.target-locked{opacity:.8}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="../index.html">✦ TECHNOVA</a>
+  <button id="menu" aria-label="Open menu" type="button">☰</button>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="events.html">Events</a>
+    <a href="technology.html">Technology</a>
+    <a href="innovation.html">Innovation</a>
+    <a href="news.html">News</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="account.html">My account</a>
+  </nav>
+</header>
+
+<main class="report-page">
+  <p class="eyebrow">COMMUNITY SAFETY</p>
+  <h1>Report something</h1>
+  <p class="lead">Tell the TechNova team about content or activity that needs attention.</p>
+
+  <section class="report-card">
+    <form id="reportForm" class="report-form">
+      <label for="targetType">
+        What are you reporting?
+        <select id="targetType" required>
+          <option value="">Select one…</option>
+          <option value="comment">A comment</option>
+          <option value="event">An event</option>
+          <option value="article">An article</option>
+          <option value="user">A user</option>
+        </select>
+        <span class="report-help">If you opened this page from a Report button, this will already be selected.</span>
+      </label>
+
+      <label for="targetId">
+        Item ID
+        <input id="targetId" type="text" placeholder="The ID of the item being reported" required>
+        <span class="report-help">This is filled automatically when the Report button passes an item ID.</span>
+      </label>
+
+      <label for="reason">
+        Reason
+        <select id="reason" required>
+          <option value="">Choose a reason…</option>
+          <option value="Spam">Spam</option>
+          <option value="Harassment">Harassment</option>
+          <option value="Inappropriate content">Inappropriate content</option>
+          <option value="Misleading information">Misleading information</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
+
+      <label for="details">
+        Details
+        <textarea id="details" placeholder="Tell us what happened…"></textarea>
+      </label>
+
+      <button class="btn primary" type="submit">Submit report</button>
+      <div id="status" class="status" aria-live="polite"></div>
+    </form>
+  </section>
+</main>
+
+<footer>© 2026 TechNova</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/reports.js"></script>
+<script src="../js/script.js"></script>
+<script>
+'use strict';
+
+const params = new URLSearchParams(window.location.search);
+const targetType = document.getElementById('targetType');
+const targetId = document.getElementById('targetId');
+const reportForm = document.getElementById('reportForm');
+const statusBox = document.getElementById('status');
+
+const suppliedType = (params.get('type') || '').trim().toLowerCase();
+const suppliedId = (params.get('id') || '').trim();
+
+if (['comment','event','article','user'].includes(suppliedType)) {
+  targetType.value = suppliedType;
+  targetType.disabled = true;
+  targetType.classList.add('target-locked');
+}
+
+if (suppliedId) {
+  targetId.value = suppliedId;
+  targetId.readOnly = true;
+  targetId.classList.add('target-locked');
+}
+
+reportForm.addEventListener('submit', async event => {
+  event.preventDefault();
+
+  const type = targetType.value;
+  const id = targetId.value.trim();
+  const reason = document.getElementById('reason').value;
+  const details = document.getElementById('details').value;
+
+  statusBox.className = 'status';
+  statusBox.textContent = '';
+
+  try {
+    await TechNovaReports.report(type, id, reason, details);
+
+    statusBox.textContent = 'Report submitted successfully. Thank you.';
+    statusBox.className = 'status show good';
+
+    document.getElementById('reason').value = '';
+    document.getElementById('details').value = '';
+
+  } catch (error) {
+    console.error('Report submission error:', error);
+    statusBox.textContent = error?.message || 'Could not submit the report.';
+    statusBox.className = 'status show bad';
+  }
+});
+</script>
+</body>
+</html>
