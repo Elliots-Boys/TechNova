@@ -3492,178 +3492,365 @@ async function deleteArticle(id){
 /* =====================================================
    ROLES
 ===================================================== */
+/* =====================================================
+   LOAD ROLES
+===================================================== */
 
 async function loadRoles(){
 
   const {
     data,
     error
-  } =
-    await supabaseClient
-      .from('user_roles')
-      .select(
-        'user_id,role'
-      )
-      .order(
-        'role',
-        {ascending:true}
-      );
-
+  } = await supabaseClient
+    .from('user_roles')
+    .select('user_id,role');
 
   if(error) throw error;
 
+  /*
+    Store the roles we actually have in the database.
+  */
+  allRoles = data || [];
 
-  allRoles =
-    data || [];
-
-
+  /*
+    Count administrators.
+  */
   $('adminCount').textContent =
     allRoles.filter(
       item => item.role === 'admin'
     ).length;
 
-
+  /*
+    Render ALL users, including users who don't
+    currently have a row in user_roles.
+  */
   renderRoles();
-
 }
 
 
+/* =====================================================
+   RENDER ROLES
+===================================================== */
+
 function renderRoles(){
 
-  if(!allRoles.length){
+  /*
+    Create a quick lookup of existing roles.
+  */
+  const roleMap = new Map(
+    allRoles.map(item => [
+      String(item.user_id),
+      item.role
+    ])
+  );
+
+
+  /*
+    Every profile is displayed.
+
+    If there isn't a matching user_roles row,
+    the user is treated as a normal "user".
+  */
+  const usersWithRoles =
+    allUsers.map(user => ({
+
+      user_id: user.id,
+
+      display_name:
+        user.display_name ||
+        'Unnamed user',
+
+      role:
+        roleMap.get(String(user.id)) ||
+        'user'
+
+    }));
+
+
+  /*
+    No users.
+  */
+  if(!usersWithRoles.length){
 
     $('rolesTable').innerHTML = `
       <tr>
-        <td colspan="3" class="loading">
-          No roles found.
+        <td
+          colspan="3"
+          class="loading"
+        >
+          No users found.
         </td>
       </tr>
     `;
 
     return;
-
   }
 
 
+  /*
+    Render the users.
+  */
   $('rolesTable').innerHTML =
-    allRoles.map(item => `
+    usersWithRoles.map(item => {
 
-      <tr>
+      const isAdmin =
+        item.role === 'admin';
 
-        <td class="admin-id">
-          ${escapeHtml(
-            item.user_id
-          )}
-        </td>
 
-        <td>
+      /*
+        If they're currently an admin,
+        the button changes them back to user.
 
-          ${
-            item.role === 'admin'
-              ? '<span class="admin-badge">ADMIN</span>'
-              : '<span class="admin-badge badge-green">USER</span>'
-          }
+        Otherwise it makes them admin.
+      */
+      const nextRole =
+        isAdmin
+          ? 'user'
+          : 'admin';
 
-        </td>
 
-        <td>
+      return `
+        <tr>
 
-          <button
-            class="admin-small-btn"
-            onclick="changeRole(
-              '${item.user_id}',
-              '${item.role === 'admin' ? 'user' : 'admin'}'
-            )"
-          >
-            Make ${
-              item.role === 'admin'
-                ? 'user'
-                : 'admin'
+          <td>
+
+            <strong>
+              ${escapeHtml(
+                item.display_name
+              )}
+            </strong>
+
+            <div class="admin-id">
+              ${escapeHtml(
+                item.user_id
+              )}
+            </div>
+
+          </td>
+
+
+          <td>
+
+            ${
+              isAdmin
+
+                ? `
+                  <span class="admin-badge">
+                    ADMIN
+                  </span>
+                `
+
+                : `
+                  <span
+                    class="admin-badge badge-green"
+                  >
+                    USER
+                  </span>
+                `
             }
-          </button>
 
-        </td>
+          </td>
 
-      </tr>
 
-    `).join('');
+          <td>
 
+            <button
+              class="admin-small-btn ${
+                isAdmin
+                  ? 'admin-warning'
+                  : 'admin-success'
+              }"
+              type="button"
+              onclick="changeRole(
+                '${item.user_id}',
+                '${nextRole}'
+              )"
+            >
+
+              ${
+                isAdmin
+                  ? 'Make user'
+                  : 'Make admin'
+              }
+
+            </button>
+
+          </td>
+
+        </tr>
+      `;
+
+    }).join('');
 }
 
+
+/* =====================================================
+   CHANGE USER ROLE
+===================================================== */
 
 async function changeRole(
   userId,
   newRole
 ){
 
-  if(userId === currentAdmin.id){
+  /*
+    Don't allow the currently logged-in admin
+    to remove their own administrator access.
+  */
+  if(
+    String(userId) ===
+    String(currentAdmin.id)
+  ){
 
     showMessage(
       'You cannot change your own administrator role.'
     );
 
     return;
-
   }
 
 
-  if(!confirm(
-    `Change this user to ${newRole}?`
-  )){
+  /*
+    Find the target user so we can show
+    their name in the confirmation.
+  */
+  const targetUser =
+    allUsers.find(
+      user =>
+        String(user.id) ===
+        String(userId)
+    );
+
+
+  const targetName =
+    targetUser?.display_name ||
+    'this user';
+
+
+  /*
+    Confirm the change.
+  */
+  if(
+    !confirm(
+      `Make ${targetName} a ${
+        newRole === 'admin'
+          ? 'administrator'
+          : 'normal user'
+      }?`
+    )
+  ){
+
     return;
+
   }
 
 
   try{
 
-    const { error } =
-      await supabaseClient
-        .from('user_roles')
-        .update({
-          role:newRole
-        })
-        .eq(
-          'user_id',
-          userId
-        );
+    /*
+      IMPORTANT:
+
+      Use UPSERT rather than UPDATE.
+
+      UPDATE only works if the user already
+      has a row in user_roles.
+
+      UPSERT creates the row if it doesn't
+      exist, or changes it if it does.
+    */
+    const {
+      error
+    } = await supabaseClient
+      .from('user_roles')
+      .upsert(
+        {
+          user_id: userId,
+          role: newRole
+        },
+        {
+          onConflict: 'user_id'
+        }
+      );
 
 
-    if(error) throw error;
+    if(error){
+
+      throw error;
+
+    }
 
 
+    /*
+      Record the action in your existing
+      admin activity log.
+    */
     await logAdminAction(
-      'Admin changed user role',
+
+      newRole === 'admin'
+        ? 'Admin promoted user'
+        : 'Admin removed admin role',
+
       'user',
+
       userId,
+
       {
-        new_role:newRole
+        new_role: newRole,
+        display_name: targetName
       }
+
     );
 
 
+    /*
+      Show success message.
+    */
     showMessage(
-      `User role changed to ${newRole}.`,
+
+      newRole === 'admin'
+
+        ? `${targetName} is now an administrator.`
+
+        : `${targetName} is now a normal user.`,
+
       'good'
+
     );
 
 
+    /*
+      Reload the role list and activity log.
+    */
     await loadRoles();
 
     await loadActivity();
 
-  }
-  catch(error){
 
-    console.error(error);
+  }catch(error){
+
+    console.error(
+      'Role change failed:',
+      error
+    );
+
 
     showMessage(
-      error.message ||
-      'Could not change role.'
+
+      error?.message ||
+
+      'Could not change the user role.'
+
     );
 
   }
 
 }
+
+
+
+
+
+
 
 
 /* =====================================================
