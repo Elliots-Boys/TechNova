@@ -43,7 +43,23 @@ async function connectGoogleDrive(event) {
   const { error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: destination, scopes: GOOGLE_DRIVE_SCOPE, queryParams: { access_type: 'offline', prompt: 'consent', include_granted_scopes: 'true' } } });
   if (error) { setBusy(button, false, 'Connect Google Drive'); const el = document.querySelector('#driveMessage'); if (el) { el.textContent = error.message || 'Google Drive could not be connected.'; el.classList.add('show'); } }
 }
+const githubLogin = document.getElementById('github-login');
 
+if (githubLogin) {
+    githubLogin.addEventListener('click', async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'github',
+            options: {
+                redirectTo: window.location.origin + '/pages/account.html'
+            }
+        });
+
+        if (error) {
+            console.error('GitHub login error:', error);
+            alert(error.message);
+        }
+    });
+}
 async function signUp(event) {
   event?.preventDefault();
   const name = document.querySelector('#name')?.value.trim() || '';
