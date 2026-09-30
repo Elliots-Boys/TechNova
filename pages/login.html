@@ -457,7 +457,8 @@ Log in
   id="phone"
   type="tel"
   autocomplete="tel"
-  placeholder="+447726834587"
+  placeholder="+447700900123"
+  pattern="^\+[1-9]\d{7,14}$"
   required
 >
 
@@ -637,8 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       event.preventDefault();
 
-      loginPhone =
-        phoneInput.value.trim();
+      loginPhone = phoneInput.value.trim().replace(/\s+/g, '');
 
 
       if (!loginPhone) {
