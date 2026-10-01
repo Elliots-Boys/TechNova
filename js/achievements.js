@@ -3,11 +3,7 @@
 function getTechNovaAchievementsClient() {
   if (window.TechNovaAchievementsClient) return window.TechNovaAchievementsClient;
 
-  if (
-    !window.supabase ||
-    !window.TECHNOVA_SUPABASE_URL ||
-    !window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
-  ) {
+  if (!window.supabase || !window.TECHNOVA_SUPABASE_URL || !window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY) {
     throw new Error('TechNova Supabase configuration is unavailable.');
   }
 
@@ -59,14 +55,24 @@ function renderAchievementCards(grid, rows) {
       earned.style.display = 'block';
       earned.style.marginTop = '6px';
       earned.style.color = '#91a0b7';
-      earned.textContent =
-        `Earned ${new Date(item.earned_at).toLocaleDateString()}`;
+      earned.textContent = `Earned ${new Date(item.earned_at).toLocaleDateString()}`;
       status.appendChild(earned);
     }
 
     card.append(icon, title, description, status);
     return card;
   }));
+}
+
+async function requireSignedInUser(client) {
+  const { data: { session }, error: sessionError } = await client.auth.getSession();
+  if (sessionError) throw sessionError;
+
+  if (!session?.user) return null;
+
+  const { data: { user }, error: userError } = await client.auth.getUser();
+  if (userError) throw userError;
+  return user;
 }
 
 async function loadAchievementFallback(client, userId) {
@@ -115,46 +121,33 @@ async function loadAchievementProgress() {
 
   try {
     const client = getTechNovaAchievementsClient();
-
-    const {
-      data: { user },
-      error: authError
-    } = await client.auth.getUser();
-
-    if (authError) throw authError;
+    const user = await requireSignedInUser(client);
 
     if (!user) {
-      showAchievementMessage(
-        grid,
-        'Please sign in to view and unlock your TechNova achievements.'
-      );
+      showAchievementMessage(grid, 'Please sign in to view and unlock your TechNova achievements.');
       return;
     }
 
-    const welcomeResult = await client.rpc('award_xp', {
+    const welcome = await client.rpc('award_xp', {
       p_amount: 0,
       p_achievement_slug: 'first-login'
     });
 
-    if (welcomeResult.error) {
-      console.warn('Welcome achievement could not be awarded:', welcomeResult.error);
+    if (welcome.error) {
+      console.warn('Welcome achievement could not be awarded:', welcome.error);
     }
 
-    let rows = null;
+    let rows;
+    const progress = await client.rpc('get_my_achievement_progress');
 
-    const progressResult = await client.rpc('get_my_achievement_progress');
-
-    if (!progressResult.error) {
-      rows = progressResult.data || [];
-    } else {
-      console.warn(
-        'Achievement RPC failed, using direct-table fallback:',
-        progressResult.error
-      );
+    if (progress.error) {
+      console.warn('Achievement RPC failed; using table fallback:', progress.error);
       rows = await loadAchievementFallback(client, user.id);
+    } else {
+      rows = progress.data || [];
     }
 
-    if (!rows?.length) {
+    if (!rows.length) {
       showAchievementMessage(grid, 'No achievements are available yet.');
       return;
     }
@@ -168,39 +161,28 @@ async function loadAchievementProgress() {
     renderAchievementCards(grid, rows);
   } catch (error) {
     console.error('Achievement loading failed:', error);
-    showAchievementMessage(
-      grid,
-      `Could not load achievements: ${error?.message || 'Unknown error'}`
-    );
+    showAchievementMessage(grid, `Could not load achievements: ${error?.message || 'Unknown error'}`);
   }
 }
 
-async function loadLeaderboard() {
-  const container = document.getElementById('leaderboard');
+async function loadLeaderboard(target) {
+  const container = target || document.getElementById('leaderboard');
   if (!container) return;
 
   container.innerHTML = '<p class="loading">Loading leaderboard…</p>';
 
   try {
     const client = getTechNovaAchievementsClient();
-
-    const {
-      data: { user },
-      error: authError
-    } = await client.auth.getUser();
-
-    if (authError) throw authError;
+    const user = await requireSignedInUser(client);
 
     if (!user) {
-      showAchievementMessage(
-        container,
-        'Please sign in to view the TechNova leaderboard.'
-      );
+      showAchievementMessage(container, 'Please sign in to view the TechNova leaderboard.');
       return;
     }
 
-    const { data: scores, error } =
-      await client.rpc('get_leaderboard', { limit_count: 25 });
+    const { data: scores, error } = await client.rpc('get_leaderboard', {
+      limit_count: 25
+    });
 
     if (error) throw error;
 
@@ -215,7 +197,6 @@ async function loadLeaderboard() {
 
       const rank = document.createElement('span');
       rank.className = 'rank';
-
       const numericRank = Number(row.rank || index + 1);
       rank.textContent =
         numericRank === 1 ? '🥇' :
@@ -228,18 +209,14 @@ async function loadLeaderboard() {
 
       const points = document.createElement('span');
       points.className = 'points';
-      points.textContent =
-        `${Number(row.xp || 0)} XP · Level ${Number(row.level || 1)}`;
+      points.textContent = `${Number(row.xp || 0)} XP · Level ${Number(row.level || 1)}`;
 
       item.append(rank, name, points);
       return item;
     }));
   } catch (error) {
     console.error('Leaderboard loading failed:', error);
-    showAchievementMessage(
-      container,
-      `Could not load the leaderboard: ${error?.message || 'Unknown error'}`
-    );
+    showAchievementMessage(container, `Could not load the leaderboard: ${error?.message || 'Unknown error'}`);
   }
 }
 
@@ -248,7 +225,7 @@ window.TechNovaAchievements = {
   loadLeaderboard
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadAchievementProgress();
-  await loadLeaderboard();
+document.addEventListener('DOMContentLoaded', () => {
+  loadAchievementProgress();
+  loadLeaderboard();
 });
