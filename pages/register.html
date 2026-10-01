@@ -120,29 +120,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { error } = await client.rpc('register_for_event', { p_event_id: event.id });
         if (error) throw error;
 
-        let emailSent = false;
-
-        try {
-          const { error: emailError } = await client.functions.invoke(
-            'send-event-confirmation',
-            {
-              body: { event_id: event.id }
-            }
-          );
-
-          if (emailError) {
-            console.warn('Event confirmation email failed:', emailError);
-          } else {
-            emailSent = true;
-          }
-        } catch (emailError) {
-          console.warn('Event confirmation email failed:', emailError);
-        }
-
         show(
-          emailSent
-            ? 'Registration complete! Your ticket is ready and a confirmation email has been sent.'
-            : 'Registration complete! Your ticket is ready. We could not send the confirmation email, but your registration is saved.',
+          'Registration complete! Your ticket is ready. Opening your tickets now…',
           'good'
         );
 
