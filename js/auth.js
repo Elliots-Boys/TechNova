@@ -193,6 +193,65 @@ async function signInWithGitHub(event) {
 
 
 /*
+  DISCORD LOGIN
+*/
+async function signInWithDiscord(event) {
+
+  event?.preventDefault();
+
+  const button =
+    document.querySelector('#discord-login');
+
+  setBusy(
+    button,
+    true,
+    'Continue with Discord'
+  );
+
+  const next =
+    new URLSearchParams(location.search).get('next');
+
+  const destination =
+    next === 'events.html'
+      ? `${window.location.origin}/pages/events.html`
+      : `${window.location.origin}/pages/account.html`;
+
+  const { error } =
+    await supabaseClient.auth.signInWithOAuth({
+
+      provider: 'discord',
+
+      options: {
+        redirectTo: destination,
+        scopes: 'identify email'
+      }
+
+    });
+
+  if (error) {
+
+    console.error(
+      'Discord OAuth error:',
+      error
+    );
+
+    setBusy(
+      button,
+      false,
+      'Continue with Discord'
+    );
+
+    showAuthMessage(
+      error.message ||
+      'Discord login could not be started.'
+    );
+
+  }
+
+}
+
+
+/*
   GOOGLE DRIVE CONNECTION
 */
 async function connectGoogleDrive(event) {
@@ -449,205 +508,6 @@ async function signIn(event) {
     next === 'events.html'
       ? 'events.html'
       : 'account.html';
-
-}
-
-
-/*
-  PHONE LOGIN
-*/
-let loginPhone = '';
-
-
-async function sendPhoneCode(event) {
-
-  event?.preventDefault();
-
-
-  const phoneInput =
-    document.querySelector('#phone');
-
-
-  const button =
-    document.querySelector('#sendOtpBtn');
-
-
-  loginPhone =
-    phoneInput?.value.trim() || '';
-
-
-  if (!loginPhone) {
-
-    showAuthMessage(
-      'Please enter your phone number.'
-    );
-
-    return;
-
-  }
-
-
-  setBusy(
-    button,
-    true,
-    'Send verification code'
-  );
-
-
-  const { error } =
-    await supabaseClient.auth.signInWithOtp({
-
-      phone: loginPhone
-
-    });
-
-
-  setBusy(
-    button,
-    false,
-    'Send verification code'
-  );
-
-
-  if (error) {
-
-    console.error(
-      'Phone OTP error:',
-      error
-    );
-
-    showAuthMessage(
-      error.message ||
-      'The verification code could not be sent.'
-    );
-
-    return;
-
-  }
-
-
-  showAuthMessage(
-    'Verification code sent! Check your phone.',
-    true
-  );
-
-
-  const phoneForm =
-    document.querySelector('#phoneLoginForm');
-
-  const otpForm =
-    document.querySelector('#otpForm');
-
-  const otpInput =
-    document.querySelector('#otp');
-
-
-  if (phoneForm) {
-    phoneForm.style.display = 'none';
-  }
-
-
-  if (otpForm) {
-    otpForm.style.display = 'block';
-  }
-
-
-  otpInput?.focus();
-
-}
-
-
-/*
-  VERIFY PHONE CODE
-*/
-async function verifyPhoneCode(event) {
-
-  event?.preventDefault();
-
-
-  const otpInput =
-    document.querySelector('#otp');
-
-
-  const button =
-    document.querySelector('#verifyOtpBtn');
-
-
-  const code =
-    otpInput?.value.trim() || '';
-
-
-  if (!code) {
-
-    showAuthMessage(
-      'Enter the verification code sent to your phone.'
-    );
-
-    return;
-
-  }
-
-
-  setBusy(
-    button,
-    true,
-    'Verify code & log in'
-  );
-
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient.auth.verifyOtp({
-
-      phone: loginPhone,
-
-      token: code,
-
-      type: 'sms'
-
-    });
-
-
-  if (error) {
-
-    setBusy(
-      button,
-      false,
-      'Verify code & log in'
-    );
-
-    console.error(
-      'Phone verification error:',
-      error
-    );
-
-    showAuthMessage(
-      error.message ||
-      'The verification code is incorrect or expired.'
-    );
-
-    return;
-
-  }
-
-
-  if (data?.session) {
-
-    window.location.href =
-      'account.html';
-
-    return;
-
-  }
-
-
-  setBusy(
-    button,
-    false,
-    'Verify code & log in'
-  );
 
 }
 
@@ -1303,10 +1163,25 @@ document.addEventListener(
 
 
     /*
-      GitHub login on pages/login.html is handled by that page's inline
-      login controller. Do not bind it here as well, otherwise one click
-      can start two OAuth requests.
+      GitHub login
     */
+    document
+      .querySelector('#github-login')
+      ?.addEventListener(
+        'click',
+        signInWithGitHub
+      );
+
+
+    /*
+      Discord login
+    */
+    document
+      .querySelector('#discord-login')
+      ?.addEventListener(
+        'click',
+        signInWithDiscord
+      );
 
 
     /*
@@ -1319,12 +1194,6 @@ document.addEventListener(
         connectGoogleDrive
       );
 
-
-    /*
-      Phone login / OTP on pages/login.html is handled by the page's
-      dedicated inline controller. Binding the same forms here caused
-      signInWithOtp() to run twice, which called the SMS hook twice.
-    */
 
 
     /*
