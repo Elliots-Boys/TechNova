@@ -1303,14 +1303,10 @@ document.addEventListener(
 
 
     /*
-      GitHub login
+      GitHub login on pages/login.html is handled by that page's inline
+      login controller. Do not bind it here as well, otherwise one click
+      can start two OAuth requests.
     */
-    document
-      .querySelector('#github-login')
-      ?.addEventListener(
-        'click',
-        signInWithGitHub
-      );
 
 
     /*
@@ -1325,25 +1321,10 @@ document.addEventListener(
 
 
     /*
-      Phone login
+      Phone login / OTP on pages/login.html is handled by the page's
+      dedicated inline controller. Binding the same forms here caused
+      signInWithOtp() to run twice, which called the SMS hook twice.
     */
-    document
-      .querySelector('#phoneLoginForm')
-      ?.addEventListener(
-        'submit',
-        sendPhoneCode
-      );
-
-
-    /*
-      Phone OTP
-    */
-    document
-      .querySelector('#otpForm')
-      ?.addEventListener(
-        'submit',
-        verifyPhoneCode
-      );
 
 
     /*
