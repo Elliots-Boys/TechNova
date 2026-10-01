@@ -1,7 +1,7 @@
 'use strict';
 
-function getTicketsClient() {
-  if (window.supabaseClient) return window.supabaseClient;
+function getTechNovaTicketsClient() {
+  if (window.TechNovaTicketsClient) return window.TechNovaTicketsClient;
 
   if (
     !window.supabase ||
@@ -11,18 +11,38 @@ function getTicketsClient() {
     throw new Error('TechNova Supabase configuration is unavailable.');
   }
 
-  window.supabaseClient = window.supabase.createClient(
+  window.TechNovaTicketsClient = window.supabase.createClient(
     window.TECHNOVA_SUPABASE_URL,
     window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
   );
 
-  return window.supabaseClient;
+  return window.TechNovaTicketsClient;
 }
 
 function ticketText(value, fallback = '—') {
   return value === null || value === undefined || value === ''
     ? fallback
     : String(value);
+}
+
+function showQrFallback(wrapper, ticketId) {
+  wrapper.replaceChildren();
+
+  const fallback = document.createElement('div');
+  fallback.style.cssText =
+    'background:#07101c;color:#dbe7f5;border:1px solid #29415e;border-radius:10px;padding:10px;text-align:center;font-size:12px;width:100%;box-sizing:border-box';
+
+  const label = document.createElement('strong');
+  label.textContent = 'Ticket ID';
+
+  const code = document.createElement('code');
+  code.textContent = String(ticketId);
+  code.style.display = 'block';
+  code.style.marginTop = '7px';
+  code.style.wordBreak = 'break-all';
+
+  fallback.append(label, code);
+  wrapper.appendChild(fallback);
 }
 
 function createTicketQr(ticketId) {
@@ -59,34 +79,37 @@ function createTicketQr(ticketId) {
   return wrapper;
 }
 
-function showQrFallback(wrapper, ticketId) {
-  wrapper.replaceChildren();
+async function loadTicketsFallback(client, userId) {
+  const { data, error } = await client
+    .from('event_registrations')
+    .select(
+      'id,event_id,created_at,events(id,title,event_date,event_time,location,event_type)'
+    )
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
 
-  const fallback = document.createElement('div');
-  fallback.style.cssText =
-    'background:#07101c;color:#dbe7f5;border:1px solid #29415e;border-radius:10px;padding:10px;text-align:center;font-size:12px;width:100%;box-sizing:border-box';
+  if (error) throw error;
 
-  const label = document.createElement('strong');
-  label.textContent = 'Ticket ID';
-
-  const code = document.createElement('code');
-  code.textContent = String(ticketId);
-  code.style.display = 'block';
-  code.style.marginTop = '7px';
-  code.style.wordBreak = 'break-all';
-
-  fallback.append(label, code);
-  wrapper.appendChild(fallback);
+  return (data || []).map(row => ({
+    registration_id: row.id,
+    event_id: row.event_id,
+    registered_at: row.created_at,
+    title: row.events?.title || 'Event',
+    event_date: row.events?.event_date || null,
+    event_time: row.events?.event_time || null,
+    location: row.events?.location || null,
+    event_type: row.events?.event_type || null
+  }));
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function loadTickets() {
   const container = document.getElementById('tickets');
   if (!container) return;
 
   container.innerHTML = '<p class="loading">Loading your tickets…</p>';
 
   try {
-    const client = getTicketsClient();
+    const client = getTechNovaTicketsClient();
 
     const {
       data: { user },
@@ -101,10 +124,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    const { data: tickets, error } =
-      await client.rpc('get_my_tickets');
+    let tickets = null;
+    const rpcResult = await client.rpc('get_my_tickets');
 
-    if (error) throw error;
+    if (!rpcResult.error) {
+      tickets = rpcResult.data || [];
+    } else {
+      console.warn(
+        'Ticket RPC failed, using direct-table fallback:',
+        rpcResult.error
+      );
+      tickets = await loadTicketsFallback(client, user.id);
+    }
 
     if (!tickets?.length) {
       container.innerHTML =
@@ -174,7 +205,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('retryTickets')?.addEventListener(
       'click',
-      () => location.reload()
+      loadTickets
     );
   }
-});
+}
+
+document.addEventListener('DOMContentLoaded', loadTickets);
