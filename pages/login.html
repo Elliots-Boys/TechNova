@@ -695,9 +695,16 @@ document.addEventListener('DOMContentLoaded', () => {
             error
           );
 
+          const hookFailed =
+            /Unexpected status code returned from hook/i.test(
+              error.message || ''
+            );
+
           phoneMessage(
-            error.message ||
-            'Could not send the verification code.'
+            hookFailed
+              ? 'The SMS service is temporarily unavailable. Please try again later or use another sign-in method.'
+              : (error.message ||
+                'Could not send the verification code.')
           );
 
           sendOtpBtn.disabled = false;
