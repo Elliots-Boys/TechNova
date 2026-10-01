@@ -61,8 +61,8 @@
 <footer>© 2026 TechNova</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/supabase-config.js"></script>
-<script src="../js/script.js"></script>
+<script src="../js/supabase-config.js?v=22"></script>
+<script src="../js/script.js?v=22"></script>
 <script>
 'use strict';
 
@@ -70,7 +70,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const client = window.supabaseClient || window.supabase.createClient(window.TECHNOVA_SUPABASE_URL, window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
   window.supabaseClient = client;
   const params = new URLSearchParams(location.search);
-  const eventId = params.get('id');
+  let eventId = params.get('id');
+  const eventNameFromUrl = params.get('event');
   const selected = document.getElementById('selectedEvent');
   const eventTitle = document.getElementById('eventTitle');
   const email = document.getElementById('accountEmail');
@@ -91,6 +92,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
     email.value = user.email || '';
+
+    // Support both the newer ?id=123 links and older cached ?event=Title links.
+    // This means event registration keeps working even while Cloudflare/browser
+    // caches are updating.
+    if (!eventId && eventNameFromUrl) {
+      const { data: matchedEvent, error: matchError } = await client
+        .from('events')
+        .select('id')
+        .ilike('title', eventNameFromUrl)
+        .limit(1)
+        .maybeSingle();
+
+      if (matchError) throw matchError;
+      if (matchedEvent?.id) eventId = String(matchedEvent.id);
+    }
 
     if (!eventId) {
       selected.textContent = 'No event selected.';
