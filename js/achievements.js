@@ -5,9 +5,9 @@ const techNovaAchievementsClient = window.supabase.createClient(
   window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
 );
 
-function showAchievementError(target, message) {
+function showAchievementMessage(target, message) {
   if (!target) return;
-  target.innerHTML = '';
+  target.replaceChildren();
   const p = document.createElement('p');
   p.className = 'muted';
   p.textContent = message;
@@ -61,38 +61,84 @@ async function loadAchievementProgress() {
   const xpEl = document.getElementById('xpTotal');
   const levelEl = document.getElementById('levelText');
 
+  grid.innerHTML = '<p class="loading">Loading achievements…</p>';
+
   try {
-    const {
-      data: { user },
-      error: authError
-    } = await techNovaAchievementsClient.auth.getUser();
+    const { data: { user }, error: authError } =
+      await techNovaAchievementsClient.auth.getUser();
 
     if (authError) throw authError;
 
     if (!user) {
-      showAchievementError(
+      showAchievementMessage(
         grid,
         'Please sign in to view and unlock your TechNova achievements.'
       );
       return;
     }
 
-    // Award the one-time welcome achievement. The database function prevents
-    // the same achievement reward from being added twice.
+    // One-time welcome reward. A duplicate achievement does not award XP twice.
     await techNovaAchievementsClient.rpc('award_xp', {
       p_amount: 0,
       p_achievement_slug: 'first-login'
     });
 
-    const { data, error } = await techNovaAchievementsClient
-      .rpc('get_my_achievement_progress');
+    let rows = null;
 
-    if (error) throw error;
+    const progressResult =
+      await techNovaAchievementsClient.rpc('get_my_achievement_progress');
 
-    const rows = data || [];
+    if (!progressResult.error) {
+      rows = progressResult.data || [];
+    } else {
+      console.warn(
+        'Achievement progress RPC failed, using table fallback:',
+        progressResult.error
+      );
+
+      const [achievementResult, xpResult, earnedResult] = await Promise.all([
+        techNovaAchievementsClient
+          .from('achievements')
+          .select('id,slug,name,description,icon,xp_reward')
+          .order('id', { ascending: true }),
+
+        techNovaAchievementsClient
+          .from('user_xp')
+          .select('xp,level')
+          .eq('user_id', user.id)
+          .maybeSingle(),
+
+        techNovaAchievementsClient
+          .from('user_achievements')
+          .select('achievement_id,earned_at')
+          .eq('user_id', user.id)
+      ]);
+
+      if (achievementResult.error) throw achievementResult.error;
+      if (xpResult.error) throw xpResult.error;
+      if (earnedResult.error) throw earnedResult.error;
+
+      const earnedMap = new Map(
+        (earnedResult.data || []).map(item => [
+          String(item.achievement_id),
+          item.earned_at
+        ])
+      );
+
+      const xp = Number(xpResult.data?.xp || 0);
+      const level = Number(xpResult.data?.level || 1);
+
+      rows = (achievementResult.data || []).map(item => ({
+        ...item,
+        earned: earnedMap.has(String(item.id)),
+        earned_at: earnedMap.get(String(item.id)) || null,
+        user_xp: xp,
+        user_level: level
+      }));
+    }
 
     if (!rows.length) {
-      showAchievementError(grid, 'No achievements are available yet.');
+      showAchievementMessage(grid, 'No achievements are available yet.');
       return;
     }
 
@@ -105,7 +151,7 @@ async function loadAchievementProgress() {
     renderAchievementCards(grid, rows);
   } catch (error) {
     console.error('Achievement loading failed:', error);
-    showAchievementError(
+    showAchievementMessage(
       grid,
       `Could not load achievements: ${error?.message || 'Unknown error'}`
     );
@@ -119,32 +165,74 @@ async function loadLeaderboard() {
   container.innerHTML = '<p class="loading">Loading leaderboard…</p>';
 
   try {
-    const {
-      data: { user },
-      error: authError
-    } = await techNovaAchievementsClient.auth.getUser();
+    const { data: { user }, error: authError } =
+      await techNovaAchievementsClient.auth.getUser();
 
     if (authError) throw authError;
 
     if (!user) {
-      showAchievementError(
+      showAchievementMessage(
         container,
         'Please sign in to view the TechNova leaderboard.'
       );
       return;
     }
 
-    const { data, error } = await techNovaAchievementsClient.rpc(
-      'get_leaderboard',
-      { limit_count: 25 }
-    );
+    let scores = null;
 
-    if (error) throw error;
+    const leaderboardResult =
+      await techNovaAchievementsClient.rpc('get_leaderboard', {
+        limit_count: 25
+      });
 
-    const scores = data || [];
+    if (!leaderboardResult.error) {
+      scores = leaderboardResult.data || [];
+    } else {
+      console.warn(
+        'Leaderboard RPC failed, using table fallback:',
+        leaderboardResult.error
+      );
+
+      const xpResult = await techNovaAchievementsClient
+        .from('user_xp')
+        .select('user_id,xp,level')
+        .order('xp', { ascending: false })
+        .limit(25);
+
+      if (xpResult.error) throw xpResult.error;
+
+      const xpRows = xpResult.data || [];
+      const ids = xpRows.map(row => row.user_id);
+
+      let profileMap = new Map();
+
+      if (ids.length) {
+        const profileResult = await techNovaAchievementsClient
+          .from('profiles')
+          .select('id,display_name')
+          .in('id', ids);
+
+        if (!profileResult.error) {
+          profileMap = new Map(
+            (profileResult.data || []).map(profile => [
+              profile.id,
+              profile.display_name
+            ])
+          );
+        }
+      }
+
+      scores = xpRows.map((row, index) => ({
+        ...row,
+        rank: index + 1,
+        display_name:
+          profileMap.get(row.user_id) ||
+          `User ${String(row.user_id).slice(0, 8)}`
+      }));
+    }
 
     if (!scores.length) {
-      showAchievementError(container, 'No leaderboard scores yet.');
+      showAchievementMessage(container, 'No leaderboard scores yet.');
       return;
     }
 
@@ -175,7 +263,7 @@ async function loadLeaderboard() {
     }));
   } catch (error) {
     console.error('Leaderboard loading failed:', error);
-    showAchievementError(
+    showAchievementMessage(
       container,
       `Could not load the leaderboard: ${error?.message || 'Unknown error'}`
     );
@@ -188,8 +276,6 @@ window.TechNovaAchievements = {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-  await Promise.all([
-    loadAchievementProgress(),
-    loadLeaderboard()
-  ]);
+  await loadAchievementProgress();
+  await loadLeaderboard();
 });
