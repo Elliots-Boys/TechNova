@@ -1,18 +1,18 @@
 'use strict';
 
 function getTechNovaAchievementsClient() {
-  if (window.TechNovaAchievementsClient) return window.TechNovaAchievementsClient;
+  if (window.supabaseClient) return window.supabaseClient;
 
   if (!window.supabase || !window.TECHNOVA_SUPABASE_URL || !window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY) {
     throw new Error('TechNova Supabase configuration is unavailable.');
   }
 
-  window.TechNovaAchievementsClient = window.supabase.createClient(
+  window.supabaseClient = window.supabase.createClient(
     window.TECHNOVA_SUPABASE_URL,
     window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY
   );
 
-  return window.TechNovaAchievementsClient;
+  return window.supabaseClient;
 }
 
 function showAchievementMessage(target, message) {
@@ -45,10 +45,7 @@ function renderAchievementCards(grid, rows) {
     const strong = document.createElement('strong');
     strong.textContent = item.earned ? 'Unlocked' : 'Locked';
 
-    status.append(
-      strong,
-      document.createTextNode(` · ${Number(item.xp_reward || 0)} XP`)
-    );
+    status.append(strong, document.createTextNode(` · ${Number(item.xp_reward || 0)} XP`));
 
     if (item.earned_at) {
       const earned = document.createElement('small');
@@ -64,50 +61,10 @@ function renderAchievementCards(grid, rows) {
   }));
 }
 
-async function requireSignedInUser(client) {
-  const { data: { session }, error: sessionError } = await client.auth.getSession();
-  if (sessionError) throw sessionError;
-
-  if (!session?.user) return null;
-
-  const { data: { user }, error: userError } = await client.auth.getUser();
-  if (userError) throw userError;
-  return user;
-}
-
-async function loadAchievementFallback(client, userId) {
-  const [
-    { data: achievements, error: achievementsError },
-    { data: earned, error: earnedError },
-    { data: xpRow, error: xpError }
-  ] = await Promise.all([
-    client.from('achievements')
-      .select('id,slug,name,description,icon,xp_reward')
-      .order('id', { ascending: true }),
-    client.from('user_achievements')
-      .select('achievement_id,earned_at')
-      .eq('user_id', userId),
-    client.from('user_xp')
-      .select('xp,level')
-      .eq('user_id', userId)
-      .maybeSingle()
-  ]);
-
-  if (achievementsError) throw achievementsError;
-  if (earnedError) throw earnedError;
-  if (xpError) throw xpError;
-
-  const earnedMap = new Map(
-    (earned || []).map(row => [String(row.achievement_id), row.earned_at])
-  );
-
-  return (achievements || []).map(item => ({
-    ...item,
-    earned: earnedMap.has(String(item.id)),
-    earned_at: earnedMap.get(String(item.id)) || null,
-    user_xp: Number(xpRow?.xp || 0),
-    user_level: Number(xpRow?.level || 1)
-  }));
+async function getSignedInUser(client) {
+  const { data: { session }, error } = await client.auth.getSession();
+  if (error) throw error;
+  return session?.user || null;
 }
 
 async function loadAchievementProgress() {
@@ -116,49 +73,40 @@ async function loadAchievementProgress() {
 
   const xpEl = document.getElementById('xpTotal');
   const levelEl = document.getElementById('levelText');
-
   grid.innerHTML = '<p class="loading">Loading achievements…</p>';
 
   try {
     const client = getTechNovaAchievementsClient();
-    const user = await requireSignedInUser(client);
+    const user = await getSignedInUser(client);
 
     if (!user) {
       showAchievementMessage(grid, 'Please sign in to view and unlock your TechNova achievements.');
       return;
     }
 
+    // Award the welcome badge once. The database function ignores duplicates.
     const welcome = await client.rpc('award_xp', {
       p_amount: 0,
       p_achievement_slug: 'first-login'
     });
+    if (welcome.error) console.warn('Welcome achievement could not be awarded:', welcome.error);
 
-    if (welcome.error) {
-      console.warn('Welcome achievement could not be awarded:', welcome.error);
-    }
+    const { data: rows, error } = await client.rpc('get_my_achievement_progress');
+    if (error) throw error;
 
-    let rows;
-    const progress = await client.rpc('get_my_achievement_progress');
-
-    if (progress.error) {
-      console.warn('Achievement RPC failed; using table fallback:', progress.error);
-      rows = await loadAchievementFallback(client, user.id);
-    } else {
-      rows = progress.data || [];
-    }
-
-    if (!rows.length) {
+    const progress = rows || [];
+    if (!progress.length) {
       showAchievementMessage(grid, 'No achievements are available yet.');
       return;
     }
 
-    const xp = Number(rows[0]?.user_xp || 0);
-    const level = Number(rows[0]?.user_level || 1);
+    const xp = Number(progress[0]?.user_xp || 0);
+    const level = Number(progress[0]?.user_level || 1);
 
     if (xpEl) xpEl.textContent = `${xp} XP`;
     if (levelEl) levelEl.textContent = `Level ${level}`;
 
-    renderAchievementCards(grid, rows);
+    renderAchievementCards(grid, progress);
   } catch (error) {
     console.error('Achievement loading failed:', error);
     showAchievementMessage(grid, `Could not load achievements: ${error?.message || 'Unknown error'}`);
@@ -173,7 +121,7 @@ async function loadLeaderboard(target) {
 
   try {
     const client = getTechNovaAchievementsClient();
-    const user = await requireSignedInUser(client);
+    const user = await getSignedInUser(client);
 
     if (!user) {
       showAchievementMessage(container, 'Please sign in to view the TechNova leaderboard.');
