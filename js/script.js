@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     box.innerHTML = filtered.length ? filtered.map(e => {
-      const params = new URLSearchParams({ event: e.title });
+      const params = new URLSearchParams({ id: String(e.id) });
       const when = relativeDate(e);
       return `
       <article class="panel event">
