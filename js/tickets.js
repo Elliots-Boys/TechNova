@@ -17,8 +17,6 @@ function createTicketQr(ticketId){
   const wrapper=document.createElement('div');
   wrapper.style.cssText='background:white;padding:8px;border-radius:12px;width:130px;height:130px;box-sizing:border-box;display:grid;place-items:center;overflow:hidden';
 
-  // Prefer the QRCode library already loaded by tickets.html.
-  // This avoids depending on an external QR-image service.
   if(window.QRCode && typeof window.QRCode.toCanvas==='function'){
     const canvas=document.createElement('canvas');
     canvas.width=114;
@@ -41,7 +39,6 @@ function createTicketQr(ticketId){
     return wrapper;
   }
 
-  // Fallback if the QR library failed to load.
   showTicketIdFallback(wrapper,ticketId);
   return wrapper;
 }
@@ -64,7 +61,6 @@ function renderTicket(registration,event){
   ticket.className='ticket';
 
   const info=document.createElement('div');
-
   const eyebrow=document.createElement('p');
   eyebrow.className='eyebrow';
   eyebrow.textContent='TECHNOVA EVENT TICKET';
@@ -102,9 +98,6 @@ document.addEventListener('DOMContentLoaded',async()=>{
       return;
     }
 
-    // A ticket is created from an event registration. Only the signed-in
-    // user's registrations are requested, so the page never exposes another
-    // user's event registrations.
     const {data:registrations,error:registrationError}=await client
       .from('event_registrations')
       .select('id,event_id,created_at')
@@ -122,7 +115,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
     let events=[];
 
     if(eventIds.length){
-      const {data,eventError}=await client
+      const {data,error:eventError}=await client
         .from('events')
         .select('id,title,event_date,event_time,location,event_type')
         .in('id',eventIds);
