@@ -252,6 +252,64 @@ async function signInWithDiscord(event) {
 
 
 /*
+  ROBLOX LOGIN
+*/
+async function signInWithRoblox(event) {
+
+  event?.preventDefault();
+
+  const button =
+    document.querySelector('#roblox-login, #roblox-signup');
+
+  setBusy(
+    button,
+    true,
+    'Continue with Roblox'
+  );
+
+  const next =
+    new URLSearchParams(location.search).get('next');
+
+  const destination =
+    next === 'events.html'
+      ? `${window.location.origin}/pages/events.html`
+      : `${window.location.origin}/pages/account.html`;
+
+  const { error } =
+    await supabaseClient.auth.signInWithOAuth({
+
+      provider: 'custom:roblox',
+
+      options: {
+        redirectTo: destination
+      }
+
+    });
+
+  if (error) {
+
+    console.error(
+      'Roblox OAuth error:',
+      error
+    );
+
+    setBusy(
+      button,
+      false,
+      'Continue with Roblox'
+    );
+
+    showAuthMessage(
+      error.message ||
+      'Roblox login could not be started.'
+    );
+
+  }
+
+}
+
+
+/*
   GOOGLE DRIVE CONNECTION
 */
 async function connectGoogleDrive(event) {
@@ -735,6 +793,9 @@ async function loadAccount() {
       profile?.display_name ||
       user.user_metadata?.display_name ||
       user.user_metadata?.full_name ||
+      user.user_metadata?.name ||
+      user.user_metadata?.preferred_username ||
+      user.user_metadata?.nickname ||
       nameFallback;
 
 
@@ -1181,6 +1242,17 @@ document.addEventListener(
       ?.addEventListener(
         'click',
         signInWithDiscord
+      );
+
+
+    /*
+      Roblox login / sign-up
+    */
+    document
+      .querySelector('#roblox-login, #roblox-signup')
+      ?.addEventListener(
+        'click',
+        signInWithRoblox
       );
 
 
