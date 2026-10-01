@@ -22,7 +22,11 @@ function technovaClient(){
 
 async function technovaAwardXP(amount,achievementKey=null){
   try{
-    const {data,error}=await technovaClient().rpc('award_xp',{p_amount:Number(amount)||0,p_achievement_key:achievementKey});
+    const client=technovaClient();
+    const {data,error}=await client.rpc('award_xp',{
+      p_amount:Number(amount)||0,
+      p_achievement_slug:achievementKey
+    });
     if(error) throw error;
     return Number(data||0);
   }catch(error){
@@ -85,7 +89,7 @@ async function technovaLoadAchievements(){
     const {data:{user},error:authError}=await client.auth.getUser();
 
     if(authError||!user){
-      grid.innerHTML='<p class="muted">Sign in to track achievements.</p>';
+      grid.innerHTML='<p class="muted">Sign in to track your achievements.</p>';
       if(leaderboard) await technovaLoadLeaderboard(leaderboard);
       return;
     }
@@ -122,14 +126,14 @@ async function technovaLoadAchievements(){
 async function technovaLoadLeaderboard(container){
   if(!container) return;
 
+  container.innerHTML='<p class="loading">Loading leaderboard…</p>';
+
   try{
     const client=technovaClient();
-    const {data:scores,error}=await client
-      .from('user_xp')
-      .select('user_id,xp,level')
-      .order('xp',{ascending:false})
-      .order('updated_at',{ascending:true})
-      .limit(25);
+
+    // Use the database function so leaderboard names and disabled-user filtering
+    // do not depend on the public profiles RLS policy.
+    const {data:scores,error}=await client.rpc('get_leaderboard',{limit_count:25});
 
     if(error) throw error;
 
@@ -138,30 +142,21 @@ async function technovaLoadLeaderboard(container){
       return;
     }
 
-    const ids=scores.map(row=>row.user_id).filter(Boolean);
-    let profiles=[];
-
-    if(ids.length){
-      const result=await client.from('profiles').select('id,display_name').in('id',ids);
-      if(!result.error) profiles=result.data||[];
-    }
-
-    const names=new Map(profiles.map(profile=>[String(profile.id),profile.display_name]));
-
     container.replaceChildren(...scores.map((row,index)=>{
       const el=document.createElement('div');
       el.className='l-row';
 
       const rank=document.createElement('span');
       rank.className='rank';
-      rank.textContent=index===0?'🥇':index===1?'🥈':index===2?'🥉':`#${index+1}`;
+      const numericRank=Number(row.rank||index+1);
+      rank.textContent=numericRank===1?'🥇':numericRank===2?'🥈':numericRank===3?'🥉':`#${numericRank}`;
 
       const name=document.createElement('span');
-      name.textContent=names.get(String(row.user_id))||`User ${String(row.user_id||'').slice(0,8)}`;
+      name.textContent=row.display_name||'Unnamed user';
 
       const points=document.createElement('span');
       points.className='points';
-      points.textContent=`${Number(row.xp||0)} XP`;
+      points.textContent=`${Number(row.xp||0)} XP · Level ${Number(row.level||1)}`;
 
       el.append(rank,name,points);
       return el;
