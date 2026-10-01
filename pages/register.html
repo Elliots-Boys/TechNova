@@ -119,9 +119,38 @@ document.addEventListener('DOMContentLoaded', async () => {
       try {
         const { error } = await client.rpc('register_for_event', { p_event_id: event.id });
         if (error) throw error;
-        show('Registration complete! Your ticket is now available.', 'good');
+
+        let emailSent = false;
+
+        try {
+          const { error: emailError } = await client.functions.invoke(
+            'send-event-confirmation',
+            {
+              body: { event_id: event.id }
+            }
+          );
+
+          if (emailError) {
+            console.warn('Event confirmation email failed:', emailError);
+          } else {
+            emailSent = true;
+          }
+        } catch (emailError) {
+          console.warn('Event confirmation email failed:', emailError);
+        }
+
+        show(
+          emailSent
+            ? 'Registration complete! Your ticket is ready and a confirmation email has been sent.'
+            : 'Registration complete! Your ticket is ready. We could not send the confirmation email, but your registration is saved.',
+          'good'
+        );
+
         button.textContent = 'Registered ✓';
-        setTimeout(() => { window.location.href = 'tickets.html'; }, 900);
+
+        setTimeout(() => {
+          window.location.href = 'tickets.html';
+        }, 1800);
       } catch (error) {
         console.error('Event registration failed:', error);
         show(error?.message || 'Could not register for this event.', 'error');
