@@ -17,6 +17,9 @@
   const content =
     document.getElementById('oauthContent');
 
+  const idle =
+    document.getElementById('oauthIdle');
+
   const message =
     document.getElementById('oauthMessage');
 
@@ -83,8 +86,20 @@
 
     if (!authorizationId) {
 
-      showError(
-        'This authorisation request is missing its authorization_id.'
+      loading?.classList.add(
+        'oauth-hidden'
+      );
+
+      message?.classList.remove(
+        'show'
+      );
+
+      content?.classList.add(
+        'oauth-hidden'
+      );
+
+      idle?.classList.remove(
+        'oauth-hidden'
       );
 
       return;
