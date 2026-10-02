@@ -310,6 +310,59 @@ async function signInWithDiscord(event) {
 
 
 /*
+  TWITCH LOGIN
+*/
+async function signInWithTwitch(event) {
+
+  event?.preventDefault();
+
+  const button =
+    document.querySelector('#twitch-login');
+
+  setBusy(
+    button,
+    true,
+    'Continue with Twitch'
+  );
+
+  const destination =
+    getAuthReturnUrl();
+
+  const { error } =
+    await supabaseClient.auth.signInWithOAuth({
+
+      provider: 'twitch',
+
+      options: {
+        redirectTo: destination
+      }
+
+    });
+
+  if (error) {
+
+    console.error(
+      'Twitch OAuth error:',
+      error
+    );
+
+    setBusy(
+      button,
+      false,
+      'Continue with Twitch'
+    );
+
+    showAuthMessage(
+      error.message ||
+      'Twitch login could not be started.'
+    );
+
+  }
+
+}
+
+
+/*
   ROBLOX LOGIN
 */
 async function signInWithRoblox(event) {
