@@ -884,7 +884,61 @@ async function loadAccount() {
 
 
     if (userError) {
+
+      const params =
+        new URLSearchParams(location.search);
+
+      const hashParams =
+        new URLSearchParams(
+          location.hash.replace(/^#/, '')
+        );
+
+      const oauthDescription =
+        params.get('error_description') ||
+        hashParams.get('error_description') ||
+        '';
+
+      const sessionMissing =
+        /auth session missing/i.test(
+          userError.message || ''
+        );
+
+      if (sessionMissing) {
+
+        document
+          .querySelector('#accountStatus')
+          ?.replaceChildren(
+            document.createTextNode(
+              'You are not signed in.'
+            )
+          );
+
+        if (
+          /premium subscription required/i.test(
+            oauthDescription
+          )
+        ) {
+
+          setAccountMessage(
+            'Spotify sign-in could not finish because Spotify requires an active Premium subscription for the owner of this developer app.'
+          );
+
+        } else {
+
+          setAccountMessage(
+            oauthDescription
+              ? `Sign-in could not be completed: ${oauthDescription}`
+              : 'Your sign-in did not complete. Please return to the login page and try again.'
+          );
+
+        }
+
+        return;
+
+      }
+
       throw userError;
+
     }
 
 
