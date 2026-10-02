@@ -207,6 +207,36 @@
   line-height:1
 }
 
+.twitch-btn{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-top:12px;
+  background:#9146ff;
+  color:#fff;
+  border:1px solid #a970ff;
+  font-weight:800;
+  padding:13px 14px;
+  border-radius:11px;
+  cursor:pointer
+}
+
+.twitch-btn:hover{
+  background:#772ce8
+}
+
+.twitch-icon{
+  width:20px;
+  height:20px;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  font-size:16px;
+  line-height:1
+}
+
 .roblox-btn{
   width:100%;
   display:flex;
@@ -359,7 +389,7 @@
 <h2>Log in</h2>
 
 <p class="sub">
-  Use your TechNova account or continue securely with Google, GitHub, Discord or Roblox.
+  Use your TechNova account or continue securely with Google, GitHub, Discord, Twitch or Roblox.
 </p>
 
 
@@ -431,6 +461,18 @@ Continue with GitHub
 >
   <span class="discord-icon" aria-hidden="true">◈</span>
   Continue with Discord
+</button>
+
+
+<!-- TWITCH -->
+
+<button
+  id="twitch-login"
+  class="btn twitch-btn"
+  type="button"
+>
+  <span class="twitch-icon" aria-hidden="true">T</span>
+  Continue with Twitch
 </button>
 
 
