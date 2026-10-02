@@ -207,6 +207,37 @@
   line-height:1
 }
 
+.spotify-btn{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-top:12px;
+  background:#1ed760;
+  color:#07120b;
+  border:1px solid #32e975;
+  font-weight:800;
+  padding:13px 14px;
+  border-radius:11px;
+  cursor:pointer
+}
+
+.spotify-btn:hover{
+  background:#1fdf64;
+  color:#07120b
+}
+
+.spotify-icon{
+  width:20px;
+  height:20px;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  font-size:16px;
+  line-height:1
+}
+
 .twitch-btn{
   width:100%;
   display:flex;
@@ -389,7 +420,7 @@
 <h2>Log in</h2>
 
 <p class="sub">
-  Use your TechNova account or continue securely with Google, GitHub, Discord, Twitch or Roblox.
+  Use your TechNova account or continue securely with Google, GitHub, Discord, Spotify, Twitch or Roblox.
 </p>
 
 
@@ -461,6 +492,18 @@ Continue with GitHub
 >
   <span class="discord-icon" aria-hidden="true">◈</span>
   Continue with Discord
+</button>
+
+
+<!-- SPOTIFY -->
+
+<button
+  id="spotify-login"
+  class="btn spotify-btn"
+  type="button"
+>
+  <span class="spotify-icon" aria-hidden="true">●</span>
+  Continue with Spotify
 </button>
 
 
