@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Continue with TechNova · OAuth Test</title>
+
+<link rel="stylesheet" href="../css/style.css">
+
+<style>
+.oauth-test-page{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:28px 18px;
+  background:
+    radial-gradient(circle at 15% 10%,#173b5a55,transparent 34%),
+    radial-gradient(circle at 85% 90%,#513b8050,transparent 34%),
+    #060c15
+}
+
+.oauth-test-card{
+  width:min(100%,620px);
+  padding:30px;
+  border-radius:24px;
+  border:1px solid #243955;
+  background:linear-gradient(180deg,#101b2d,#09111d);
+  box-shadow:0 30px 100px #0009;
+  color:#fff
+}
+
+.oauth-test-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px
+}
+
+.oauth-test-mark{
+  width:46px;
+  height:46px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#32d6ff,#9b6cff);
+  color:#06101d;
+  font-size:22px;
+  font-weight:900
+}
+
+.oauth-test-card h1{
+  margin:0 0 10px;
+  font-size:clamp(30px,6vw,44px)
+}
+
+.oauth-test-copy{
+  color:#9fb0c5;
+  line-height:1.6
+}
+
+.oauth-test-info{
+  margin:20px 0;
+  padding:15px;
+  border-radius:14px;
+  background:#08111e;
+  border:1px solid #20344f;
+  color:#cbd6e6
+}
+
+.tech-login{
+  width:100%;
+  min-height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  border:0;
+  border-radius:13px;
+  cursor:pointer;
+  font-weight:900;
+  font-size:16px;
+  color:#07111d;
+  background:linear-gradient(135deg,#32d6ff,#9b6cff)
+}
+
+.tech-login:disabled{
+  opacity:.65;
+  cursor:wait
+}
+
+.oauth-test-note{
+  margin:14px 0 0;
+  color:#71839c;
+  font-size:13px;
+  line-height:1.5
+}
+
+.oauth-test-error{
+  display:none;
+  margin-top:16px;
+  padding:12px 14px;
+  border-radius:11px;
+  border:1px solid #6b3040;
+  background:#27131a;
+  color:#ffb7c5
+}
+
+.oauth-test-error.show{
+  display:block
+}
+</style>
+</head>
+
+<body>
+
+<main class="oauth-test-page">
+
+  <section class="oauth-test-card">
+
+    <div class="oauth-test-brand">
+      <div class="oauth-test-mark">✦</div>
+      <div>
+        <strong>TECHNOVA OAUTH TEST</strong>
+      </div>
+    </div>
+
+    <h1>Continue with TechNova</h1>
+
+    <p class="oauth-test-copy">
+      This page acts as a separate test application. Press the button below
+      to authenticate through TechNova's OAuth 2.1 identity provider.
+    </p>
+
+    <div class="oauth-test-info">
+      Requested permissions:
+      <strong>identity, profile and email</strong>
+    </div>
+
+    <button
+      id="startTechNovaOAuth"
+      class="tech-login"
+      type="button"
+    >
+      ✦ Continue with TechNova
+    </button>
+
+    <p class="oauth-test-note">
+      This test uses Authorization Code + PKCE. No client secret is stored
+      in the browser.
+    </p>
+
+    <div
+      id="oauthTestError"
+      class="oauth-test-error"
+      role="alert"
+      aria-live="polite"
+    ></div>
+
+  </section>
+
+</main>
+
+<script src="../js/oauth-test.js"></script>
+
+</body>
+</html>
