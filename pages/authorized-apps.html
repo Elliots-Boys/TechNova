@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Authorised apps · TechNova</title>
+
+<link rel="stylesheet" href="../css/style.css">
+
+<style>
+.oauth-apps-page{
+  max-width:960px;
+  margin:0 auto;
+  padding:64px 22px 90px
+}
+
+.oauth-apps-hero{
+  margin-bottom:22px
+}
+
+.oauth-apps-hero h1{
+  margin:8px 0 10px;
+  font-size:clamp(42px,7vw,66px);
+  line-height:1.03
+}
+
+.oauth-apps-hero p{
+  max-width:720px;
+  color:#9fb0c5
+}
+
+.oauth-apps-list{
+  display:grid;
+  gap:14px
+}
+
+.oauth-app{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:16px;
+  align-items:center;
+  padding:20px;
+  border:1px solid #20324b;
+  border-radius:18px;
+  background:linear-gradient(180deg,#0d1728,#09111e)
+}
+
+.oauth-app-icon{
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:linear-gradient(135deg,#32d6ff,#9b6cff);
+  color:#06101d;
+  font-size:23px;
+  font-weight:900
+}
+
+.oauth-app h2{
+  margin:0 0 3px;
+  font-size:19px
+}
+
+.oauth-meta{
+  color:#91a0b7;
+  font-size:13px;
+  line-height:1.55
+}
+
+.oauth-scopes{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:9px
+}
+
+.oauth-scope{
+  border:1px solid #264768;
+  background:#0b2039;
+  color:#9ccfff;
+  padding:3px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800
+}
+
+.oauth-revoke{
+  background:#20131a;
+  border:1px solid #59303c;
+  color:#ffb7c5;
+  cursor:pointer;
+  padding:10px 13px;
+  border-radius:10px;
+  font:inherit;
+  font-weight:800
+}
+
+.oauth-revoke:hover{
+  background:#321821
+}
+
+.oauth-empty,
+.oauth-loading{
+  padding:26px;
+  border:1px dashed #29405e;
+  border-radius:16px;
+  color:#91a0b7;
+  text-align:center
+}
+
+.oauth-apps-message{
+  display:none;
+  margin:0 0 16px;
+  padding:12px 14px;
+  border-radius:11px;
+  border:1px solid #6b3040;
+  background:#27131a;
+  color:#ffb7c5
+}
+
+.oauth-apps-message.show{
+  display:block
+}
+
+.oauth-apps-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:22px
+}
+
+@media(max-width:650px){
+  .oauth-app{
+    grid-template-columns:auto 1fr
+  }
+
+  .oauth-revoke{
+    grid-column:1/-1;
+    width:100%
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <a class="brand" href="../index.html">
+    ✦ TECHNOVA
+  </a>
+
+  <button
+    id="menu"
+    aria-label="Open menu"
+    type="button"
+  >
+    ☰
+  </button>
+
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="events.html">Events</a>
+    <a href="technology.html">Technology</a>
+    <a href="innovation.html">Innovation</a>
+    <a href="news.html">News</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a class="active" href="account.html">My account</a>
+  </nav>
+
+</header>
+
+
+<main class="oauth-apps-page">
+
+  <section class="oauth-apps-hero">
+
+    <p class="eyebrow">
+      CONTINUE WITH TECHNOVA
+    </p>
+
+    <h1>
+      Authorised apps
+    </h1>
+
+    <p>
+      These applications have permission to use your TechNova identity.
+      Revoking an app signs out its OAuth sessions and prevents its refresh
+      tokens from being used again.
+    </p>
+
+  </section>
+
+
+  <div
+    id="oauthAppsMessage"
+    class="oauth-apps-message"
+    role="alert"
+    aria-live="polite"
+  ></div>
+
+
+  <section
+    id="oauthAppsList"
+    class="oauth-apps-list"
+    aria-live="polite"
+  >
+
+    <div class="oauth-loading">
+      Loading your authorised apps…
+    </div>
+
+  </section>
+
+
+  <div class="oauth-apps-actions">
+
+    <a
+      class="btn primary"
+      href="account.html"
+    >
+      ← Back to account
+    </a>
+
+    <a
+      class="btn"
+      href="oauth-developers.html"
+    >
+      Continue with TechNova for developers
+    </a>
+
+  </div>
+
+</main>
+
+
+<footer>
+  © 2026 TechNova · Technology for what's next.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/authorized-apps.js"></script>
+<script src="../js/script.js"></script>
+
+</body>
+</html>
