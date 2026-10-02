@@ -66,6 +66,80 @@ const GOOGLE_DRIVE_SCOPE =
 
 
 /*
+  Resolve where the user should return after authentication.
+
+  OAuth consent requests use ?redirect=/pages/oauth-consent.html?authorization_id=...
+  Only same-origin destinations are accepted so this cannot become an open redirect.
+*/
+function getAuthReturnPath() {
+
+  const params =
+    new URLSearchParams(location.search);
+
+  const redirect =
+    params.get('redirect');
+
+  if (redirect) {
+
+    try {
+
+      const target =
+        new URL(
+          redirect,
+          location.origin
+        );
+
+      if (
+        target.origin ===
+        location.origin
+      ) {
+
+        return (
+          target.pathname +
+          target.search +
+          target.hash
+        );
+
+      }
+
+    } catch (error) {
+
+      console.warn(
+        'Ignored invalid TechNova auth redirect:',
+        error
+      );
+
+    }
+
+  }
+
+
+  const next =
+    params.get('next');
+
+  if (next === 'events.html') {
+    return '/pages/events.html';
+  }
+
+  if (next === 'google-drive.html') {
+    return '/pages/google-drive.html';
+  }
+
+  return '/pages/account.html';
+}
+
+
+function getAuthReturnUrl() {
+
+  return (
+    location.origin +
+    getAuthReturnPath()
+  );
+
+}
+
+
+/*
   GOOGLE LOGIN
 */
 async function signInWithGoogle(event) {
@@ -81,13 +155,8 @@ async function signInWithGoogle(event) {
     'Continue with Google'
   );
 
-  const next =
-    new URLSearchParams(location.search).get('next');
-
   const destination =
-    next === 'events.html'
-      ? `${location.origin}/pages/events.html`
-      : `${location.origin}/pages/account.html`;
+    getAuthReturnUrl();
 
 
   const { error } =
@@ -147,14 +216,8 @@ async function signInWithGitHub(event) {
   );
 
 
-  const next =
-    new URLSearchParams(location.search).get('next');
-
-
   const destination =
-    next === 'events.html'
-      ? `${window.location.origin}/pages/events.html`
-      : `${window.location.origin}/pages/account.html`;
+    getAuthReturnUrl();
 
 
   const { error } =
@@ -208,13 +271,8 @@ async function signInWithDiscord(event) {
     'Continue with Discord'
   );
 
-  const next =
-    new URLSearchParams(location.search).get('next');
-
   const destination =
-    next === 'events.html'
-      ? `${window.location.origin}/pages/events.html`
-      : `${window.location.origin}/pages/account.html`;
+    getAuthReturnUrl();
 
   const { error } =
     await supabaseClient.auth.signInWithOAuth({
@@ -267,13 +325,8 @@ async function signInWithRoblox(event) {
     'Continue with Roblox'
   );
 
-  const next =
-    new URLSearchParams(location.search).get('next');
-
   const destination =
-    next === 'events.html'
-      ? `${window.location.origin}/pages/events.html`
-      : `${window.location.origin}/pages/account.html`;
+    getAuthReturnUrl();
 
   const { error } =
     await supabaseClient.auth.signInWithOAuth({
@@ -452,7 +505,7 @@ async function signUp(event) {
         },
 
         emailRedirectTo:
-          `${location.origin}/pages/account.html`
+          getAuthReturnUrl()
 
       }
 
@@ -557,15 +610,8 @@ async function signIn(event) {
   }
 
 
-  const next =
-    new URLSearchParams(location.search)
-      .get('next');
-
-
   location.href =
-    next === 'events.html'
-      ? 'events.html'
-      : 'account.html';
+    getAuthReturnPath();
 
 }
 
@@ -1187,6 +1233,35 @@ async function cancelEvent(
 document.addEventListener(
   'DOMContentLoaded',
   () => {
+
+    /*
+      Preserve an OAuth authorization request while the user
+      moves between the login and sign-up pages.
+    */
+    const authRedirect =
+      new URLSearchParams(location.search)
+        .get('redirect');
+
+    if (authRedirect) {
+
+      document
+        .querySelectorAll(
+          'a[href="login.html"], a[href="signup.html"]'
+        )
+        .forEach(link => {
+
+          const page =
+            link
+              .getAttribute('href')
+              .split('?')[0];
+
+          link.href =
+            `${page}?redirect=${encodeURIComponent(authRedirect)}`;
+
+        });
+
+    }
+
 
     /*
       Sign up
