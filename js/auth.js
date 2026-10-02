@@ -1374,6 +1374,17 @@ document.addEventListener(
 
 
     /*
+      Twitch login
+    */
+    document
+      .querySelector('#twitch-login')
+      ?.addEventListener(
+        'click',
+        signInWithTwitch
+      );
+
+
+    /*
       Roblox login / sign-up
     */
     document
