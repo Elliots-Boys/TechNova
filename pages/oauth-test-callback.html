@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>TechNova OAuth Result</title>
+
+<link rel="stylesheet" href="../css/style.css">
+
+<style>
+.oauth-result-page{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:28px 18px;
+  background:
+    radial-gradient(circle at 15% 10%,#173b5a55,transparent 34%),
+    radial-gradient(circle at 85% 90%,#513b8050,transparent 34%),
+    #060c15
+}
+
+.oauth-result-card{
+  width:min(100%,680px);
+  padding:30px;
+  border-radius:24px;
+  border:1px solid #243955;
+  background:linear-gradient(180deg,#101b2d,#09111d);
+  box-shadow:0 30px 100px #0009;
+  color:#fff
+}
+
+.oauth-result-card h1{
+  margin:0 0 10px
+}
+
+.oauth-status{
+  color:#9fb0c5;
+  line-height:1.6
+}
+
+.oauth-success{
+  display:none
+}
+
+.oauth-success.show{
+  display:block
+}
+
+.oauth-error{
+  display:none;
+  margin-top:16px;
+  padding:12px 14px;
+  border-radius:11px;
+  border:1px solid #6b3040;
+  background:#27131a;
+  color:#ffb7c5
+}
+
+.oauth-error.show{
+  display:block
+}
+
+.oauth-profile{
+  display:grid;
+  gap:10px;
+  margin:20px 0
+}
+
+.oauth-profile-row{
+  padding:12px 14px;
+  border-radius:12px;
+  background:#08111e;
+  border:1px solid #20344f;
+  color:#cbd6e6;
+  word-break:break-word
+}
+
+.oauth-profile-row strong{
+  color:#fff
+}
+
+.oauth-result-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:20px
+}
+
+.oauth-result-actions a{
+  text-decoration:none
+}
+</style>
+</head>
+
+<body>
+
+<main class="oauth-result-page">
+
+  <section class="oauth-result-card">
+
+    <p class="eyebrow">TECHNOVA IDENTITY</p>
+
+    <h1 id="oauthResultTitle">
+      Completing TechNova sign-in…
+    </h1>
+
+    <p id="oauthResultStatus" class="oauth-status">
+      Verifying the OAuth response and exchanging the authorization code.
+    </p>
+
+    <div id="oauthSuccess" class="oauth-success">
+
+      <div class="oauth-profile">
+        <div class="oauth-profile-row">
+          <strong>Name:</strong>
+          <span id="resultName">—</span>
+        </div>
+
+        <div class="oauth-profile-row">
+          <strong>Email:</strong>
+          <span id="resultEmail">—</span>
+        </div>
+
+        <div class="oauth-profile-row">
+          <strong>TechNova user ID:</strong>
+          <span id="resultSubject">—</span>
+        </div>
+
+        <div class="oauth-profile-row">
+          <strong>Granted scopes:</strong>
+          <span id="resultScopes">—</span>
+        </div>
+
+        <div class="oauth-profile-row">
+          <strong>OIDC ID token:</strong>
+          <span id="resultIdToken">—</span>
+        </div>
+      </div>
+
+      <div class="oauth-result-actions">
+        <a class="btn primary" href="oauth-test.html">
+          Test again
+        </a>
+
+        <a class="btn" href="../index.html">
+          TechNova home
+        </a>
+      </div>
+
+    </div>
+
+    <div
+      id="oauthResultError"
+      class="oauth-error"
+      role="alert"
+      aria-live="polite"
+    ></div>
+
+  </section>
+
+</main>
+
+<script src="../js/oauth-test-callback.js"></script>
+
+</body>
+</html>
