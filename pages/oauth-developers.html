@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Continue with TechNova · Developers</title>
+
+<link rel="stylesheet" href="../css/style.css">
+
+<style>
+.oauth-dev-page{
+  max-width:1040px;
+  margin:0 auto;
+  padding:64px 22px 90px
+}
+
+.oauth-dev-hero{
+  padding:30px;
+  border:1px solid #244563;
+  border-radius:24px;
+  background:linear-gradient(145deg,#10233d,#0a1220);
+  margin-bottom:20px
+}
+
+.oauth-dev-hero h1{
+  font-size:clamp(42px,7vw,68px);
+  line-height:1.02;
+  margin:10px 0
+}
+
+.oauth-dev-hero p{
+  color:#a9b9cc;
+  max-width:760px
+}
+
+.oauth-dev-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px
+}
+
+.oauth-dev-card{
+  padding:22px;
+  border:1px solid #20324b;
+  border-radius:18px;
+  background:linear-gradient(180deg,#0d1728,#09111e)
+}
+
+.oauth-dev-card h2{
+  margin-top:0
+}
+
+.oauth-code{
+  display:block;
+  margin-top:10px;
+  padding:12px 13px;
+  border:1px solid #29405e;
+  border-radius:11px;
+  background:#06101b;
+  color:#bcecff;
+  overflow:auto;
+  white-space:nowrap;
+  font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace
+}
+
+.oauth-scopes{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px
+}
+
+.oauth-scope{
+  padding:5px 9px;
+  border-radius:999px;
+  border:1px solid #264768;
+  background:#0b2039;
+  color:#9ccfff;
+  font-size:12px;
+  font-weight:800
+}
+
+.oauth-dev-note{
+  margin-top:18px;
+  padding:16px;
+  border:1px solid #4e4320;
+  border-radius:13px;
+  background:#221d0b;
+  color:#e5d797
+}
+
+@media(max-width:760px){
+  .oauth-dev-grid{
+    grid-template-columns:1fr
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <a class="brand" href="../index.html">
+    ✦ TECHNOVA
+  </a>
+
+  <button
+    id="menu"
+    aria-label="Open menu"
+    type="button"
+  >
+    ☰
+  </button>
+
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="events.html">Events</a>
+    <a href="technology.html">Technology</a>
+    <a href="innovation.html">Innovation</a>
+    <a href="news.html">News</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="account.html">My account</a>
+  </nav>
+
+</header>
+
+
+<main class="oauth-dev-page">
+
+  <section class="oauth-dev-hero">
+
+    <p class="eyebrow">
+      TECHNOVA IDENTITY PLATFORM
+    </p>
+
+    <h1>
+      Continue with TechNova
+    </h1>
+
+    <p>
+      TechNova can act as an OAuth 2.1 and OpenID Connect identity provider.
+      Registered applications can let their users sign in with an existing
+      TechNova account using Authorization Code + PKCE.
+    </p>
+
+  </section>
+
+
+  <section class="oauth-dev-grid">
+
+    <article class="oauth-dev-card">
+
+      <h2>OIDC discovery</h2>
+
+      <p class="muted">
+        OIDC-compatible clients can discover the provider configuration here.
+      </p>
+
+      <code class="oauth-code">https://maxlbgiomkdfynnjoghs.supabase.co/auth/v1/.well-known/openid-configuration</code>
+
+    </article>
+
+
+    <article class="oauth-dev-card">
+
+      <h2>Issuer</h2>
+
+      <p class="muted">
+        Use this as the TechNova identity issuer.
+      </p>
+
+      <code class="oauth-code">https://maxlbgiomkdfynnjoghs.supabase.co/auth/v1</code>
+
+    </article>
+
+
+    <article class="oauth-dev-card">
+
+      <h2>Authorization endpoint</h2>
+
+      <code class="oauth-code">https://maxlbgiomkdfynnjoghs.supabase.co/auth/v1/oauth/authorize</code>
+
+    </article>
+
+
+    <article class="oauth-dev-card">
+
+      <h2>Token endpoint</h2>
+
+      <code class="oauth-code">https://maxlbgiomkdfynnjoghs.supabase.co/auth/v1/oauth/token</code>
+
+    </article>
+
+
+    <article class="oauth-dev-card">
+
+      <h2>UserInfo endpoint</h2>
+
+      <code class="oauth-code">https://maxlbgiomkdfynnjoghs.supabase.co/auth/v1/oauth/userinfo</code>
+
+    </article>
+
+
+    <article class="oauth-dev-card">
+
+      <h2>JWKS endpoint</h2>
+
+      <code class="oauth-code">https://maxlbgiomkdfynnjoghs.supabase.co/auth/v1/.well-known/jwks.json</code>
+
+    </article>
+
+  </section>
+
+
+  <section
+    class="oauth-dev-card"
+    style="margin-top:16px"
+  >
+
+    <h2>Supported identity scopes</h2>
+
+    <div class="oauth-scopes">
+      <span class="oauth-scope">openid</span>
+      <span class="oauth-scope">profile</span>
+      <span class="oauth-scope">email</span>
+      <span class="oauth-scope">phone</span>
+    </div>
+
+    <p class="muted">
+      Each client application needs its own registered Client ID and exact
+      redirect URI. Public browser and mobile clients should use PKCE with
+      the S256 challenge method.
+    </p>
+
+  </section>
+
+
+  <div class="oauth-dev-note">
+    Client registrations are controlled by TechNova. Do not place a
+    confidential client secret in browser JavaScript or a public repository.
+  </div>
+
+
+  <div class="actions">
+    <a class="btn primary" href="account.html">
+      My TechNova account
+    </a>
+
+    <a class="btn" href="authorized-apps.html">
+      Manage authorised apps
+    </a>
+  </div>
+
+</main>
+
+
+<footer>
+  © 2026 TechNova · Technology for what's next.
+</footer>
+
+<script src="../js/script.js"></script>
+
+</body>
+</html>
