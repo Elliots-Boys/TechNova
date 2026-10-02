@@ -16,7 +16,10 @@ window.__technovaGoogleProviderToken = null;
 
 supabaseClient.auth.onAuthStateChange((event, session) => {
 
-  if (session?.provider_token) {
+  if (
+    session?.provider_token &&
+    session?.user?.app_metadata?.provider === 'google'
+  ) {
     window.__technovaGoogleProviderToken =
       session.provider_token;
   }
@@ -302,6 +305,59 @@ async function signInWithDiscord(event) {
     showAuthMessage(
       error.message ||
       'Discord login could not be started.'
+    );
+
+  }
+
+}
+
+
+/*
+  SPOTIFY LOGIN
+*/
+async function signInWithSpotify(event) {
+
+  event?.preventDefault();
+
+  const button =
+    document.querySelector('#spotify-login, #spotify-signup');
+
+  setBusy(
+    button,
+    true,
+    'Continue with Spotify'
+  );
+
+  const destination =
+    getAuthReturnUrl();
+
+  const { error } =
+    await supabaseClient.auth.signInWithOAuth({
+
+      provider: 'spotify',
+
+      options: {
+        redirectTo: destination
+      }
+
+    });
+
+  if (error) {
+
+    console.error(
+      'Spotify OAuth error:',
+      error
+    );
+
+    setBusy(
+      button,
+      false,
+      'Continue with Spotify'
+    );
+
+    showAuthMessage(
+      error.message ||
+      'Spotify login could not be started.'
     );
 
   }
@@ -1370,6 +1426,17 @@ document.addEventListener(
       ?.addEventListener(
         'click',
         signInWithDiscord
+      );
+
+
+    /*
+      Spotify login / sign-up
+    */
+    document
+      .querySelector('#spotify-login, #spotify-signup')
+      ?.addEventListener(
+        'click',
+        signInWithSpotify
       );
 
 
