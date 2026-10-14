@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Manage OAuth application · TechNova</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.developer-page{max-width:1080px;margin:0 auto;padding:58px 22px 90px}
+.developer-hero{padding:30px;border:1px solid #244563;border-radius:24px;background:linear-gradient(145deg,#10233d,#0a1220);margin-bottom:20px}
+.developer-hero h1{font-size:clamp(42px,7vw,68px);line-height:1.02;margin:9px 0}
+.developer-hero p{max-width:760px;color:#a9b9cc}
+.developer-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.developer-grid{display:grid;gap:14px}
+.developer-app-card{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:20px;border:1px solid #20324b;border-radius:18px;background:linear-gradient(180deg,#0d1728,#09111e)}
+.developer-app-icon{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#32d6ff,#9b6cff);color:#06101d;font-size:24px;font-weight:900}
+.developer-app-card h2{margin:0 0 5px}
+.developer-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px;color:#91a0b7;font-size:12px}
+.developer-meta code,.credential code,.client-id{padding:6px 8px;border-radius:8px;background:#06101b;border:1px solid #29405e;color:#bcecff;overflow-wrap:anywhere}
+.developer-empty,.developer-loading{padding:26px;border:1px dashed #29405e;border-radius:16px;color:#91a0b7;text-align:center}
+.developer-panel{padding:24px;border:1px solid #20324b;border-radius:18px;background:linear-gradient(180deg,#0d1728,#09111e);margin-top:16px}
+.developer-form{display:grid;gap:16px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.field label{display:block;margin-bottom:7px;font-weight:800;font-size:13px;color:#c5d1e2}
+.field input,.field textarea,.field select{width:100%;box-sizing:border-box;background:#07101c;border:1px solid #253a55;color:#fff;padding:12px 13px;border-radius:10px;outline:0;font:inherit}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:#32d6ff;box-shadow:0 0 0 3px #32d6ff16}
+.field-help{margin-top:6px;color:#8191a8;font-size:12px;line-height:1.45}
+.full{grid-column:1/-1}
+.developer-message{display:none;margin:0 0 16px;padding:12px 14px;border-radius:11px;border:1px solid #6b3040;background:#27131a;color:#ffb7c5}
+.developer-message.show{display:block}
+.developer-message.good{border-color:#21614e;background:#0b2b22;color:#86efc7}
+.credential{padding:14px;border:1px solid #29405e;border-radius:12px;background:#07101c;margin-top:12px}
+.credential-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.credential-row code{flex:1;min-width:180px}
+.warning{padding:14px;border-radius:12px;border:1px solid #675320;background:#2b220c;color:#f2d98a}
+.danger-zone{border-color:#5d2c3a}
+.danger-button{background:#2a131a;border:1px solid #6d3444;color:#ffb8c7}
+@media(max-width:760px){.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.developer-app-card{grid-template-columns:auto 1fr}.developer-app-card .btn{grid-column:1/-1}.developer-toolbar .btn{width:100%;text-align:center}}
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="../index.html">✦ TECHNOVA</a>
+<button id="menu" aria-label="Open menu" type="button">☰</button>
+<nav>
+<a href="../index.html">Home</a>
+<a href="events.html">Events</a>
+<a href="technology.html">Technology</a>
+<a href="news.html">News</a>
+<a href="oauth-developers.html">Developers</a>
+<a href="account.html">My account</a>
+</nav>
+</header>
+<main class="developer-page">
+<section class="developer-hero">
+<p class="eyebrow">TECHNOVA DEVELOPERS</p>
+<h1>Manage application</h1>
+<p>Update your application metadata and exact OAuth redirect URLs.</p>
+<div class="developer-toolbar">
+<a class="btn" href="developer-apps.html">← Developer Console</a>
+<a class="btn" href="oauth-developers.html">Integration documentation</a>
+</div>
+</section>
+
+<div id="developerMessage" class="developer-message" role="alert" aria-live="polite"></div>
+<div id="developerLoading" class="developer-loading">Loading application…</div>
+
+<form id="manageDeveloperAppForm" class="developer-form" hidden>
+<section class="developer-panel">
+<p class="eyebrow">OAUTH CLIENT</p>
+<h2>Client details</h2>
+<p><strong>Client ID:</strong> <code id="managedClientId" class="client-id"></code></p>
+<p><strong>Type:</strong> <span id="managedClientType"></span></p>
+<p class="muted">Client type cannot be changed after creation. Create a separate application if you need a different client type.</p>
+</section>
+
+<section class="developer-panel">
+<div class="form-grid">
+<div class="field">
+<label for="manageName">Application name</label>
+<input id="manageName" name="name" maxlength="80" required>
+</div>
+<div class="field">
+<label for="manageWebsite">Website URL</label>
+<input id="manageWebsite" name="website_url" type="url">
+</div>
+<div class="field full">
+<label for="manageDescription">Description</label>
+<textarea id="manageDescription" name="description" maxlength="500"></textarea>
+</div>
+<div class="field">
+<label for="manageLogo">Logo URL</label>
+<input id="manageLogo" name="logo_url" type="url">
+</div>
+<div class="field">
+<label for="managePrivacy">Privacy policy URL</label>
+<input id="managePrivacy" name="privacy_url" type="url">
+</div>
+<div class="field">
+<label for="manageTerms">Terms URL</label>
+<input id="manageTerms" name="terms_url" type="url">
+</div>
+<div class="field full">
+<label for="manageRedirects">Redirect URIs</label>
+<textarea id="manageRedirects" name="redirect_uris" required></textarea>
+<div class="field-help">One exact URL per line.</div>
+</div>
+</div>
+<div class="developer-toolbar">
+<button id="saveDeveloperApp" class="btn primary" type="submit">Save changes</button>
+</div>
+</section>
+
+<section id="secretManagement" class="developer-panel" hidden>
+<p class="eyebrow">CONFIDENTIAL CLIENT</p>
+<h2>Client secret</h2>
+<p class="muted">TechNova does not store a readable copy of your secret. Regenerating it immediately invalidates the old secret.</p>
+<div id="newSecretBox" class="credential" hidden>
+<strong>New Client Secret — copy now</strong>
+<div class="credential-row">
+<code id="newClientSecret"></code>
+<button id="copyNewClientSecret" class="btn" type="button">Copy</button>
+</div>
+</div>
+<div class="developer-toolbar">
+<button id="regenerateClientSecret" class="btn" type="button">Regenerate client secret</button>
+</div>
+</section>
+
+<section class="developer-panel danger-zone">
+<p class="eyebrow">DANGER ZONE</p>
+<h2>Delete application</h2>
+<p class="muted">Deleting the OAuth client stops new authorisations and token operations for this application.</p>
+<div class="developer-toolbar">
+<button id="deleteDeveloperApp" class="btn danger-button" type="button">Delete application</button>
+</div>
+</section>
+</form>
+</main>
+<footer>© 2026 TechNova · Technology for what's next.</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/developer-oauth.js"></script>
+<script src="../js/script.js"></script>
+</body>
+</html>
