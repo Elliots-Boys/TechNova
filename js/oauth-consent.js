@@ -197,6 +197,7 @@
 
     const clientName =
       details.client?.name ||
+      details.client?.client_name ||
       'this application';
 
     document
