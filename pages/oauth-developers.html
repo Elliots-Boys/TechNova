@@ -149,6 +149,20 @@
   </section>
 
 
+  <section class="oauth-dev-card" style="margin-bottom:16px">
+    <p class="eyebrow">DEVELOPER CONSOLE</p>
+    <h2>Create your own Continue with TechNova app</h2>
+    <p class="muted">
+      Sign in with your TechNova account, register an OAuth application, add exact redirect
+      URLs and get a Client ID. Public browser/mobile apps use PKCE and confidential
+      server-side apps receive a Client Secret that is only shown when created or regenerated.
+    </p>
+    <div class="actions">
+      <a class="btn primary" href="developer-apps.html">Open Developer Console →</a>
+      <a class="btn" href="developer-app-new.html">Create an OAuth app</a>
+    </div>
+  </section>
+
   <section class="oauth-dev-grid">
 
     <article class="oauth-dev-card">
@@ -226,7 +240,6 @@
       <span class="oauth-scope">openid</span>
       <span class="oauth-scope">profile</span>
       <span class="oauth-scope">email</span>
-      <span class="oauth-scope">phone</span>
     </div>
 
     <p class="muted">
@@ -238,14 +251,31 @@
   </section>
 
 
+  <section class="oauth-dev-card" style="margin-top:16px">
+    <h2>Quick start</h2>
+    <p class="muted">
+      Send users to the TechNova authorization endpoint with your Client ID,
+      exact redirect URI, requested scopes, state and an S256 PKCE challenge.
+      After the user approves access, exchange the returned authorization code
+      at the token endpoint.
+    </p>
+    <code class="oauth-code">scope=openid profile email</code>
+    <code class="oauth-code">response_type=code</code>
+    <code class="oauth-code">code_challenge_method=S256</code>
+  </section>
+
   <div class="oauth-dev-note">
-    Client registrations are controlled by TechNova. Do not place a
-    confidential client secret in browser JavaScript or a public repository.
+    Never place a confidential Client Secret in browser JavaScript or a public repository.
+    Public clients do not receive a secret and should always use PKCE.
   </div>
 
 
   <div class="actions">
-    <a class="btn primary" href="account.html">
+    <a class="btn primary" href="developer-apps.html">
+      Developer Console
+    </a>
+
+    <a class="btn" href="account.html">
       My TechNova account
     </a>
 
