@@ -264,13 +264,22 @@ Deno.serve(async (req: Request) => {
           }),
         })
 
+        const createdSecret =
+          oauthClient.client_secret ?? null
+
         if (logoUrl) {
-          oauthClient = await adminOAuth(`/${encodeURIComponent(oauthClient.client_id)}`, {
+          const updatedClient = await adminOAuth(`/${encodeURIComponent(oauthClient.client_id)}`, {
             method: 'PUT',
             body: JSON.stringify({
               logo_uri: logoUrl,
             }),
           })
+
+          oauthClient = {
+            ...oauthClient,
+            ...updatedClient,
+            client_secret: createdSecret,
+          }
         }
 
         const inserted = await dbRequest('developer_oauth_apps', {
