@@ -55,7 +55,11 @@
       if (error) throw error;
     },
     async publish(category, id, published) {
-      return this.update(category, id, { title: (await this.listArticles(category)).find(row => String(row.id) === String(id))?.title || 'Untitled', published });
+      const { data, error } = await client().from('articles')
+        .update({ published: !!published, updated_at: new Date().toISOString() })
+        .eq('id', id).eq('category', category).select().single();
+      if (error) throw error;
+      return data;
     },
     async getSiteContent(key) {
       const { data, error } = await client().from('site_content').select('*').eq('content_key', key).maybeSingle();
