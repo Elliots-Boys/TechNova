@@ -11,7 +11,7 @@ window.supabaseClient = supabaseClient;
 
 
 /* hCaptcha integration for Supabase email authentication. */
-const TECHNOVA_HCAPTCHA_SITEKEY = 'acb00eae-6096-424a-bc26-3f12994cf504';
+const TECHNOVA_HCAPTCHA_SITEKEY = '3e4a23f2-aad4-4ed4-9320-90e0d6d23304';
 let technovaCaptchaToken = null;
 let technovaCaptchaWidgetId = null;
 
