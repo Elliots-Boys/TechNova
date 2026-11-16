@@ -151,3 +151,7 @@ main :is(input,select,textarea,button){max-width:100%;min-width:0}
   .command-palette{padding:8px}
   .command-box{padding:12px;max-width:100%;max-height:calc(100dvh - 16px)}
 }
+
+/* Optional smaller text sizes; users can return to the default at any time. */
+html[data-a11y-text="smaller"]{font-size:90%}
+html[data-a11y-text="smallest"]{font-size:80%}
