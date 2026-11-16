@@ -9,6 +9,42 @@ const supabaseClient = window.supabase.createClient(
 window.supabaseClient = supabaseClient;
 
 
+
+/* hCaptcha integration for Supabase email authentication. */
+const TECHNOVA_HCAPTCHA_SITEKEY = 'acb00eae-6096-424a-bc26-3f12994cf504';
+let technovaCaptchaToken = null;
+let technovaCaptchaWidgetId = null;
+
+window.onTechNovaHCaptchaLoad = function () {
+  const container = document.getElementById('hcaptcha-container');
+  if (!container || !window.hcaptcha || technovaCaptchaWidgetId !== null) return;
+  technovaCaptchaWidgetId = window.hcaptcha.render(container, {
+    sitekey: TECHNOVA_HCAPTCHA_SITEKEY,
+    callback: token => { technovaCaptchaToken = token; },
+    'expired-callback': () => { technovaCaptchaToken = null; },
+    'error-callback': () => {
+      technovaCaptchaToken = null;
+      showAuthMessage('The CAPTCHA could not load. Please refresh and try again.');
+    }
+  });
+};
+
+function getTechNovaCaptchaToken() {
+  if (!technovaCaptchaToken) {
+    showAuthMessage('Please complete the hCaptcha challenge before continuing.');
+    return null;
+  }
+  return technovaCaptchaToken;
+}
+
+function resetTechNovaCaptcha() {
+  technovaCaptchaToken = null;
+  if (window.hcaptcha && technovaCaptchaWidgetId !== null) {
+    window.hcaptcha.reset(technovaCaptchaWidgetId);
+  }
+}
+
+
 /*
   Google provider token
 */
@@ -592,12 +628,14 @@ async function signUp(event) {
   }
 
 
+  const captchaToken = getTechNovaCaptchaToken();
+  if (!captchaToken) return;
+
   setBusy(
     button,
     true,
     'Create account'
   );
-
 
   const { error } =
     await supabaseClient.auth.signUp({
@@ -614,11 +652,15 @@ async function signUp(event) {
         },
 
         emailRedirectTo:
-          getAuthReturnUrl()
+          getAuthReturnUrl(),
+
+        captchaToken
 
       }
 
     });
+
+  resetTechNovaCaptcha();
 
 
   setBusy(
@@ -685,20 +727,23 @@ async function signIn(event) {
   }
 
 
+  const captchaToken = getTechNovaCaptchaToken();
+  if (!captchaToken) return;
+
   setBusy(
     button,
     true,
     'Log in'
   );
 
-
   const { error } =
     await supabaseClient.auth.signInWithPassword({
-
       email,
-      password
-
+      password,
+      options: { captchaToken }
     });
+
+  resetTechNovaCaptcha();
 
 
   setBusy(
@@ -749,14 +794,19 @@ async function resetPassword(event) {
   }
 
 
+  const captchaToken = getTechNovaCaptchaToken();
+  if (!captchaToken) return;
+
   const { error } =
     await supabaseClient.auth.resetPasswordForEmail(
       email,
       {
-        redirectTo:
-          `${location.origin}/pages/login.html?reset=1`
+        redirectTo: `${location.origin}/pages/login.html?reset=1`,
+        captchaToken
       }
     );
+
+  resetTechNovaCaptcha();
 
 
   if (error) {
