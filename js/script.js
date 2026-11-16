@@ -13,14 +13,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Give dynamically-created controls accessible names when their markup omitted labels.
-  document.querySelectorAll('input:not([type="hidden"]), textarea, select').forEach(control => {
-    const hasLabel = control.labels?.length || control.getAttribute('aria-label') || control.getAttribute('aria-labelledby');
-    if (!hasLabel) {
+  // Give controls a useful accessible name when the page omitted a label.
+  const labelUnlabelledControls = root => {
+    root.querySelectorAll?.('input:not([type="hidden"]), textarea, select').forEach(control => {
+      const hasLabel = control.labels?.length || control.getAttribute('aria-label') || control.getAttribute('aria-labelledby');
+      if (hasLabel) return;
       const hint = control.getAttribute('placeholder') || control.getAttribute('name') || control.id;
-      if (hint) control.setAttribute('aria-label', hint.replace(/[-_]+/g, ' ').trim());
-    }
+      if (hint) {
+        const readableName = hint.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
+        control.setAttribute('aria-label', readableName);
+      }
+    });
+  };
+  labelUnlabelledControls(document);
+  // Also cover controls inserted later by CMS, search and dashboard scripts.
+  const controlObserver = new MutationObserver(records => {
+    records.forEach(record => record.addedNodes.forEach(node => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        if (node.matches?.('input:not([type="hidden"]), textarea, select')) {
+          labelUnlabelledControls({querySelectorAll: () => [node]});
+        }
+        labelUnlabelledControls(node);
+      }
+    }));
   });
+  controlObserver.observe(document.body, {childList: true, subtree: true});
   document.querySelectorAll('#eventsGrid,[data-cms-items],.topic-comments,.news-comments').forEach(region => {
     if (!region.hasAttribute('aria-live')) region.setAttribute('aria-live', 'polite');
     if (!region.hasAttribute('aria-atomic')) region.setAttribute('aria-atomic', 'false');
