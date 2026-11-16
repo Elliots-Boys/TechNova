@@ -28,3 +28,22 @@
   fill:currentColor;
   flex:none;
 }}
+
+
+/* Accessibility improvements: robust zoom, contrast and motion preferences. */
+:focus-visible{outline:3px solid #7ce8ff!important;outline-offset:3px!important}
+.skip-link{left:12px;top:12px}
+.site-drawer[aria-hidden="true"]{visibility:hidden;pointer-events:none}
+.site-drawer[aria-hidden="false"]{visibility:visible;pointer-events:auto}
+@media (forced-colors:active){
+  :focus-visible{outline:3px solid Highlight!important;outline-offset:3px}
+  a,button,.btn{border:1px solid ButtonText}
+  .site-drawer,.command-box,.modal-box{border:2px solid CanvasText}
+}
+@media (prefers-contrast:more){
+  :root{--line:#7890ad;--muted:#c1cde0}
+  a,button,input,select,textarea{border-color:#7890ad}
+}
+@media (max-width:800px){
+  .site-drawer{max-height:100dvh;overscroll-behavior:contain}
+}
