@@ -381,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
     launcher.type='button'; launcher.className='a11y-launcher'; launcher.textContent='Accessibility';
     launcher.setAttribute('aria-expanded','false'); launcher.setAttribute('aria-controls','technova-accessibility-panel');
     const panel=document.createElement('section');
-    panel.className='a11y-panel'; panel.id='technova-accessibility-panel'; panel.setAttribute('aria-labelledby','a11y-panel-title'); panel.setAttribute('aria-hidden','true');
+    panel.className='a11y-panel'; panel.id='technova-accessibility-panel'; panel.setAttribute('aria-labelledby','a11y-panel-title'); panel.setAttribute('aria-hidden','true'); panel.inert=true;
     panel.innerHTML=`
       <button type="button" class="a11y-action a11y-close" aria-label="Close accessibility settings">Close ×</button>
       <h2 id="a11y-panel-title">Accessibility settings</h2>
@@ -397,8 +397,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.append(launcher,panel,guide);
     const close=panel.querySelector('.a11y-close');
     const status=panel.querySelector('#a11y-status');
-    const closePanel=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true');launcher.setAttribute('aria-expanded','false');launcher.focus();};
-    const openPanel=()=>{panel.classList.add('open');panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true');close.focus();};
+    const closePanel=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true');panel.inert=true;launcher.setAttribute('aria-expanded','false');launcher.focus();};
+    const openPanel=()=>{panel.classList.add('open');panel.setAttribute('aria-hidden','false');panel.inert=false;launcher.setAttribute('aria-expanded','true');close.focus();};
     launcher.addEventListener('click',()=>panel.classList.contains('open')?closePanel():openPanel());
     close.addEventListener('click',closePanel);
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))closePanel();});
