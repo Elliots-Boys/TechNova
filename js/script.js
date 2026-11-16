@@ -359,6 +359,71 @@ document.addEventListener('DOMContentLoaded', () => {
     navigator.serviceWorker.register(swPath).catch(() => {});
   }
 
+  // Optional site-wide accessibility panel. All adjustments are local, reversible, and opt-in.
+  (() => {
+    if (document.querySelector('.a11y-launcher')) return;
+    const settings = {text:'normal',spacing:'normal',font:'normal',contrast:'normal',links:'normal',motion:'normal'};
+    const keys = Object.keys(settings);
+    try { const saved = JSON.parse(localStorage.getItem('technova-a11y-settings') || '{}'); keys.forEach(k => { if (saved[k] && ['normal','large','larger','wide','wider','readable','high','soft','underlined','reduced'].includes(saved[k])) settings[k]=saved[k]; }); } catch {}
+    const apply = () => {
+      const root=document.documentElement;
+      root.dataset.a11yText=settings.text;
+      root.dataset.a11ySpacing=settings.spacing;
+      root.dataset.a11yFont=settings.font;
+      root.dataset.a11yContrast=settings.contrast;
+      root.dataset.a11yLinks=settings.links;
+      root.dataset.a11yMotion=settings.motion;
+      try { localStorage.setItem('technova-a11y-settings',JSON.stringify(settings)); } catch {}
+      panel.querySelectorAll('[data-setting]').forEach(button => button.setAttribute('aria-pressed',String(settings[button.dataset.setting]===button.dataset.value)));
+    };
+    const launcher=document.createElement('button');
+    launcher.type='button'; launcher.className='a11y-launcher'; launcher.textContent='Accessibility';
+    launcher.setAttribute('aria-expanded','false'); launcher.setAttribute('aria-controls','technova-accessibility-panel');
+    const panel=document.createElement('section');
+    panel.className='a11y-panel'; panel.id='technova-accessibility-panel'; panel.setAttribute('aria-labelledby','a11y-panel-title'); panel.setAttribute('aria-hidden','true'); panel.inert=true;
+    panel.innerHTML=`
+      <button type="button" class="a11y-action a11y-close" aria-label="Close accessibility settings">Close ×</button>
+      <h2 id="a11y-panel-title">Accessibility settings</h2>
+      <p>Choose the display and reading options that work best for you. Changes apply on this device and can be reset at any time.</p>
+      <fieldset><legend>Text size</legend><div class="a11y-row"><span>Standard</span><button class="a11y-action" data-setting="text" data-value="normal" aria-pressed="false">Default</button></div><div class="a11y-row"><span>Large text</span><button class="a11y-action" data-setting="text" data-value="large" aria-pressed="false">Large</button></div><div class="a11y-row"><span>Larger text</span><button class="a11y-action" data-setting="text" data-value="larger" aria-pressed="false">Larger</button></div></fieldset>
+      <fieldset><legend>Reading and spacing</legend><div class="a11y-row"><span>Standard spacing</span><button class="a11y-action" data-setting="spacing" data-value="normal" aria-pressed="false">Default</button></div><div class="a11y-row"><span>Wide spacing</span><button class="a11y-action" data-setting="spacing" data-value="wide" aria-pressed="false">Wide</button></div><div class="a11y-row"><span>Extra spacing</span><button class="a11y-action" data-setting="spacing" data-value="wider" aria-pressed="false">Extra</button></div><div class="a11y-row"><span>Readable system font</span><button class="a11y-action" data-setting="font" data-value="readable" aria-pressed="false">Use</button></div><div class="a11y-row"><span>Original font</span><button class="a11y-action" data-setting="font" data-value="normal" aria-pressed="false">Default</button></div></fieldset>
+      <fieldset><legend>Contrast and links</legend><div class="a11y-row"><span>Standard colours</span><button class="a11y-action" data-setting="contrast" data-value="normal" aria-pressed="false">Default</button></div><div class="a11y-row"><span>High contrast</span><button class="a11y-action" data-setting="contrast" data-value="high" aria-pressed="false">High</button></div><div class="a11y-row"><span>Soft light theme</span><button class="a11y-action" data-setting="contrast" data-value="soft" aria-pressed="false">Soft</button></div><div class="a11y-row"><span>Underline all links</span><button class="a11y-action" data-setting="links" data-value="underlined" aria-pressed="false">Underline</button></div><div class="a11y-row"><span>Original link style</span><button class="a11y-action" data-setting="links" data-value="normal" aria-pressed="false">Default</button></div></fieldset>
+      <fieldset><legend>Movement</legend><div class="a11y-row"><span>Reduce animation and motion</span><button class="a11y-action" data-setting="motion" data-value="reduced" aria-pressed="false">Reduce</button></div><div class="a11y-row"><span>Original motion</span><button class="a11y-action" data-setting="motion" data-value="normal" aria-pressed="false">Default</button></div></fieldset>
+      <fieldset><legend>Reading support</legend><div class="a11y-row"><span>Reading line guide</span><button class="a11y-action" id="a11y-guide" aria-pressed="false">Show guide</button></div><div class="a11y-row"><span>Read main content aloud</span><button class="a11y-action" id="a11y-read">Read aloud</button></div><div class="a11y-row"><span>Stop speech</span><button class="a11y-action" id="a11y-stop">Stop</button></div></fieldset>
+      <div class="a11y-actions"><button type="button" class="a11y-action" id="a11y-reset">Reset all settings</button></div>
+      <p class="a11y-status" id="a11y-status" role="status" aria-live="polite"></p>`;
+    const guide=document.createElement('div'); guide.className='a11y-reading-guide'; guide.setAttribute('aria-hidden','true');
+    document.body.append(launcher,panel,guide);
+    const close=panel.querySelector('.a11y-close');
+    const status=panel.querySelector('#a11y-status');
+    const closePanel=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true');panel.inert=true;launcher.setAttribute('aria-expanded','false');launcher.focus();};
+    const openPanel=()=>{panel.classList.add('open');panel.setAttribute('aria-hidden','false');panel.inert=false;launcher.setAttribute('aria-expanded','true');close.focus();};
+    launcher.addEventListener('click',()=>panel.classList.contains('open')?closePanel():openPanel());
+    close.addEventListener('click',closePanel);
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))closePanel();});
+    panel.addEventListener('click',e=>{
+      const b=e.target.closest('[data-setting]'); if(!b)return;
+      settings[b.dataset.setting]=b.dataset.value; apply(); status.textContent='Setting updated.';
+    });
+    const guideButton=panel.querySelector('#a11y-guide');
+    guideButton.addEventListener('click',()=>{const active=guide.classList.toggle('active');guideButton.setAttribute('aria-pressed',String(active));guideButton.textContent=active?'Hide guide':'Show guide';status.textContent=active?'Reading guide shown.':'Reading guide hidden.';});
+    document.addEventListener('pointermove',e=>{if(guide.classList.contains('active'))guide.style.top=Math.max(0,Math.min(window.innerHeight-3,e.clientY))+'px';},{passive:true});
+    panel.querySelector('#a11y-read').addEventListener('click',()=>{
+      if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){status.textContent='Read aloud is not supported by this browser.';return;}
+      const main=document.querySelector('main')||document.querySelector('[role="main"]');
+      const text=main?.innerText?.trim();
+      if(!text){status.textContent='No main page content was found to read.';return;}
+      window.speechSynthesis.cancel();
+      const utterance=new SpeechSynthesisUtterance(text.slice(0,12000));
+      utterance.onend=()=>{status.textContent='Finished reading.';};
+      utterance.onerror=()=>{status.textContent='Speech could not be played.';};
+      window.speechSynthesis.speak(utterance);status.textContent='Reading page content aloud.';
+    });
+    panel.querySelector('#a11y-stop').addEventListener('click',()=>{if('speechSynthesis' in window)window.speechSynthesis.cancel();status.textContent='Speech stopped.';});
+    panel.querySelector('#a11y-reset').addEventListener('click',()=>{Object.keys(settings).forEach(k=>settings[k]=({text:'normal',spacing:'normal',font:'normal',contrast:'normal',links:'normal',motion:'normal'})[k]);apply();guide.classList.remove('active');guideButton.setAttribute('aria-pressed','false');guideButton.textContent='Show guide';if('speechSynthesis' in window)window.speechSynthesis.cancel();status.textContent='All accessibility settings reset.';});
+    apply();
+  })();
+
   const box = document.querySelector('#eventsGrid');
   if (!box) return;
 

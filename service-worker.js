@@ -1,4 +1,4 @@
-const CACHE = 'technova-public-shell-v5';
+const CACHE = 'technova-public-shell-v6';
 const CORE = [
   './offline.html',
   './index.html',
