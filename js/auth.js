@@ -15,19 +15,39 @@ const TECHNOVA_HCAPTCHA_SITEKEY = 'acb00eae-6096-424a-bc26-3f12994cf504';
 let technovaCaptchaToken = null;
 let technovaCaptchaWidgetId = null;
 
-window.onTechNovaHCaptchaLoad = function () {
+function renderTechNovaHCaptcha() {
   const container = document.getElementById('hcaptcha-container');
   if (!container || !window.hcaptcha || technovaCaptchaWidgetId !== null) return;
-  technovaCaptchaWidgetId = window.hcaptcha.render(container, {
-    sitekey: TECHNOVA_HCAPTCHA_SITEKEY,
-    callback: token => { technovaCaptchaToken = token; },
-    'expired-callback': () => { technovaCaptchaToken = null; },
-    'error-callback': () => {
-      technovaCaptchaToken = null;
-      showAuthMessage('The CAPTCHA could not load. Please refresh and try again.');
-    }
-  });
-};
+  try {
+    technovaCaptchaWidgetId = window.hcaptcha.render(container, {
+      sitekey: TECHNOVA_HCAPTCHA_SITEKEY,
+      theme: 'dark',
+      callback: token => {
+        technovaCaptchaToken = token;
+        showAuthMessage('Verification completed.', true);
+      },
+      'expired-callback': () => {
+        technovaCaptchaToken = null;
+        showAuthMessage('Your verification expired. Please complete it again.');
+      },
+      'error-callback': () => {
+        technovaCaptchaToken = null;
+        showAuthMessage('hCaptcha could not load. Check that this domain is allowed in your hCaptcha site settings, then refresh.');
+      }
+    });
+  } catch (error) {
+    console.error('TechNova hCaptcha render error:', error);
+    showAuthMessage('hCaptcha could not be displayed. Please refresh the page.');
+  }
+}
+
+window.onTechNovaHCaptchaLoad = renderTechNovaHCaptcha;
+
+window.addEventListener('load', renderTechNovaHCaptcha);
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.hcaptcha) renderTechNovaHCaptcha();
+});
 
 function getTechNovaCaptchaToken() {
   if (!technovaCaptchaToken) {
