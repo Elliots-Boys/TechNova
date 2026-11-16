@@ -85,13 +85,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Accessibility: provide a keyboard skip link even on older pages that were created without one.
   const main = document.querySelector('main');
-  if (main && !document.querySelector('.skip-link')) {
+  if (main) {
     main.id = main.id || 'main-content';
-    const skip = document.createElement('a');
-    skip.className = 'skip-link';
-    skip.href = '#main-content';
-    skip.textContent = 'Skip to main content';
-    document.body.prepend(skip);
+    if (!main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');
+    if (!document.querySelector('.skip-link')) {
+      const skip = document.createElement('a');
+      skip.className = 'skip-link';
+      skip.href = '#main-content';
+      skip.textContent = 'Skip to main content';
+      document.body.prepend(skip);
+    }
   }
 
   // Give every page the same polished footer without requiring duplicate markup in every file.
@@ -120,7 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const target = new URL(link.href, location.href);
       const isCurrent = target.pathname === location.pathname;
-      if (isCurrent) link.classList.add('active');
+      if (isCurrent) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
     } catch {}
   });
 
@@ -150,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     drawer.className = 'site-drawer';
     drawer.id = 'technova-more-drawer';
     drawer.setAttribute('aria-hidden', 'true');
+    drawer.inert = true;
 
     const head = document.createElement('div');
     head.className = 'site-drawer-head';
@@ -220,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
       drawer.classList.remove('open');
       overlay.classList.remove('open');
       drawer.setAttribute('aria-hidden','true');
+      drawer.inert = true;
       trigger.setAttribute('aria-expanded','false');
       document.body.classList.remove('drawer-open');
       drawerReturnFocus?.focus();
@@ -229,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
       drawer.classList.add('open');
       overlay.classList.add('open');
       drawer.setAttribute('aria-hidden','false');
+      drawer.inert = false;
       trigger.setAttribute('aria-expanded','true');
       document.body.classList.add('drawer-open');
       head.querySelector('.site-drawer-close')?.focus();
@@ -254,6 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Reading polish: top progress bar + back-to-top control.
   const progress = document.createElement('div');
   progress.className = 'scroll-progress';
+  progress.setAttribute('aria-hidden', 'true');
   document.body.appendChild(progress);
 
   const backTop = document.createElement('button');
@@ -288,6 +300,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(palette);
     const input = palette.querySelector('.command-input');
     const results = palette.querySelector('.command-results');
+    results.setAttribute('role', 'region');
+    results.setAttribute('aria-label', 'Search results');
+    results.setAttribute('aria-live', 'polite');
+    results.setAttribute('aria-atomic', 'false');
     const entries = [
       ['Search','Search events, topics and site content','search.html','🔎'],
       ['Discover','Open the TechNova hub','discover.html','✦'],
@@ -341,6 +357,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!el) {
       el = document.createElement('div');
       el.className = 'site-toast';
+      el.setAttribute('role', 'status');
+      el.setAttribute('aria-live', 'polite');
+      el.setAttribute('aria-atomic', 'true');
       document.body.appendChild(el);
     }
     el.textContent = message;
@@ -362,9 +381,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Optional site-wide accessibility panel. All adjustments are local, reversible, and opt-in.
   (() => {
     if (document.querySelector('.a11y-launcher')) return;
-    const settings = {text:'normal',spacing:'normal',font:'normal',contrast:'normal',links:'normal',motion:'normal'};
-    const keys = Object.keys(settings);
-    try { const saved = JSON.parse(localStorage.getItem('technova-a11y-settings') || '{}'); keys.forEach(k => { if (saved[k] && ['normal','large','larger','wide','wider','readable','high','soft','underlined','reduced'].includes(saved[k])) settings[k]=saved[k]; }); } catch {}
+    const settings = {text:'normal',spacing:'normal',font:'normal',contrast:'normal',links:'normal',motion:'normal',align:'normal'};
+    const allowed = {text:['normal','large','larger'],spacing:['normal','wide','wider'],font:['normal','readable'],contrast:['normal','high','soft'],links:['normal','underlined'],motion:['normal','reduced'],align:['normal','left']};
+    try { const saved = JSON.parse(localStorage.getItem('technova-a11y-settings') || '{}'); Object.keys(settings).forEach(k => { if (allowed[k].includes(saved[k])) settings[k]=saved[k]; }); } catch {}
     const apply = () => {
       const root=document.documentElement;
       root.dataset.a11yText=settings.text;
@@ -373,6 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
       root.dataset.a11yContrast=settings.contrast;
       root.dataset.a11yLinks=settings.links;
       root.dataset.a11yMotion=settings.motion;
+      root.dataset.a11yAlign=settings.align;
       try { localStorage.setItem('technova-a11y-settings',JSON.stringify(settings)); } catch {}
       panel.querySelectorAll('[data-setting]').forEach(button => button.setAttribute('aria-pressed',String(settings[button.dataset.setting]===button.dataset.value)));
     };
@@ -389,7 +409,8 @@ document.addEventListener('DOMContentLoaded', () => {
       <fieldset><legend>Reading and spacing</legend><div class="a11y-row"><span>Standard spacing</span><button class="a11y-action" data-setting="spacing" data-value="normal" aria-pressed="false">Default</button></div><div class="a11y-row"><span>Wide spacing</span><button class="a11y-action" data-setting="spacing" data-value="wide" aria-pressed="false">Wide</button></div><div class="a11y-row"><span>Extra spacing</span><button class="a11y-action" data-setting="spacing" data-value="wider" aria-pressed="false">Extra</button></div><div class="a11y-row"><span>Readable system font</span><button class="a11y-action" data-setting="font" data-value="readable" aria-pressed="false">Use</button></div><div class="a11y-row"><span>Original font</span><button class="a11y-action" data-setting="font" data-value="normal" aria-pressed="false">Default</button></div></fieldset>
       <fieldset><legend>Contrast and links</legend><div class="a11y-row"><span>Standard colours</span><button class="a11y-action" data-setting="contrast" data-value="normal" aria-pressed="false">Default</button></div><div class="a11y-row"><span>High contrast</span><button class="a11y-action" data-setting="contrast" data-value="high" aria-pressed="false">High</button></div><div class="a11y-row"><span>Soft light theme</span><button class="a11y-action" data-setting="contrast" data-value="soft" aria-pressed="false">Soft</button></div><div class="a11y-row"><span>Underline all links</span><button class="a11y-action" data-setting="links" data-value="underlined" aria-pressed="false">Underline</button></div><div class="a11y-row"><span>Original link style</span><button class="a11y-action" data-setting="links" data-value="normal" aria-pressed="false">Default</button></div></fieldset>
       <fieldset><legend>Movement</legend><div class="a11y-row"><span>Reduce animation and motion</span><button class="a11y-action" data-setting="motion" data-value="reduced" aria-pressed="false">Reduce</button></div><div class="a11y-row"><span>Original motion</span><button class="a11y-action" data-setting="motion" data-value="normal" aria-pressed="false">Default</button></div></fieldset>
-      <fieldset><legend>Reading support</legend><div class="a11y-row"><span>Reading line guide</span><button class="a11y-action" id="a11y-guide" aria-pressed="false">Show guide</button></div><div class="a11y-row"><span>Read main content aloud</span><button class="a11y-action" id="a11y-read">Read aloud</button></div><div class="a11y-row"><span>Stop speech</span><button class="a11y-action" id="a11y-stop">Stop</button></div></fieldset>
+      <fieldset><legend>Text alignment</legend><div class="a11y-row"><span>Original alignment</span><button class="a11y-action" data-setting="align" data-value="normal" aria-pressed="false">Default</button></div><div class="a11y-row"><span>Align reading text left</span><button class="a11y-action" data-setting="align" data-value="left" aria-pressed="false">Left align</button></div></fieldset>
+      <fieldset><legend>Reading support</legend><div class="a11y-row"><span>Reading line guide</span><button class="a11y-action" id="a11y-guide" aria-pressed="false" aria-keyshortcuts="ArrowUp ArrowDown Home End">Show guide</button></div><div class="a11y-row"><span>Move guide up or down</span><span><button class="a11y-action" id="a11y-guide-up" type="button" aria-label="Move reading guide up">↑</button> <button class="a11y-action" id="a11y-guide-down" type="button" aria-label="Move reading guide down">↓</button></span></div><p>When the guide is on, use the up and down arrow keys to move it. You can also move it with a pointer or touch.</p><div class="a11y-row"><span>Read main content aloud</span><button class="a11y-action" id="a11y-read">Read aloud</button></div><div class="a11y-row"><span>Stop speech</span><button class="a11y-action" id="a11y-stop">Stop</button></div></fieldset>
       <div class="a11y-actions"><button type="button" class="a11y-action" id="a11y-reset">Reset all settings</button></div>
       <p class="a11y-status" id="a11y-status" role="status" aria-live="polite"></p>`;
     const guide=document.createElement('div'); guide.className='a11y-reading-guide'; guide.setAttribute('aria-hidden','true');
@@ -406,8 +427,15 @@ document.addEventListener('DOMContentLoaded', () => {
       settings[b.dataset.setting]=b.dataset.value; apply(); status.textContent='Setting updated.';
     });
     const guideButton=panel.querySelector('#a11y-guide');
-    guideButton.addEventListener('click',()=>{const active=guide.classList.toggle('active');guideButton.setAttribute('aria-pressed',String(active));guideButton.textContent=active?'Hide guide':'Show guide';status.textContent=active?'Reading guide shown.':'Reading guide hidden.';});
-    document.addEventListener('pointermove',e=>{if(guide.classList.contains('active'))guide.style.top=Math.max(0,Math.min(window.innerHeight-3,e.clientY))+'px';},{passive:true});
+    const moveGuide=position=>{guide.style.top=Math.max(0,Math.min(window.innerHeight-3,position))+'px';};
+    const guideActive=()=>guide.classList.contains('active');
+    guideButton.addEventListener('click',()=>{const active=guide.classList.toggle('active');guideButton.setAttribute('aria-pressed',String(active));guideButton.textContent=active?'Hide guide':'Show guide';if(active)moveGuide(window.innerHeight*.4);status.textContent=active?'Reading guide shown. Use the arrow keys or the guide buttons to move it.':'Reading guide hidden.';});
+    panel.querySelector('#a11y-guide-up').addEventListener('click',()=>{moveGuide((parseFloat(guide.style.top)||window.innerHeight*.4)-36);status.textContent='Reading guide moved up.';});
+    panel.querySelector('#a11y-guide-down').addEventListener('click',()=>{moveGuide((parseFloat(guide.style.top)||window.innerHeight*.4)+36);status.textContent='Reading guide moved down.';});
+    document.addEventListener('pointermove',e=>{if(guideActive())moveGuide(e.clientY);},{passive:true});
+    document.addEventListener('touchmove',e=>{if(guideActive()&&e.touches?.[0])moveGuide(e.touches[0].clientY);},{passive:true});
+    document.addEventListener('keydown',e=>{if(!guideActive()||e.altKey||e.ctrlKey||e.metaKey||['INPUT','TEXTAREA','SELECT'].includes(e.target?.tagName)||e.target?.isContentEditable)return;const top=parseFloat(guide.style.top)||window.innerHeight*.4;if(e.key==='ArrowUp'){e.preventDefault();moveGuide(top-24);}else if(e.key==='ArrowDown'){e.preventDefault();moveGuide(top+24);}else if(e.key==='Home'){e.preventDefault();moveGuide(0);}else if(e.key==='End'){e.preventDefault();moveGuide(window.innerHeight-3);} });
+    window.addEventListener('resize',()=>{if(guideActive())moveGuide(Math.min(parseFloat(guide.style.top)||window.innerHeight*.4,window.innerHeight-3));});
     panel.querySelector('#a11y-read').addEventListener('click',()=>{
       if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance){status.textContent='Read aloud is not supported by this browser.';return;}
       const main=document.querySelector('main')||document.querySelector('[role="main"]');
@@ -420,7 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
       window.speechSynthesis.speak(utterance);status.textContent='Reading page content aloud.';
     });
     panel.querySelector('#a11y-stop').addEventListener('click',()=>{if('speechSynthesis' in window)window.speechSynthesis.cancel();status.textContent='Speech stopped.';});
-    panel.querySelector('#a11y-reset').addEventListener('click',()=>{Object.keys(settings).forEach(k=>settings[k]=({text:'normal',spacing:'normal',font:'normal',contrast:'normal',links:'normal',motion:'normal'})[k]);apply();guide.classList.remove('active');guideButton.setAttribute('aria-pressed','false');guideButton.textContent='Show guide';if('speechSynthesis' in window)window.speechSynthesis.cancel();status.textContent='All accessibility settings reset.';});
+    panel.querySelector('#a11y-reset').addEventListener('click',()=>{Object.keys(settings).forEach(k=>settings[k]=({text:'normal',spacing:'normal',font:'normal',contrast:'normal',links:'normal',motion:'normal',align:'normal'})[k]);apply();guide.classList.remove('active');guideButton.setAttribute('aria-pressed','false');guideButton.textContent='Show guide';if('speechSynthesis' in window)window.speechSynthesis.cancel();status.textContent='All accessibility settings reset.';});
     apply();
   })();
 

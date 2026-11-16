@@ -88,3 +88,19 @@ html[data-a11y-contrast="soft"] a{color:#174b78!important}
 @media(max-width:600px){.a11y-launcher{top:auto;bottom:18px;transform:none;padding:11px 8px;writing-mode:horizontal-tb;border-left:0;border-radius:0 10px 10px 0}.a11y-panel{top:auto;bottom:12px;transform:translateX(-105%);max-height:80vh}.a11y-panel.open{transform:translateX(0)}}
 @media(prefers-reduced-motion:reduce){.a11y-panel{transition:none}}
 @media(forced-colors:active){.a11y-launcher,.a11y-panel,.a11y-panel button{border:2px solid ButtonText;background:Canvas;color:CanvasText}.a11y-panel legend{color:CanvasText}}
+
+
+/* Additional accessibility options: scalable reading text and adjustable alignment. */
+html[data-a11y-text="large"] body :is(p,li,label,button,input,select,textarea,small,td,th,figcaption,blockquote){font-size:calc(1rem * 1.125)!important}
+html[data-a11y-text="larger"] body :is(p,li,label,button,input,select,textarea,small,td,th,figcaption,blockquote){font-size:calc(1rem * 1.25)!important}
+html[data-a11y-align="left"] main :is(p,li,blockquote,figcaption){text-align:left!important}
+html[data-a11y-contrast="soft"] :is(input,select,textarea,button,.panel,.card,.contact-card,.auth-card){border-color:#665f52!important}
+html[data-a11y-contrast="soft"] :is(input,select,textarea){background:#fffdf7!important;color:#222!important}
+html[data-a11y-contrast="soft"] :is(button,.btn){background:#e9e1d2!important;color:#222!important}
+html[data-a11y-contrast="soft"] :focus-visible{outline-color:#174b78!important}
+.a11y-reading-guide{top:40vh}
+@media(max-width:600px){.a11y-panel{padding-bottom:max(18px,env(safe-area-inset-bottom))}.a11y-launcher{bottom:max(18px,env(safe-area-inset-bottom))}}
+
+/* Ensure keyboard users can see where the skip link moved focus. */
+main:focus{outline:3px solid #7ce8ff;outline-offset:5px}
+@media(forced-colors:active){main:focus{outline:3px solid Highlight}}
