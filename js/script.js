@@ -85,13 +85,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Accessibility: provide a keyboard skip link even on older pages that were created without one.
   const main = document.querySelector('main');
-  if (main && !document.querySelector('.skip-link')) {
+  if (main) {
     main.id = main.id || 'main-content';
-    const skip = document.createElement('a');
-    skip.className = 'skip-link';
-    skip.href = '#main-content';
-    skip.textContent = 'Skip to main content';
-    document.body.prepend(skip);
+    if (!main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');
+    if (!document.querySelector('.skip-link')) {
+      const skip = document.createElement('a');
+      skip.className = 'skip-link';
+      skip.href = '#main-content';
+      skip.textContent = 'Skip to main content';
+      document.body.prepend(skip);
+    }
   }
 
   // Give every page the same polished footer without requiring duplicate markup in every file.
@@ -120,7 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const target = new URL(link.href, location.href);
       const isCurrent = target.pathname === location.pathname;
-      if (isCurrent) link.classList.add('active');
+      if (isCurrent) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
     } catch {}
   });
 
@@ -150,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     drawer.className = 'site-drawer';
     drawer.id = 'technova-more-drawer';
     drawer.setAttribute('aria-hidden', 'true');
+    drawer.inert = true;
 
     const head = document.createElement('div');
     head.className = 'site-drawer-head';
@@ -220,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
       drawer.classList.remove('open');
       overlay.classList.remove('open');
       drawer.setAttribute('aria-hidden','true');
+      drawer.inert = true;
       trigger.setAttribute('aria-expanded','false');
       document.body.classList.remove('drawer-open');
       drawerReturnFocus?.focus();
@@ -229,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
       drawer.classList.add('open');
       overlay.classList.add('open');
       drawer.setAttribute('aria-hidden','false');
+      drawer.inert = false;
       trigger.setAttribute('aria-expanded','true');
       document.body.classList.add('drawer-open');
       head.querySelector('.site-drawer-close')?.focus();
@@ -254,6 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Reading polish: top progress bar + back-to-top control.
   const progress = document.createElement('div');
   progress.className = 'scroll-progress';
+  progress.setAttribute('aria-hidden', 'true');
   document.body.appendChild(progress);
 
   const backTop = document.createElement('button');
@@ -288,6 +300,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(palette);
     const input = palette.querySelector('.command-input');
     const results = palette.querySelector('.command-results');
+    results.setAttribute('role', 'region');
+    results.setAttribute('aria-label', 'Search results');
+    results.setAttribute('aria-live', 'polite');
+    results.setAttribute('aria-atomic', 'false');
     const entries = [
       ['Search','Search events, topics and site content','search.html','🔎'],
       ['Discover','Open the TechNova hub','discover.html','✦'],
@@ -341,6 +357,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!el) {
       el = document.createElement('div');
       el.className = 'site-toast';
+      el.setAttribute('role', 'status');
+      el.setAttribute('aria-live', 'polite');
+      el.setAttribute('aria-atomic', 'true');
       document.body.appendChild(el);
     }
     el.textContent = message;
