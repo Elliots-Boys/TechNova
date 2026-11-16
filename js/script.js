@@ -1,9 +1,66 @@
 document.addEventListener('DOMContentLoaded', () => {
   const header = document.querySelector('header');
   const menuButton = document.querySelector('#menu');
-  menuButton?.addEventListener('click', () => {
-    const open = header?.classList.toggle('open');
-    menuButton.setAttribute('aria-expanded', String(!!open));
+  const primaryNav = header?.querySelector('nav');
+  if (menuButton && primaryNav) {
+    primaryNav.id = primaryNav.id || 'primary-navigation';
+    menuButton.setAttribute('aria-controls', primaryNav.id);
+    menuButton.setAttribute('aria-label', 'Toggle main navigation');
+    menuButton.setAttribute('aria-expanded', 'false');
+    menuButton.addEventListener('click', () => {
+      const open = header.classList.toggle('open');
+      menuButton.setAttribute('aria-expanded', String(open));
+    });
+  }
+
+  // Give controls a useful accessible name when the page omitted a label.
+  const labelUnlabelledControls = root => {
+    root.querySelectorAll?.('input:not([type="hidden"]), textarea, select').forEach(control => {
+      const hasLabel = control.labels?.length || control.getAttribute('aria-label') || control.getAttribute('aria-labelledby');
+      if (hasLabel) return;
+      const hint = control.getAttribute('placeholder') || control.getAttribute('name') || control.id;
+      if (hint) {
+        const readableName = hint.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
+        control.setAttribute('aria-label', readableName);
+      }
+    });
+  };
+  labelUnlabelledControls(document);
+  // Also cover controls inserted later by CMS, search and dashboard scripts.
+  const controlObserver = new MutationObserver(records => {
+    records.forEach(record => record.addedNodes.forEach(node => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        if (node.matches?.('input:not([type="hidden"]), textarea, select')) {
+          labelUnlabelledControls({querySelectorAll: () => [node]});
+        }
+        labelUnlabelledControls(node);
+      }
+    }));
+  });
+  controlObserver.observe(document.body, {childList: true, subtree: true});
+  document.querySelectorAll('#eventsGrid,[data-cms-items],.topic-comments,.news-comments').forEach(region => {
+    if (!region.hasAttribute('aria-live')) region.setAttribute('aria-live', 'polite');
+    if (!region.hasAttribute('aria-atomic')) region.setAttribute('aria-atomic', 'false');
+  });
+
+  // Keep keyboard focus inside the active modal/drawer while it is open.
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Tab') return;
+    const drawer = document.querySelector('.site-drawer.open');
+    const palette = document.querySelector('.command-palette.open');
+    const modal = [...document.querySelectorAll('[role="dialog"][aria-modal="true"]')]
+      .find(dialog => dialog.getClientRects().length);
+    const scope = drawer || palette?.querySelector('.command-box') || modal;
+    if (!scope) return;
+    const items = [...scope.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')]
+      .filter(item => item.getClientRects().length);
+    if (!items.length) { event.preventDefault(); scope.focus?.(); return; }
+    const first = items[0], last = items[items.length - 1];
+    if (event.shiftKey && (document.activeElement === first || !scope.contains(document.activeElement))) {
+      event.preventDefault(); last.focus();
+    } else if (!event.shiftKey && (document.activeElement === last || !scope.contains(document.activeElement))) {
+      event.preventDefault(); first.focus();
+    }
   });
 
   // Add useful browser-level polish on every page.
@@ -154,19 +211,27 @@ document.addEventListener('DOMContentLoaded', () => {
     trigger.setAttribute('aria-label','Open TechNova explorer');
     trigger.textContent = 'Explore';
 
+    let drawerReturnFocus = null;
+    drawer.setAttribute('role', 'dialog');
+    drawer.setAttribute('aria-modal', 'true');
+    drawer.setAttribute('aria-labelledby', 'technova-drawer-title');
+    head.querySelector('h2').id = 'technova-drawer-title';
     const closeDrawer = () => {
       drawer.classList.remove('open');
       overlay.classList.remove('open');
       drawer.setAttribute('aria-hidden','true');
       trigger.setAttribute('aria-expanded','false');
       document.body.classList.remove('drawer-open');
+      drawerReturnFocus?.focus();
     };
     const openDrawer = () => {
+      drawerReturnFocus = document.activeElement;
       drawer.classList.add('open');
       overlay.classList.add('open');
       drawer.setAttribute('aria-hidden','false');
       trigger.setAttribute('aria-expanded','true');
       document.body.classList.add('drawer-open');
+      head.querySelector('.site-drawer-close')?.focus();
     };
 
     trigger.addEventListener('click', () => drawer.classList.contains('open') ? closeDrawer() : openDrawer());
@@ -209,7 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Site-wide command palette: Ctrl/Cmd+K, or / when not typing.
   let palette = null;
+  let paletteReturnFocus = null;
   function openCommandPalette() {
+    paletteReturnFocus = document.activeElement;
     if (palette) {
       palette.classList.add('open');
       palette.querySelector('input')?.focus();
@@ -254,6 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function closeCommandPalette() {
     palette?.classList.remove('open');
+    paletteReturnFocus?.focus();
   }
   document.addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
