@@ -100,3 +100,7 @@ html[data-a11y-contrast="soft"] :is(button,.btn){background:#e9e1d2!important;co
 html[data-a11y-contrast="soft"] :focus-visible{outline-color:#174b78!important}
 .a11y-reading-guide{top:40vh}
 @media(max-width:600px){.a11y-panel{padding-bottom:max(18px,env(safe-area-inset-bottom))}.a11y-launcher{bottom:max(18px,env(safe-area-inset-bottom))}}
+
+/* Ensure keyboard users can see where the skip link moved focus. */
+main:focus{outline:3px solid #7ce8ff;outline-offset:5px}
+@media(forced-colors:active){main:focus{outline:3px solid Highlight}}
