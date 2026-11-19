@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Read the latest published articles from TechNova.">
+  <title>Article · TechNova</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .article-page{max-width:900px;margin:auto;padding:45px 22px 80px}
+    .article-content{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;color:#d5dfed}
+    .article-image{display:block;width:100%;max-height:440px;object-fit:cover;border-radius:18px;margin:24px 0}
+    .article-meta{color:#91a0b7;font-size:14px;margin:12px 0 22px}
+    .article-error{padding:18px;border:1px solid #29415e;border-radius:14px;background:#0d1728}
+    .article-title{overflow-wrap:anywhere}
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="../index.html">✦ TECHNOVA</a>
+    <button id="menu" type="button" aria-label="Toggle main navigation" aria-expanded="false">☰</button>
+    <nav><a href="../index.html">Home</a><a href="events.html">Events</a><a href="technology.html">Technology</a><a href="innovation.html">Innovation</a><a href="news.html">News</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="account.html">My account</a></nav>
+  </header>
+  <main class="article-page">
+    <a class="btn" href="news.html">← Back to news</a>
+    <article id="article" aria-labelledby="articleTitle" style="margin-top:24px">
+      <a class="eyebrow" id="articleCategory" href="news.html">TECHNOVA ARTICLE</a>
+      <h1 class="article-title" id="articleTitle">Loading article…</h1>
+      <p class="article-meta" id="articleMeta"></p>
+      <img class="article-image" id="articleImage" alt="" hidden>
+      <p class="lead" id="articleExcerpt"></p>
+      <div class="article-content" id="articleContent"></div>
+    </article>
+    <p class="article-error" id="articleStatus" role="status" hidden></p>
+  </main>
+  <footer>© 2026 TechNova · Technology for what's next.</footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/script.js"></script>
+  <script src="../js/article-page.js"></script>
+</body>
+</html>
