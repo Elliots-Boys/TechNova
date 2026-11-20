@@ -605,6 +605,20 @@ Log out
 
 </div>
 
+<div class="admin-grid">
+
+<div class="admin-stat">
+<h3>Draft articles</h3>
+<strong id="draftArticleCount">—</strong>
+</div>
+
+<div class="admin-stat">
+<h3>Quiz questions</h3>
+<strong id="quizQuestionCount">—</strong>
+</div>
+
+</div>
+
 
 <div class="admin-card">
 
@@ -633,6 +647,22 @@ Log out
 </div>
 
 <div id="recentUsers">
+<p class="loading">Loading…</p>
+</div>
+
+</div>
+
+<div class="admin-card">
+
+<div class="admin-card-header">
+<div>
+<p class="eyebrow">ADMINISTRATION</p>
+<h2>Recent administrator activity</h2>
+<p>The five latest actions recorded in the administrator activity log.</p>
+</div>
+</div>
+
+<div id="overviewRecentActivity" aria-live="polite">
 <p class="loading">Loading…</p>
 </div>
 
@@ -1276,6 +1306,7 @@ Loading activity…
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-config.js"></script>
+<script src="../js/analytics.js"></script>
 
 <script>
 
@@ -4484,11 +4515,39 @@ function renderRecentUsers(){
 }
 
 
+function renderOverviewActivity(){
+
+  const container = $('overviewRecentActivity');
+  const recent = allActivity.slice(0,5);
+
+  if(!recent.length){
+    container.innerHTML = '<p class="loading">No administrator activity recorded yet.</p>';
+    return;
+  }
+
+  container.innerHTML = recent.map(item => `
+    <div class="activity-item">
+      <div class="activity-icon" aria-hidden="true">📝</div>
+      <div class="activity-content">
+        <div class="activity-action">${escapeHtml(item.action || 'Administrator action')}</div>
+        <div class="activity-meta">
+          ${item.created_at ? new Date(item.created_at).toLocaleString() : 'Date unavailable'}
+          ${item.target_type ? ` · ${escapeHtml(item.target_type)}` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+}
+
+
 function renderOverview(){
 
   renderOverviewUsers();
 
   renderRecentUsers();
+
+  renderOverviewActivity();
 
   loadPopularEvents();
 
@@ -4671,6 +4730,18 @@ async function loadDashboard(){
       loadAnnouncement(),
       loadActivity()
     ]);
+
+
+    try{
+      const contentStats = await window.TechNovaAnalytics.contentAndQuizStats();
+      $('draftArticleCount').textContent = contentStats.draftArticles;
+      $('quizQuestionCount').textContent = contentStats.quizQuestions;
+    }
+    catch(statsError){
+      console.warn('Could not load article and quiz overview counts:', statsError);
+      $('draftArticleCount').textContent = '—';
+      $('quizQuestionCount').textContent = '—';
+    }
 
 
     renderOverview();
