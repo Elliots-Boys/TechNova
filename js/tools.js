@@ -10,30 +10,77 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   if (tool === 'catalogue') {
-    const cards = [...document.querySelectorAll('.tool-card')];
-    const search = $('toolSearch');
-    const buttons = [...document.querySelectorAll('[data-filter]')];
-    let filter = 'all';
+    const grid = $('toolGrid'), search = $('toolSearch');
+    let cards = [...grid.querySelectorAll('.tool-card')], filter = 'all';
+    let filterButtons = [...document.querySelectorAll('[data-filter]')];
     function update() {
       const query = search.value.trim().toLowerCase();
       let visible = 0;
       cards.forEach(card => {
         const matches = (filter === 'all' || card.dataset.category === filter) &&
-          (!query || card.dataset.search.includes(query));
+          (!query || (card.dataset.search || '').includes(query));
         card.hidden = !matches;
         if (matches) visible++;
       });
       set('toolResultCount', visible + (visible === 1 ? ' tool found' : ' tools found'));
       $('noTools').hidden = visible !== 0;
     }
+    function bindFilters(categories) {
+      const wrap = document.querySelector('.tool-filters');
+      wrap.replaceChildren();
+      const values = ['all', ...categories];
+      values.forEach(value => {
+        const button = document.createElement('button');
+        button.type = 'button'; button.className = 'btn' + (value === filter ? ' active' : '');
+        button.dataset.filter = value;
+        button.textContent = value === 'all' ? 'All' : value;
+        button.addEventListener('click', () => {
+          filter = value;
+          filterButtons.forEach(item => item.classList.toggle('active', item === button));
+          update();
+        });
+        wrap.appendChild(button);
+      });
+      filterButtons = [...wrap.querySelectorAll('[data-filter]')];
+    }
+    async function loadDatabaseCatalogue() {
+      if (!window.supabase || !window.TECHNOVA_SUPABASE_URL || !window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY) return;
+      try {
+        const client = window.supabaseClient || window.supabase.createClient(window.TECHNOVA_SUPABASE_URL, window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
+        const { data, error } = await client.from('tool_catalog')
+          .select('slug,name,description,category,page_path,icon,featured,sort_order')
+          .eq('enabled', true).order('sort_order', { ascending: true });
+        if (error || !Array.isArray(data) || !data.length) return;
+        grid.replaceChildren();
+        data.forEach(item => {
+          const card = document.createElement('article');
+          card.className = 'tool-card';
+          card.dataset.category = String(item.category || 'Everyday').toLowerCase();
+          card.dataset.search = [item.name,item.description,item.category].join(' ').toLowerCase();
+          const top = document.createElement('div'); top.className = 'tool-card-top';
+          const category = document.createElement('span'); category.className = 'tool-category'; category.textContent = item.category || 'Tools';
+          const icon = document.createElement('span'); icon.textContent = item.icon || '🛠️'; icon.setAttribute('aria-hidden','true');
+          top.append(category,icon);
+          const heading = document.createElement('h2'); heading.textContent = item.name;
+          const description = document.createElement('p'); description.textContent = item.description || '';
+          const link = document.createElement('a'); link.className = 'btn primary';
+          link.href = String(item.page_path || '').replace(/^pages\//,'');
+          link.textContent = 'Open tool →';
+          if (item.featured) { const badge=document.createElement('span'); badge.className='tool-category'; badge.textContent='Featured'; top.appendChild(badge); }
+          card.append(top,heading,description,link); grid.appendChild(card);
+        });
+        cards = [...grid.querySelectorAll('.tool-card')];
+        const categories = [...new Set(data.map(item=>String(item.category||'Everyday').toLowerCase()))];
+        bindFilters(categories);
+      } catch (error) {
+        console.warn('TechNova tool catalogue could not refresh; using the built-in catalogue.', error);
+      }
+    }
     search.addEventListener('input', update);
-    buttons.forEach(button => button.addEventListener('click', () => {
-      filter = button.dataset.filter;
-      buttons.forEach(item => item.classList.toggle('active', item === button));
-      update();
-    }));
+    bindFilters([...new Set(cards.map(card => card.dataset.category))]);
+    loadDatabaseCatalogue().then(update);
+    update();
   }
-
   if (tool === 'qr') {
     $('qrGenerate').addEventListener('click', () => {
       const value = $('qrText').value.trim(), output = $('qrOutput');
@@ -206,5 +253,32 @@ document.addEventListener('DOMContentLoaded', () => {
     $('textLower').addEventListener('click',()=>{input.value=input.value.toLowerCase();updateStats();});
     $('textTitle').addEventListener('click',()=>{input.value=input.value.toLowerCase().replace(/\b\p{L}/gu,char=>char.toUpperCase());updateStats();});
     $('textTrim').addEventListener('click',()=>{input.value=input.value.replace(/\s+/g,' ').trim();updateStats();});
+  }
+
+  const toolSlug = document.body.dataset.toolSlug;
+  if (toolSlug && window.supabase && window.TECHNOVA_SUPABASE_URL && window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY) {
+    (async () => {
+      try {
+        const client = window.supabaseClient || window.supabase.createClient(window.TECHNOVA_SUPABASE_URL, window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
+        const { data, error } = await client.from('tool_catalog').select('slug').eq('slug', toolSlug).maybeSingle();
+        if (!error && !data) {
+          const workspace = document.querySelector('.tool-workspace');
+          if (workspace) workspace.hidden = true;
+          const message = document.createElement('p');
+          message.className = 'tool-result'; message.setAttribute('role','status');
+          message.textContent = 'This tool is currently unavailable.';
+          document.querySelector('.tool-page')?.appendChild(message);
+          return;
+        }
+        if (error) return;
+        const key = 'technova_tool_used_' + toolSlug;
+        if (!sessionStorage.getItem(key)) {
+          const { error: usageError } = await client.rpc('record_tool_usage', { p_slug: toolSlug });
+          if (!usageError) sessionStorage.setItem(key, '1');
+        }
+      } catch (error) {
+        console.warn('Tool usage could not be recorded:', error);
+      }
+    })();
   }
 });
