@@ -132,33 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch {}
   });
 
-  // Keep the public Tools catalogue available in the primary navigation site-wide.
-  const nav = document.querySelector('header nav');
-  if (nav) {
-    const toolsHref = rootPrefix + 'pages/tools.html';
-    const toolsPath = new URL(toolsHref, location.href).pathname;
-    let toolsLink = [...nav.querySelectorAll('a[href]')].find(link => {
-      try { return new URL(link.href, location.href).pathname === toolsPath; }
-      catch { return false; }
-    });
-    if (!toolsLink) {
-      toolsLink = document.createElement('a');
-      toolsLink.href = toolsHref;
-      toolsLink.textContent = 'Tools';
-      const homePath = new URL(rootPrefix + 'index.html', location.href).pathname;
-      const homeLink = [...nav.querySelectorAll('a[href]')].find(link => {
-        try { return new URL(link.href, location.href).pathname === homePath; }
-        catch { return false; }
-      });
-      if (homeLink) homeLink.after(toolsLink);
-      else nav.prepend(toolsLink);
-    }
-    if (toolsPath === location.pathname) {
-      toolsLink.classList.add('active');
-      toolsLink.setAttribute('aria-current', 'page');
-    }
-  }
-
   // Secondary pages live in a polished slide-out drawer instead of crowding the header.
   if (nav && !document.querySelector('.site-drawer')) {
     const groups = [
