@@ -68,5 +68,15 @@
     return { users, events, registrations, newUsersWeek, newUsersMonth, mostPopular, upcoming: upcoming || [], recentUsers: recentUsers || [] };
   }
 
-  window.TechNovaAnalytics = { dashboardStats };
+  async function contentAndQuizStats() {
+    const [publishedArticles, draftArticles, quizQuestions] = await Promise.all([
+      exactCount('articles', q => q.eq('published', true)),
+      exactCount('articles', q => q.eq('published', false)),
+      exactCount('quiz_questions')
+    ]);
+
+    return { publishedArticles, draftArticles, quizQuestions };
+  }
+
+  window.TechNovaAnalytics = { dashboardStats, contentAndQuizStats };
 })();
