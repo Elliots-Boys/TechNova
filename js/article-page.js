@@ -19,6 +19,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const created = data.created_at ? new Date(data.created_at) : null;
     meta.textContent = created && !Number.isNaN(created.getTime()) ? new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' }).format(created) : '';
     excerpt.textContent = data.excerpt || ''; content.textContent = data.content || data.excerpt || 'This article does not have any additional content.';
+    try {
+      const viewKey = 'technova_article_viewed_' + id;
+      if (!sessionStorage.getItem(viewKey)) {
+        const { error: viewError } = await client.rpc('record_article_view', { p_article_id: Number(id) });
+        if (!viewError) sessionStorage.setItem(viewKey, '1');
+      }
+    } catch (viewError) {
+      console.warn('Article view could not be recorded:', viewError);
+    }
     if (data.image_url) {
       try {
         const imageUrl = new URL(data.image_url, location.href);

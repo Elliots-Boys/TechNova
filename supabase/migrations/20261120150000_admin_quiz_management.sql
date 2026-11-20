@@ -139,3 +139,117 @@ grant execute on function public.admin_list_quiz_questions() to authenticated;
 grant execute on function public.admin_save_quiz_question(bigint, text, jsonb, text, text, integer) to authenticated;
 grant execute on function public.admin_delete_quiz_question(bigint) to authenticated;
 grant execute on function public.admin_quiz_stats() to authenticated;
+
+-- Keep administrator role changes behind a server-side guard.
+create or replace function public.admin_set_user_role(
+  p_user_id uuid,
+  p_new_role public.app_role
+)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $function$
+declare
+  current_role public.app_role;
+  administrator_count bigint;
+begin
+  if auth.uid() is null or not private.is_admin() then
+    raise exception 'Administrator access required' using errcode = '42501';
+  end if;
+  if p_user_id is null or p_new_role is null then
+    raise exception 'A user and role are required';
+  end if;
+  if p_user_id = auth.uid() and p_new_role <> 'admin'::public.app_role then
+    raise exception 'You cannot remove your own administrator role';
+  end if;
+
+  select role into current_role
+  from public.user_roles
+  where user_id = p_user_id;
+
+  if p_new_role = 'user'::public.app_role and current_role = 'admin'::public.app_role then
+    select count(*) into administrator_count
+    from public.user_roles
+    where role = 'admin'::public.app_role;
+    if administrator_count <= 1 then
+      raise exception 'The last administrator cannot be removed';
+    end if;
+  end if;
+
+  insert into public.user_roles(user_id, role)
+  values (p_user_id, p_new_role)
+  on conflict (user_id) do update set role = excluded.role;
+end;
+$function$;
+
+revoke all on function public.admin_set_user_role(uuid, public.app_role) from public, anon;
+grant execute on function public.admin_set_user_role(uuid, public.app_role) to authenticated;
+
+-- Privacy-minimised article analytics: daily aggregate counts only, no visitor identifiers.
+create table if not exists public.article_daily_views (
+  article_id bigint not null references public.articles(id) on delete cascade,
+  view_date date not null default current_date,
+  view_count bigint not null default 0 check (view_count >= 0),
+  primary key (article_id, view_date)
+);
+
+alter table public.article_daily_views enable row level security;
+revoke all on public.article_daily_views from public, anon, authenticated;
+grant all on public.article_daily_views to service_role;
+
+create or replace function public.record_article_view(p_article_id bigint)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $function$
+begin
+  if p_article_id is null or p_article_id < 1 then return; end if;
+  if not exists (
+    select 1 from public.articles
+    where id = p_article_id and published = true
+  ) then
+    return;
+  end if;
+
+  insert into public.article_daily_views(article_id, view_date, view_count)
+  values (p_article_id, current_date, 1)
+  on conflict (article_id, view_date)
+  do update set view_count = public.article_daily_views.view_count + 1;
+end;
+$function$;
+
+create or replace function public.admin_article_view_stats()
+returns table (
+  article_id bigint,
+  title text,
+  total_views bigint,
+  views_last_30_days bigint
+)
+language plpgsql
+security definer
+set search_path = ''
+as $function$
+begin
+  if auth.uid() is null or not private.is_admin() then
+    raise exception 'Administrator access required' using errcode = '42501';
+  end if;
+
+  return query
+    select a.id, a.title,
+           coalesce(sum(v.view_count), 0)::bigint,
+           coalesce(sum(v.view_count) filter (where v.view_date >= current_date - 29), 0)::bigint
+    from public.articles as a
+    left join public.article_daily_views as v on v.article_id = a.id
+    where a.published = true
+    group by a.id, a.title
+    order by coalesce(sum(v.view_count), 0) desc, a.title asc
+    limit 10;
+end;
+$function$;
+
+revoke all on function public.record_article_view(bigint) from public;
+grant execute on function public.record_article_view(bigint) to anon, authenticated;
+revoke all on function public.admin_article_view_stats() from public, anon;
+grant execute on function public.admin_article_view_stats() to authenticated;

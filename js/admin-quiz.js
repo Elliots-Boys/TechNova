@@ -118,6 +118,8 @@
       try {
         const { error } = await client.rpc('admin_delete_quiz_question', { p_id: Number(deleteId) });
         if (error) throw error;
+        const { data: authData } = await client.auth.getUser();
+        await client.from('admin_activity_log').insert({ admin_user_id: authData.user.id, action: 'Admin deleted quiz question', target_type: 'quiz_question', target_id: String(deleteId), details: {} });
         await loadQuestions();
         showSuccess('Quiz question deleted.');
       } catch (error) {
@@ -139,8 +141,10 @@
       p_xp_reward: Number(byId('quizXpReward').value)
     };
     try {
-      const { error } = await client.rpc('admin_save_quiz_question', payload);
+      const { data: savedId, error } = await client.rpc('admin_save_quiz_question', payload);
       if (error) throw error;
+      const { data: authData } = await client.auth.getUser();
+      await client.from('admin_activity_log').insert({ admin_user_id: authData.user.id, action: payload.p_id ? 'Admin updated quiz question' : 'Admin created quiz question', target_type: 'quiz_question', target_id: String(savedId), details: { category: payload.p_category } });
       byId('quizQuestionEditor').classList.remove('show');
       byId('quizQuestionForm').reset();
       syncAnswerOptions();

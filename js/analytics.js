@@ -84,5 +84,11 @@
     return Array.isArray(data) ? (data[0] || { attempts_count: 0, xp_earned_total: 0 }) : (data || { attempts_count: 0, xp_earned_total: 0 });
   }
 
-  window.TechNovaAnalytics = { dashboardStats, contentAndQuizStats, adminQuizStats };
+  async function adminArticleViewStats() {
+    const { data, error } = await client().rpc('admin_article_view_stats');
+    if (error) throw error;
+    return data || [];
+  }
+
+  window.TechNovaAnalytics = { dashboardStats, contentAndQuizStats, adminQuizStats, adminArticleViewStats };
 })();
