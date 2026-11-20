@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tool Management · TechNova</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.manager-page{max-width:1250px;margin:auto;padding:42px 22px 80px}
+.manager-card{background:linear-gradient(180deg,#101b2d,#09111d);border:1px solid #243955;border-radius:18px;padding:22px;margin:20px 0}
+.manager-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.manager-field{display:grid;gap:7px}.manager-field.full{grid-column:1/-1}
+.manager-field label{font-weight:700;color:#cbd8e8;font-size:13px}
+.manager-input{width:100%;box-sizing:border-box;padding:11px;border:1px solid #29415e;border-radius:9px;background:#07101c;color:#fff;font:inherit}
+.manager-table{width:100%;border-collapse:collapse;min-width:760px}.manager-table th,.manager-table td{text-align:left;padding:12px;border-bottom:1px solid #243955;vertical-align:top}.manager-table th{color:#91a0b7;font-size:13px}
+.manager-actions{display:flex;gap:7px;flex-wrap:wrap}.manager-message{padding:12px;border-radius:10px;margin:12px 0}.manager-error{background:#421820;color:#ffb4c0}.manager-good{background:#0c342b;color:#75efc2}
+.manager-note{color:#91a0b7;line-height:1.6}
+@media(max-width:650px){.manager-grid{grid-template-columns:1fr}.manager-field.full{grid-column:auto}.manager-page{padding:25px 14px 55px}}
+</style>
+</head>
+<body>
+<header><a class="brand" href="../index.html">✦ TECHNOVA</a><button id="menu" type="button" aria-label="Toggle main navigation">☰</button><nav><a href="../index.html">Home</a><a href="tools.html">Tools</a><a href="admin.html">Admin dashboard</a><a href="admin-tools.html">Admin tools</a></nav></header>
+<main class="manager-page">
+<p class="eyebrow">TECHNOVA ADMIN</p><h1>Tool <span>management.</span></h1>
+<p class="lead">Manage the public tool catalogue, featured tools, categories and availability.</p>
+<p id="managerStatus" class="manager-note" role="status">Checking administrator access…</p>
+<div id="managerContent" hidden>
+<section class="manager-card">
+<h2 id="formHeading">Add a tool</h2>
+<p class="manager-note">A new catalogue entry also needs its tool page and code added to the website repository. This form manages catalogue metadata only.</p>
+<form id="toolForm" class="manager-grid">
+<div class="manager-field"><label for="toolSlug">Tool slug</label><input id="toolSlug" class="manager-input" required pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="80"></div>
+<div class="manager-field"><label for="toolName">Tool name</label><input id="toolName" class="manager-input" required maxlength="100"></div>
+<div class="manager-field full"><label for="toolDescription">Description</label><textarea id="toolDescription" class="manager-input" rows="3" maxlength="300"></textarea></div>
+<div class="manager-field"><label for="toolCategory">Category</label><input id="toolCategory" class="manager-input" required maxlength="60" placeholder="Everyday"></div>
+<div class="manager-field"><label for="toolPagePath">Page path</label><input id="toolPagePath" class="manager-input" required pattern="pages/tool-[a-z0-9-]+\.html" placeholder="pages/tool-example.html"></div>
+<div class="manager-field"><label for="toolIcon">Icon</label><input id="toolIcon" class="manager-input" maxlength="12" value="🛠️"></div>
+<div class="manager-field"><label for="toolSortOrder">Display order</label><input id="toolSortOrder" class="manager-input" type="number" min="0" max="10000" value="100"></div>
+<label class="manager-field"><span><input id="toolFeatured" type="checkbox"> Featured tool</span></label>
+<div class="manager-actions full"><button class="btn primary" type="submit">Save tool</button><button id="resetToolForm" class="btn" type="button">Clear form</button></div>
+</form>
+<div id="managerMessage" aria-live="polite"></div>
+</section>
+<section class="manager-card"><h2>Public tool catalogue</h2><div style="overflow-x:auto"><table class="manager-table"><thead><tr><th>Tool</th><th>Category</th><th>Featured</th><th>Status</th><th>Actions</th></tr></thead><tbody id="toolsTable"><tr><td colspan="5">Loading tools…</td></tr></tbody></table></div></section>
+<section class="manager-card"><h2>Tool usage statistics</h2><p class="manager-note">Daily aggregate counts only; no user IDs or visitor identifiers are stored.</p><div style="overflow-x:auto"><table class="manager-table"><thead><tr><th>Tool</th><th>All-time uses</th><th>Last 30 days</th></tr></thead><tbody id="usageTable"><tr><td colspan="3">Loading statistics…</td></tr></tbody></table></div></section>
+</div>
+</main><footer></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/script.js"></script>
+<script src="../js/admin-tool-management.js"></script>
+</body></html>
