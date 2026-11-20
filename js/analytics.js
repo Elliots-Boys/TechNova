@@ -78,5 +78,11 @@
     return { publishedArticles, draftArticles, quizQuestions };
   }
 
-  window.TechNovaAnalytics = { dashboardStats, contentAndQuizStats };
+  async function adminQuizStats() {
+    const { data, error } = await client().rpc('admin_quiz_stats');
+    if (error) throw error;
+    return Array.isArray(data) ? (data[0] || { attempts_count: 0, xp_earned_total: 0 }) : (data || { attempts_count: 0, xp_earned_total: 0 });
+  }
+
+  window.TechNovaAnalytics = { dashboardStats, contentAndQuizStats, adminQuizStats };
 })();
