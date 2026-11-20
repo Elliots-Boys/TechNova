@@ -155,3 +155,11 @@ main :is(input,select,textarea,button){max-width:100%;min-width:0}
 /* Optional smaller text sizes; users can return to the default at any time. */
 html[data-a11y-text="smaller"]{font-size:90%}
 html[data-a11y-text="smallest"]{font-size:80%}
+
+
+/* Accessible page zoom controls. */
+.a11y-zoom-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin:6px 0 10px}
+.a11y-panel .a11y-zoom-controls .a11y-action{flex:0 0 48px;min-width:48px;min-height:44px;font-size:24px;font-weight:800;line-height:1}
+.a11y-zoom-value{min-width:58px;text-align:center;font-size:16px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+.a11y-panel .a11y-zoom-controls .a11y-action:disabled{opacity:.45;cursor:not-allowed}
+.a11y-panel .a11y-zoom-help{text-align:center;margin:0 0 4px}
