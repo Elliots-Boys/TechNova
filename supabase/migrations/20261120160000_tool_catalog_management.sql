@@ -12,7 +12,7 @@ create table if not exists public.tool_catalog (
 );
 alter table public.tool_catalog enable row level security;
 revoke all on public.tool_catalog from public,anon,authenticated;
-grant select(slug,name,description,category,page_path,icon,featured,sort_order) on public.tool_catalog to anon,authenticated;
+grant select(slug,name,description,category,page_path,icon,featured,sort_order,enabled) on public.tool_catalog to anon,authenticated;
 drop policy if exists "Public can view enabled tools" on public.tool_catalog;
 create policy "Public can view enabled tools" on public.tool_catalog for select to anon,authenticated using(enabled=true);
 

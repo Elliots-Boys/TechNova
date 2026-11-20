@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const { data, error } = await client.from('tool_catalog')
           .select('slug,name,description,category,page_path,icon,featured,sort_order')
           .eq('enabled', true).order('sort_order', { ascending: true });
-        if (error || !Array.isArray(data) || !data.length) return;
+        if (error || !Array.isArray(data)) return;
         grid.replaceChildren();
         data.forEach(item => {
           const card = document.createElement('article');
