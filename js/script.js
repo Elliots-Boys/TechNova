@@ -381,8 +381,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Optional site-wide accessibility panel. All adjustments are local, reversible, and opt-in.
   (() => {
     if (document.querySelector('.a11y-launcher')) return;
-    const settings = {text:'normal',spacing:'normal',font:'normal',contrast:'normal',links:'normal',motion:'normal',align:'normal'};
-    const allowed = {text:['smallest','smaller','normal','large','larger'],spacing:['normal','wide','wider'],font:['normal','readable'],contrast:['normal','high','soft'],links:['normal','underlined'],motion:['normal','reduced'],align:['normal','left']};
+    const settings = {text:'normal',spacing:'normal',font:'normal',contrast:'normal',links:'normal',motion:'normal',align:'normal',zoom:100};
+    const allowed = {text:['smallest','smaller','normal','large','larger'],spacing:['normal','wide','wider'],font:['normal','readable'],contrast:['normal','high','soft'],links:['normal','underlined'],motion:['normal','reduced'],align:['normal','left'],zoom:[70,80,90,100,110,120,130,140,150]};
     try { const saved = JSON.parse(localStorage.getItem('technova-a11y-settings') || '{}'); Object.keys(settings).forEach(k => { if (allowed[k].includes(saved[k])) settings[k]=saved[k]; }); } catch {}
     const apply = () => {
       const root=document.documentElement;
@@ -393,6 +393,13 @@ document.addEventListener('DOMContentLoaded', () => {
       root.dataset.a11yLinks=settings.links;
       root.dataset.a11yMotion=settings.motion;
       root.dataset.a11yAlign=settings.align;
+      root.style.zoom=settings.zoom+'%';
+      const zoomValue=panel.querySelector('#a11y-zoom-value');
+      if(zoomValue) zoomValue.textContent=settings.zoom+'%';
+      const zoomOut=panel.querySelector('#a11y-zoom-out');
+      const zoomIn=panel.querySelector('#a11y-zoom-in');
+      if(zoomOut) zoomOut.disabled=settings.zoom<=70;
+      if(zoomIn) zoomIn.disabled=settings.zoom>=150;
       try { localStorage.setItem('technova-a11y-settings',JSON.stringify(settings)); } catch {}
       panel.querySelectorAll('[data-setting]').forEach(button => button.setAttribute('aria-pressed',String(settings[button.dataset.setting]===button.dataset.value)));
     };
@@ -406,6 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <h2 id="a11y-panel-title">Accessibility settings</h2>
       <p>Choose the display and reading options that work best for you. Changes apply on this device and can be reset at any time.</p>
       <fieldset><legend>Text size</legend><div class="a11y-row"><span>Smallest text</span><button class="a11y-action" data-setting="text" data-value="smallest" aria-pressed="false">Smallest</button></div><div class="a11y-row"><span>Smaller text</span><button class="a11y-action" data-setting="text" data-value="smaller" aria-pressed="false">Smaller</button></div><div class="a11y-row"><span>Standard</span><button class="a11y-action" data-setting="text" data-value="normal" aria-pressed="false">Default</button></div><div class="a11y-row"><span>Large text</span><button class="a11y-action" data-setting="text" data-value="large" aria-pressed="false">Large</button></div><div class="a11y-row"><span>Larger text</span><button class="a11y-action" data-setting="text" data-value="larger" aria-pressed="false">Larger</button></div></fieldset>
+      <fieldset><legend>Page zoom</legend><div class="a11y-zoom-controls"><button type="button" class="a11y-action" id="a11y-zoom-out" aria-label="Zoom webpage out">−</button><output id="a11y-zoom-value" class="a11y-zoom-value" aria-live="polite">100%</output><button type="button" class="a11y-action" id="a11y-zoom-in" aria-label="Zoom webpage in">+</button></div><p class="a11y-zoom-help">Adjust the size of the whole webpage. Choose between 70% and 150%.</p></fieldset>
       <fieldset><legend>Reading and spacing</legend><div class="a11y-row"><span>Standard spacing</span><button class="a11y-action" data-setting="spacing" data-value="normal" aria-pressed="false">Default</button></div><div class="a11y-row"><span>Wide spacing</span><button class="a11y-action" data-setting="spacing" data-value="wide" aria-pressed="false">Wide</button></div><div class="a11y-row"><span>Extra spacing</span><button class="a11y-action" data-setting="spacing" data-value="wider" aria-pressed="false">Extra</button></div><div class="a11y-row"><span>Readable system font</span><button class="a11y-action" data-setting="font" data-value="readable" aria-pressed="false">Use</button></div><div class="a11y-row"><span>Original font</span><button class="a11y-action" data-setting="font" data-value="normal" aria-pressed="false">Default</button></div></fieldset>
       <fieldset><legend>Contrast and links</legend><div class="a11y-row"><span>Standard colours</span><button class="a11y-action" data-setting="contrast" data-value="normal" aria-pressed="false">Default</button></div><div class="a11y-row"><span>High contrast</span><button class="a11y-action" data-setting="contrast" data-value="high" aria-pressed="false">High</button></div><div class="a11y-row"><span>Soft light theme</span><button class="a11y-action" data-setting="contrast" data-value="soft" aria-pressed="false">Soft</button></div><div class="a11y-row"><span>Underline all links</span><button class="a11y-action" data-setting="links" data-value="underlined" aria-pressed="false">Underline</button></div><div class="a11y-row"><span>Original link style</span><button class="a11y-action" data-setting="links" data-value="normal" aria-pressed="false">Default</button></div></fieldset>
       <fieldset><legend>Movement</legend><div class="a11y-row"><span>Reduce animation and motion</span><button class="a11y-action" data-setting="motion" data-value="reduced" aria-pressed="false">Reduce</button></div><div class="a11y-row"><span>Original motion</span><button class="a11y-action" data-setting="motion" data-value="normal" aria-pressed="false">Default</button></div></fieldset>
@@ -426,6 +434,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const b=e.target.closest('[data-setting]'); if(!b)return;
       settings[b.dataset.setting]=b.dataset.value; apply(); status.textContent='Setting updated.';
     });
+    panel.querySelector('#a11y-zoom-out').addEventListener('click',()=>{settings.zoom=Math.max(70,settings.zoom-10);apply();status.textContent='Page zoom set to '+settings.zoom+'%.';});
+    panel.querySelector('#a11y-zoom-in').addEventListener('click',()=>{settings.zoom=Math.min(150,settings.zoom+10);apply();status.textContent='Page zoom set to '+settings.zoom+'%.';});
     const guideButton=panel.querySelector('#a11y-guide');
     const moveGuide=position=>{guide.style.top=Math.max(0,Math.min(window.innerHeight-3,position))+'px';};
     const guideActive=()=>guide.classList.contains('active');
@@ -448,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
       window.speechSynthesis.speak(utterance);status.textContent='Reading page content aloud.';
     });
     panel.querySelector('#a11y-stop').addEventListener('click',()=>{if('speechSynthesis' in window)window.speechSynthesis.cancel();status.textContent='Speech stopped.';});
-    panel.querySelector('#a11y-reset').addEventListener('click',()=>{Object.keys(settings).forEach(k=>settings[k]=({text:'normal',spacing:'normal',font:'normal',contrast:'normal',links:'normal',motion:'normal',align:'normal'})[k]);apply();guide.classList.remove('active');guideButton.setAttribute('aria-pressed','false');guideButton.textContent='Show guide';if('speechSynthesis' in window)window.speechSynthesis.cancel();status.textContent='All accessibility settings reset.';});
+    panel.querySelector('#a11y-reset').addEventListener('click',()=>{Object.keys(settings).forEach(k=>settings[k]=({text:'normal',spacing:'normal',font:'normal',contrast:'normal',links:'normal',motion:'normal',align:'normal',zoom:100})[k]);apply();guide.classList.remove('active');guideButton.setAttribute('aria-pressed','false');guideButton.textContent='Show guide';if('speechSynthesis' in window)window.speechSynthesis.cancel();status.textContent='All accessibility settings reset.';});
     apply();
   })();
 
