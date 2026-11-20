@@ -139,3 +139,49 @@ grant execute on function public.admin_list_quiz_questions() to authenticated;
 grant execute on function public.admin_save_quiz_question(bigint, text, jsonb, text, text, integer) to authenticated;
 grant execute on function public.admin_delete_quiz_question(bigint) to authenticated;
 grant execute on function public.admin_quiz_stats() to authenticated;
+
+-- Keep administrator role changes behind a server-side guard.
+create or replace function public.admin_set_user_role(
+  p_user_id uuid,
+  p_new_role public.app_role
+)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $function$
+declare
+  current_role public.app_role;
+  administrator_count bigint;
+begin
+  if auth.uid() is null or not private.is_admin() then
+    raise exception 'Administrator access required' using errcode = '42501';
+  end if;
+  if p_user_id is null or p_new_role is null then
+    raise exception 'A user and role are required';
+  end if;
+  if p_user_id = auth.uid() and p_new_role <> 'admin'::public.app_role then
+    raise exception 'You cannot remove your own administrator role';
+  end if;
+
+  select role into current_role
+  from public.user_roles
+  where user_id = p_user_id;
+
+  if p_new_role = 'user'::public.app_role and current_role = 'admin'::public.app_role then
+    select count(*) into administrator_count
+    from public.user_roles
+    where role = 'admin'::public.app_role;
+    if administrator_count <= 1 then
+      raise exception 'The last administrator cannot be removed';
+    end if;
+  end if;
+
+  insert into public.user_roles(user_id, role)
+  values (p_user_id, p_new_role)
+  on conflict (user_id) do update set role = excluded.role;
+end;
+$function$;
+
+revoke all on function public.admin_set_user_role(uuid, public.app_role) from public, anon;
+grant execute on function public.admin_set_user_role(uuid, public.app_role) to authenticated;

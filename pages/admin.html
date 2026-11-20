@@ -3763,170 +3763,43 @@ function renderRoles(){
    CHANGE USER ROLE
 ===================================================== */
 
-async function changeRole(
-  userId,
-  newRole
-){
-
-  /*
-    Don't allow the currently logged-in admin
-    to remove their own administrator access.
-  */
-  if(
-    String(userId) ===
-    String(currentAdmin.id)
-  ){
-
-    showMessage(
-      'You cannot change your own administrator role.'
-    );
-
+async function changeRole(userId, newRole) {
+  if (String(userId) === String(currentAdmin.id)) {
+    showMessage('You cannot change your own administrator role.');
     return;
   }
 
+  const targetUser = allUsers.find(user => String(user.id) === String(userId));
+  const targetName = targetUser?.display_name || 'this user';
+  if (!confirm(`Make ${targetName} a ${newRole === 'admin' ? 'administrator' : 'normal user'}?`)) return;
 
-  /*
-    Find the target user so we can show
-    their name in the confirmation.
-  */
-  const targetUser =
-    allUsers.find(
-      user =>
-        String(user.id) ===
-        String(userId)
-    );
+  try {
+    const { error } = await supabaseClient.rpc('admin_set_user_role', {
+      p_user_id: userId,
+      p_new_role: newRole
+    });
+    if (error) throw error;
 
-
-  const targetName =
-    targetUser?.display_name ||
-    'this user';
-
-
-  /*
-    Confirm the change.
-  */
-  if(
-    !confirm(
-      `Make ${targetName} a ${
-        newRole === 'admin'
-          ? 'administrator'
-          : 'normal user'
-      }?`
-    )
-  ){
-
-    return;
-
-  }
-
-
-  try{
-
-    /*
-      IMPORTANT:
-
-      Use UPSERT rather than UPDATE.
-
-      UPDATE only works if the user already
-      has a row in user_roles.
-
-      UPSERT creates the row if it doesn't
-      exist, or changes it if it does.
-    */
-    const {
-      error
-    } = await supabaseClient
-      .from('user_roles')
-      .upsert(
-        {
-          user_id: userId,
-          role: newRole
-        },
-        {
-          onConflict: 'user_id'
-        }
-      );
-
-
-    if(error){
-
-      throw error;
-
-    }
-
-
-    /*
-      Record the action in your existing
-      admin activity log.
-    */
     await logAdminAction(
-
-      newRole === 'admin'
-        ? 'Admin promoted user'
-        : 'Admin removed admin role',
-
+      newRole === 'admin' ? 'Admin promoted user' : 'Admin removed admin role',
       'user',
-
       userId,
-
-      {
-        new_role: newRole,
-        display_name: targetName
-      }
-
+      { new_role: newRole, display_name: targetName }
     );
 
-
-    /*
-      Show success message.
-    */
     showMessage(
-
       newRole === 'admin'
-
         ? `${targetName} is now an administrator.`
-
         : `${targetName} is now a normal user.`,
-
       'good'
-
     );
-
-
-    /*
-      Reload the role list and activity log.
-    */
     await loadRoles();
-
     await loadActivity();
-
-
-  }catch(error){
-
-    console.error(
-      'Role change failed:',
-      error
-    );
-
-
-    showMessage(
-
-      error?.message ||
-
-      'Could not change the user role.'
-
-    );
-
+  } catch (error) {
+    console.error('Role change failed:', error);
+    showMessage(error?.message || 'Could not change the user role.');
   }
-
 }
-
-
-
-
-
-
-
 
 /* =====================================================
    SITE CONTENT
