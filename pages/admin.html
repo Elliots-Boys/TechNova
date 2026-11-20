@@ -544,6 +544,7 @@ Log out
 <button class="admin-tab" data-section="users">👥 Users</button>
 <button class="admin-tab" data-section="registrations">📋 Registrations</button>
 <button class="admin-tab" data-section="articles">📰 Articles</button>
+<button class="admin-tab" data-section="quiz">🧠 Quiz</button>
 <button class="admin-tab" data-section="content">🏠 Website</button>
 <button class="admin-tab" data-section="activity">📝 Activity</button>
 
@@ -959,6 +960,49 @@ placeholder="Search users..."
 
 </section>
 
+
+
+<!-- =====================================================
+     QUIZ MANAGEMENT
+===================================================== -->
+<section id="section-quiz" class="admin-section">
+  <section class="admin-card">
+    <div class="admin-card-header">
+      <div>
+        <p class="eyebrow">QUIZ MANAGEMENT</p>
+        <h2>Quiz questions</h2>
+        <p>Manage questions and answer keys. Correct answers are returned only by administrator-checked database functions.</p>
+      </div>
+      <button id="addQuizQuestionBtn" class="btn primary" type="button">+ Add question</button>
+    </div>
+    <div class="admin-grid">
+      <div class="admin-stat"><h3>Total quiz attempts</h3><strong id="adminQuizAttempts">—</strong></div>
+      <div class="admin-stat"><h3>Total XP awarded</h3><strong id="adminQuizXp">—</strong></div>
+    </div>
+    <div id="quizQuestionEditor" class="admin-card editor">
+      <div class="admin-card-header">
+        <div><p class="eyebrow">QUESTION EDITOR</p><h2 id="quizEditorTitle">Add question</h2></div>
+        <button id="cancelQuizEdit" class="btn" type="button">Cancel</button>
+      </div>
+      <form id="quizQuestionForm" class="admin-form">
+        <input id="quizQuestionId" type="hidden">
+        <div class="admin-field full"><label for="quizQuestionText">Question</label><textarea id="quizQuestionText" class="admin-textarea" required maxlength="1000"></textarea></div>
+        <div class="admin-field full"><label for="quizOptions">Answer options (one per line)</label><textarea id="quizOptions" class="admin-textarea" required placeholder="Option one&#10;Option two&#10;Option three"></textarea></div>
+        <div class="admin-field"><label for="quizCorrectAnswer">Correct answer</label><select id="quizCorrectAnswer" class="admin-select" required><option value="">Add options first</option></select></div>
+        <div class="admin-field"><label for="quizCategory">Category</label><input id="quizCategory" class="admin-input" value="Technology" maxlength="80" required></div>
+        <div class="admin-field"><label for="quizXpReward">XP reward</label><input id="quizXpReward" class="admin-input" type="number" min="0" max="1000" value="10" required></div>
+        <div class="admin-form-actions"><button class="btn primary" type="submit">Save question</button></div>
+      </form>
+    </div>
+    <div class="admin-toolbar"><input id="quizQuestionSearch" class="admin-input" type="search" placeholder="Search quiz questions..."></div>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Question</th><th>Category</th><th>XP</th><th>Correct answer</th><th>Actions</th></tr></thead>
+        <tbody id="quizQuestionsTable"><tr><td colspan="5" class="loading">Loading quiz questions…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</section>
 
 <!-- =====================================================
      REGISTRATIONS
@@ -4784,5 +4828,6 @@ document.addEventListener(
 
 </script>
 <script src="../js/admin-tools.js"></script>
+<script src="../js/admin-quiz.js"></script>
 </body>
 </html>
