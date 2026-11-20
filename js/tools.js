@@ -12,74 +12,104 @@ document.addEventListener('DOMContentLoaded', () => {
   if (tool === 'catalogue') {
     const grid = $('toolGrid'), search = $('toolSearch');
     let cards = [...grid.querySelectorAll('.tool-card')], filter = 'all';
-    let filterButtons = [...document.querySelectorAll('[data-filter]')];
-    function update() {
-      const query = search.value.trim().toLowerCase();
-      let visible = 0;
-      cards.forEach(card => {
-        const matches = (filter === 'all' || card.dataset.category === filter) &&
-          (!query || (card.dataset.search || '').includes(query));
-        card.hidden = !matches;
-        if (matches) visible++;
+    let filterButtons = [];
+    const readList = key => { try { const value=JSON.parse(localStorage.getItem(key)||'[]'); return Array.isArray(value)?value:[]; } catch { return []; } };
+    const writeList = (key,value) => { try { localStorage.setItem(key,JSON.stringify(value)); } catch {} };
+    const slugOf = card => card.dataset.toolSlug || (card.querySelector('a[href]')?.getAttribute('href')||'').match(/tool-([a-z0-9-]+)\.html$/)?.[1] || '';
+    function personalList(id, slugs) {
+      const container=$(id); if(!container)return;
+      container.replaceChildren();
+      const lookup=new Map(cards.map(card=>[slugOf(card),card]));
+      const items=slugs.map(slug=>lookup.get(slug)).filter(Boolean);
+      if(!items.length){const note=document.createElement('p');note.className='tool-note';note.textContent='Nothing here yet. Save or open a tool to build this list.';container.appendChild(note);return;}
+      items.forEach(card=>{
+        const link=document.createElement('a');link.className='personal-tool-link';
+        link.href=card.querySelector('a[href]')?.getAttribute('href')||'#';
+        link.textContent=card.querySelector('h2')?.textContent||slugOf(card);
+        container.appendChild(link);
       });
-      set('toolResultCount', visible + (visible === 1 ? ' tool found' : ' tools found'));
-      $('noTools').hidden = visible !== 0;
+    }
+    function renderPersonalLists() {
+      personalList('savedToolsList',readList('technova_favourite_tools'));
+      personalList('recentToolsList',readList('technova_recent_tools'));
+    }
+    function syncFavouriteButtons() {
+      const saved=new Set(readList('technova_favourite_tools'));
+      cards.forEach(card=>{
+        const slug=slugOf(card),button=card.querySelector('[data-tool-favourite]');
+        if(!button)return;
+        const active=saved.has(slug);
+        button.textContent=active?'★ Saved':'☆ Save';
+        button.setAttribute('aria-pressed',String(active));
+      });
+    }
+    function ensureFavouriteButton(card) {
+      if(card.querySelector('[data-tool-favourite]'))return;
+      const button=document.createElement('button');
+      button.type='button';button.className='tool-favourite';button.dataset.toolFavourite='';
+      button.textContent='☆ Save';button.setAttribute('aria-label','Save this tool to favourites');
+      card.appendChild(button);
+    }
+    function update() {
+      const query=search.value.trim().toLowerCase();let visible=0;
+      cards.forEach(card=>{
+        const matches=(filter==='all'||card.dataset.category===filter)&&(!query||(card.dataset.search||'').includes(query));
+        card.hidden=!matches;if(matches)visible++;
+      });
+      set('toolResultCount',visible+(visible===1?' tool found':' tools found'));
+      $('noTools').hidden=visible!==0;
     }
     function bindFilters(categories) {
-      const wrap = document.querySelector('.tool-filters');
-      wrap.replaceChildren();
-      const values = ['all', ...categories];
-      values.forEach(value => {
-        const button = document.createElement('button');
-        button.type = 'button'; button.className = 'btn' + (value === filter ? ' active' : '');
-        button.dataset.filter = value;
-        button.textContent = value === 'all' ? 'All' : value;
-        button.addEventListener('click', () => {
-          filter = value;
-          filterButtons.forEach(item => item.classList.toggle('active', item === button));
-          update();
+      const wrap=document.querySelector('.tool-filters');wrap.replaceChildren();
+      ['all',...categories].forEach(value=>{
+        const button=document.createElement('button');button.type='button';button.className='btn'+(value===filter?' active':'');
+        button.dataset.filter=value;button.textContent=value==='all'?'All':value;
+        button.addEventListener('click',()=>{
+          filter=value;filterButtons.forEach(item=>item.classList.toggle('active',item===button));update();
         });
         wrap.appendChild(button);
       });
-      filterButtons = [...wrap.querySelectorAll('[data-filter]')];
+      filterButtons=[...wrap.querySelectorAll('[data-filter]')];
     }
     async function loadDatabaseCatalogue() {
-      if (!window.supabase || !window.TECHNOVA_SUPABASE_URL || !window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY) return;
+      if(!window.supabase||!window.TECHNOVA_SUPABASE_URL||!window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY)return;
       try {
-        const client = window.supabaseClient || window.supabase.createClient(window.TECHNOVA_SUPABASE_URL, window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
-        const { data, error } = await client.from('tool_catalog')
-          .select('slug,name,description,category,page_path,icon,featured,sort_order')
-          .eq('enabled', true).order('sort_order', { ascending: true });
-        if (error || !Array.isArray(data)) return;
+        const client=window.supabaseClient||window.supabase.createClient(window.TECHNOVA_SUPABASE_URL,window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY);
+        const {data,error}=await client.from('tool_catalog').select('slug,name,description,category,page_path,icon,featured,sort_order').eq('enabled',true).order('sort_order',{ascending:true});
+        if(error||!Array.isArray(data))return;
         grid.replaceChildren();
-        data.forEach(item => {
-          const card = document.createElement('article');
-          card.className = 'tool-card';
-          card.dataset.category = String(item.category || 'Everyday').toLowerCase();
-          card.dataset.search = [item.name,item.description,item.category].join(' ').toLowerCase();
-          const top = document.createElement('div'); top.className = 'tool-card-top';
-          const category = document.createElement('span'); category.className = 'tool-category'; category.textContent = item.category || 'Tools';
-          const icon = document.createElement('span'); icon.textContent = item.icon || '🛠️'; icon.setAttribute('aria-hidden','true');
-          top.append(category,icon);
-          const heading = document.createElement('h2'); heading.textContent = item.name;
-          const description = document.createElement('p'); description.textContent = item.description || '';
-          const link = document.createElement('a'); link.className = 'btn primary';
-          link.href = String(item.page_path || '').replace(/^pages\//,'');
-          link.textContent = 'Open tool →';
-          if (item.featured) { const badge=document.createElement('span'); badge.className='tool-category'; badge.textContent='Featured'; top.appendChild(badge); }
-          card.append(top,heading,description,link); grid.appendChild(card);
+        data.forEach(item=>{
+          const card=document.createElement('article');card.className='tool-card';card.dataset.toolSlug=item.slug;
+          card.dataset.category=String(item.category||'Everyday').toLowerCase();
+          card.dataset.search=[item.name,item.description,item.category].join(' ').toLowerCase();
+          const top=document.createElement('div');top.className='tool-card-top';
+          const category=document.createElement('span');category.className='tool-category';category.textContent=item.category||'Tools';
+          const icon=document.createElement('span');icon.textContent=item.icon||'🛠️';icon.setAttribute('aria-hidden','true');top.append(category,icon);
+          if(item.featured){const badge=document.createElement('span');badge.className='tool-category';badge.textContent='Featured';top.appendChild(badge);}
+          const heading=document.createElement('h2');heading.textContent=item.name;
+          const description=document.createElement('p');description.textContent=item.description||'';
+          const link=document.createElement('a');link.className='btn primary';link.href=String(item.page_path||'').replace(/^pages\//,'');link.textContent='Open tool →';
+          card.append(top,heading,description,link);grid.appendChild(card);
         });
-        cards = [...grid.querySelectorAll('.tool-card')];
-        const categories = [...new Set(data.map(item=>String(item.category||'Everyday').toLowerCase()))];
-        bindFilters(categories);
-      } catch (error) {
-        console.warn('TechNova tool catalogue could not refresh; using the built-in catalogue.', error);
-      }
+        cards=[...grid.querySelectorAll('.tool-card')];
+      } catch(error) { console.warn('TechNova tool catalogue could not refresh; using the built-in catalogue.',error); }
     }
-    search.addEventListener('input', update);
-    bindFilters([...new Set(cards.map(card => card.dataset.category))]);
-    loadDatabaseCatalogue().then(update);
-    update();
+    grid.addEventListener('click',event=>{
+      const button=event.target.closest('[data-tool-favourite]');if(!button)return;
+      const card=button.closest('.tool-card'),slug=card&&slugOf(card);if(!slug)return;
+      const saved=readList('technova_favourite_tools'),index=saved.indexOf(slug);
+      if(index>=0)saved.splice(index,1);else saved.unshift(slug);
+      writeList('technova_favourite_tools',saved.slice(0,50));syncFavouriteButtons();renderPersonalLists();
+    });
+    search.addEventListener('input',update);
+    loadDatabaseCatalogue().then(()=>{
+      cards.forEach(ensureFavouriteButton);
+      bindFilters([...new Set(cards.map(card=>card.dataset.category))]);
+      syncFavouriteButtons();renderPersonalLists();update();
+    });
+    cards.forEach(ensureFavouriteButton);
+    bindFilters([...new Set(cards.map(card=>card.dataset.category))]);
+    syncFavouriteButtons();renderPersonalLists();update();
   }
   if (tool === 'qr') {
     $('qrGenerate').addEventListener('click', () => {
@@ -256,6 +286,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const toolSlug = document.body.dataset.toolSlug;
+  if (toolSlug) {
+    const read = key => { try { const value=JSON.parse(localStorage.getItem(key)||'[]'); return Array.isArray(value)?value:[]; } catch { return []; } };
+    try { const recent=read('technova_recent_tools').filter(slug=>slug!==toolSlug); recent.unshift(toolSlug); localStorage.setItem('technova_recent_tools',JSON.stringify(recent.slice(0,8))); } catch {}
+    const favouriteButton=$('toolFavouriteButton');
+    if(favouriteButton){
+      const sync=()=>{const active=read('technova_favourite_tools').includes(toolSlug);favouriteButton.textContent=active?'★ Saved to favourites':'☆ Save to favourites';favouriteButton.setAttribute('aria-pressed',String(active));};
+      favouriteButton.addEventListener('click',()=>{
+        const saved=read('technova_favourite_tools'),index=saved.indexOf(toolSlug);
+        if(index>=0)saved.splice(index,1);else saved.unshift(toolSlug);
+        try{localStorage.setItem('technova_favourite_tools',JSON.stringify(saved.slice(0,50)));}catch{}
+        sync();
+      });
+      sync();
+    }
+  }
   if (toolSlug && window.supabase && window.TECHNOVA_SUPABASE_URL && window.TECHNOVA_SUPABASE_PUBLISHABLE_KEY) {
     (async () => {
       try {
