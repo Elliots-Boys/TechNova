@@ -81,8 +81,7 @@ const TECHNOVA_WORDBANK = [
   {
     keywords: ['project idea','technology project','tech project'],
     answer: 'Project ideas: a technology news dashboard, event booking site, quiz app, PC-part compatibility checker, study tracker, weather dashboard or a small community site with accounts and saved content.'
-  }
-
+  },
   {
     "keywords": [
       "generative ai",
