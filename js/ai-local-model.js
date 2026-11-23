@@ -117,8 +117,12 @@
       const clean = answer.trim();
       const words = clean.toLowerCase().match(/[a-z0-9'-]+/g) || [];
       const uniqueRatio = words.length ? new Set(words).size / words.length : 0;
-      const repeatedPhrase = /(.{1,18})(?:\s+\1){2,}/i.test(clean);
-      if (words.length < 2 || (words.length >= 8 && uniqueRatio < 0.38) || repeatedPhrase) return null;
+      const repeatedPhrase = /(.{1,18})(?:\s+\1){1,}/i.test(clean);
+      const compact = clean.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(Boolean);
+      const shortLoop = compact.length >= 3 && compact.length <= 8 &&
+        compact.every((word, index) => word === compact[index % 2]) &&
+        new Set(compact).size <= 2;
+      if (words.length < 2 || (words.length >= 8 && uniqueRatio < 0.38) || repeatedPhrase || shortLoop) return null;
       return clean;
     } finally {
       busy = false;
