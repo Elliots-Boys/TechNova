@@ -119,8 +119,8 @@
       if (status === 'WARNING' || status === 'FAIL') warnings++;
     };
 
-    check('Correct website', location.origin === siteOrigin ? 'PASS' : 'FAIL',
-      location.origin === siteOrigin ? 'Running on the TechNova production origin.' : 'This checker is intended for the TechNova production origin.');
+    check('Correct website', (location.protocol === 'https:' && (location.hostname === 'technova-bmm.pages.dev' || location.hostname.endsWith('.technova-bmm.pages.dev'))) ? 'PASS' : 'FAIL',
+      (location.protocol === 'https:' && (location.hostname === 'technova-bmm.pages.dev' || location.hostname.endsWith('.technova-bmm.pages.dev'))) ? 'Running on a TechNova Pages production or preview origin.' : 'This checker is intended for a TechNova Pages production or preview origin.');
     check('HTTPS connection', location.protocol === 'https:' ? 'PASS' : 'FAIL',
       location.protocol === 'https:' ? 'The page is using HTTPS.' : 'The page is not using HTTPS.');
     check('Secure browser context', window.isSecureContext ? 'PASS' : 'WARNING',
@@ -212,7 +212,7 @@
       }
       result('Own-role RLS check','PASS','The session could read only the role row matching its own authenticated user ID. No other users were queried.');
       if (roleRow.role !== 'admin') {
-        result('Administrator role','FAIL','This signed-in account does not have the administrator role. Admin-only checks were safely skipped.');
+        result('Administrator role','INFO','This account is signed in but is not an administrator. Admin-only checks were safely skipped.');
         result('Admin-only database read','NOT TESTED','Skipped because this account is not an administrator.');
         result('Admin read-only function','NOT TESTED','Skipped because this account is not an administrator.');
         throw new Error('stop');
