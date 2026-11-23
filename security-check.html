@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Security Centre | TechNova</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1220;--panel:#121d30;--panel2:#18263d;--text:#edf3ff;--muted:#9fb0ca;--line:#293a55;--blue:#70a7ff;--green:#4bd19a;--amber:#ffc66d;--red:#ff8585}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#1a3152 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+    main{width:min(100% - 32px,980px);margin:42px auto 64px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}.brand{font-weight:800;letter-spacing:.08em;color:var(--blue);font-size:13px}.tag{border:1px solid var(--line);border-radius:999px;padding:5px 10px;color:var(--muted);font-size:12px}
+    h1{font-size:clamp(30px,5vw,44px);line-height:1.1;margin:8px 0 12px}.intro{color:var(--muted);max-width:720px;margin:0 0 24px}.notice{border:1px solid #66502d;background:#302719;color:#ffe2ae;padding:13px 15px;border-radius:12px;margin:18px 0 24px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 24px}button{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--blue);color:#081426}button.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}button:disabled{opacity:.6;cursor:wait}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{background:linear-gradient(160deg,var(--panel),#101a2b);border:1px solid var(--line);border-radius:15px;padding:17px}.card h2{font-size:16px;margin:0 0 6px}.card p{margin:0;color:var(--muted);font-size:13px}
+    .results{margin-top:22px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:var(--panel)}.results-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.results-head h2{margin:0;font-size:17px}.result{padding:14px 18px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(145px,1fr) 110px 2fr;gap:12px;align-items:start}.result:last-child{border-bottom:0}.result small{color:var(--muted)}.status{font-size:11px;font-weight:800;letter-spacing:.04em;border-radius:999px;padding:4px 8px;text-align:center;width:max-content}.pass{background:#123c32;color:#82edc0}.warn{background:#46351c;color:#ffd18a}.info{background:#1b3558;color:#a9ccff}.fail{background:#4a252b;color:#ffaaaa}.pending{background:#29364b;color:#c4d0e2}
+    .foot{color:var(--muted);font-size:12px;margin-top:22px}.foot a{color:var(--blue)}.hidden{display:none}
+    @media(max-width:620px){.result{grid-template-columns:1fr auto}.result small{grid-column:1/-1}.results-head{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="top"><div class="brand">TECHNOVA / SECURITY</div><div class="tag">READ-ONLY CHECKER · PREVIEW</div></div>
+  <h1>Security Centre</h1>
+  <p class="intro">A small, safe set of browser checks for the TechNova website. It checks transport security, selected response headers and whether known page routes respond. It does not attempt logins, change data, or test access by bypassing permissions.</p>
+  <div class="notice"><strong>Important:</strong> A page returning HTTP 200 only means its HTML route responded. It does not prove that its data or administrator actions are accessible. Database permissions and admin authorization require separate verification.</div>
+  <div class="actions">
+    <button id="run">Run safe checks</button>
+    <button id="clear" class="secondary">Clear results</button>
+  </div>
+  <section class="grid" aria-label="What this page checks">
+    <article class="card"><h2>🔒 Connection</h2><p>Checks HTTPS and whether the browser reports a secure context.</p></article>
+    <article class="card"><h2>🛡️ Response headers</h2><p>Looks for common browser security headers on the current page response.</p></article>
+    <article class="card"><h2>📄 Page routes</h2><p>Requests the known admin page HTML without sending your sign-in cookies.</p></article>
+    <article class="card"><h2>👤 Permissions</h2><p>Clearly marks real admin authorization and database access as not tested here.</p></article>
+  </section>
+  <section class="results" aria-live="polite">
+    <div class="results-head"><h2>Test results</h2><span id="summary" class="tag">Not run yet</span></div>
+    <div id="results"><div class="result"><strong>Ready</strong><span class="status pending">PENDING</span><small>Select “Run safe checks” to begin. No account or database changes will be made.</small></div></div>
+  </section>
+  <p class="foot">This page is a diagnostic aid, not a penetration test or a security certification. Do not enter passwords, tokens, API keys or other secrets here. For the full review, verify Supabase Row Level Security and server-side admin checks separately.</p>
+</main>
+<script>
+(() => {
+  const runButton = document.getElementById('run');
+  const clearButton = document.getElementById('clear');
+  const results = document.getElementById('results');
+  const summary = document.getElementById('summary');
+  const siteOrigin = 'https://technova-bmm.pages.dev';
+
+  function add(name, status, detail) {
+    const row = document.createElement('div');
+    row.className = 'result';
+    const title = document.createElement('strong');
+    title.textContent = name;
+    const badge = document.createElement('span');
+    badge.className = 'status ' + ({PASS:'pass', WARNING:'warn', INFO:'info', FAIL:'fail', 'NOT TESTED':'pending'}[status] || 'pending');
+    badge.textContent = status;
+    const note = document.createElement('small');
+    note.textContent = detail;
+    row.append(title, badge, note);
+    results.append(row);
+  }
+
+  function reset() {
+    results.replaceChildren();
+    summary.textContent = 'Running…';
+  }
+
+  async function run() {
+    runButton.disabled = true;
+    reset();
+    let completed = 0;
+    let warnings = 0;
+    const check = (name, status, detail) => {
+      add(name, status, detail);
+      completed++;
+      if (status === 'WARNING' || status === 'FAIL') warnings++;
+    };
+
+    check('Correct website', location.origin === siteOrigin ? 'PASS' : 'FAIL',
+      location.origin === siteOrigin ? 'Running on the TechNova production origin.' : 'This checker is intended for the TechNova production origin.');
+
+    check('HTTPS connection', location.protocol === 'https:' ? 'PASS' : 'FAIL',
+      location.protocol === 'https:' ? 'The page is using HTTPS.' : 'The page is not using HTTPS.');
+
+    check('Secure browser context', window.isSecureContext ? 'PASS' : 'WARNING',
+      window.isSecureContext ? 'The browser reports a secure context.' : 'The browser does not report a secure context.');
+
+    try {
+      const response = await fetch(location.href, { method: 'GET', credentials: 'same-origin', cache: 'no-store' });
+      const headers = response.headers;
+      const headerChecks = [
+        ['Strict-Transport-Security', 'Strict-Transport-Security'],
+        ['Content-Security-Policy', 'Content-Security-Policy'],
+        ['X-Content-Type-Options', 'X-Content-Type-Options'],
+        ['Referrer-Policy', 'Referrer-Policy'],
+        ['Permissions-Policy', 'Permissions-Policy']
+      ];
+      for (const [label, header] of headerChecks) {
+        const value = headers.get(header);
+        if (value) check(label, 'PASS', 'Header present: ' + value.slice(0, 180));
+        else check(label, 'WARNING', 'Header not visible in this response. Confirm at the hosting/CDN configuration; some headers may be set elsewhere.');
+      }
+      const csp = headers.get('Content-Security-Policy') || '';
+      const frameProtected = /frame-ancestors/i.test(csp) || !!headers.get('X-Frame-Options');
+      check('Clickjacking protection header', frameProtected ? 'PASS' : 'WARNING',
+        frameProtected ? 'A frame restriction header was detected.' : 'No frame restriction header was detected in this response.');
+    } catch (error) {
+      check('Current page response headers', 'WARNING', 'Could not inspect headers: ' + error.message);
+    }
+
+    const routes = [
+      ['/pages/admin-reports.html', 'Admin reports route'],
+      ['/pages/admin-quiz.html', 'Admin quiz route']
+    ];
+    for (const [path, label] of routes) {
+      try {
+        const response = await fetch(siteOrigin + path, {
+          method: 'GET',
+          credentials: 'omit',
+          cache: 'no-store',
+          redirect: 'follow'
+        });
+        check(label, 'INFO',
+          'HTTP ' + response.status + '. The request sent no sign-in cookies. This confirms only whether the HTML route responds, not whether admin data/actions are protected.');
+      } catch (error) {
+        check(label, 'WARNING', 'Request could not complete: ' + error.message);
+      }
+    }
+
+    add('Signed-out access enforcement', 'NOT TESTED', 'Requires a separate review of the actual admin page guard and server-side checks. A static HTML response is not proof of access.');
+    add('Supabase Row Level Security', 'NOT TESTED', 'Requires read-only policy inspection and carefully scoped tests with appropriate test accounts.');
+    add('Admin database functions', 'NOT TESTED', 'Requires checking function grants and role checks. This page does not call or modify database functions.');
+    add('Session invalidation after sign-out', 'NOT TESTED', 'Requires a controlled sign-in/sign-out test in a separate browser session.');
+
+    summary.textContent = completed + ' basic checks · ' + warnings + ' warnings · 4 areas not tested';
+    runButton.disabled = false;
+  }
+
+  runButton.addEventListener('click', run);
+  clearButton.addEventListener('click', () => {
+    results.replaceChildren();
+    const row = document.createElement('div');
+    row.className = 'result';
+    row.innerHTML = '<strong>Ready</strong><span class="status pending">PENDING</span><small>Results cleared. Select “Run safe checks” to begin.</small>';
+    results.append(row);
+    summary.textContent = 'Not run yet';
+  });
+})();
+</script>
+</body>
+</html>
