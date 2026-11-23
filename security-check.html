@@ -9,11 +9,11 @@
     :root{color-scheme:dark;--bg:#0b1220;--panel:#121d30;--panel2:#18263d;--text:#edf3ff;--muted:#9fb0ca;--line:#293a55;--blue:#70a7ff;--green:#4bd19a;--amber:#ffc66d;--red:#ff8585}
     *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#1a3152 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
     main{width:min(100% - 32px,980px);margin:42px auto 64px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}.brand{font-weight:800;letter-spacing:.08em;color:var(--blue);font-size:13px}.tag{border:1px solid var(--line);border-radius:999px;padding:5px 10px;color:var(--muted);font-size:12px}
-    h1{font-size:clamp(30px,5vw,44px);line-height:1.1;margin:8px 0 12px}.intro{color:var(--muted);max-width:720px;margin:0 0 24px}.notice{border:1px solid #66502d;background:#302719;color:#ffe2ae;padding:13px 15px;border-radius:12px;margin:18px 0 24px}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 24px}button{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--blue);color:#081426}button.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}button:disabled{opacity:.6;cursor:wait}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{background:linear-gradient(160deg,var(--panel),#101a2b);border:1px solid var(--line);border-radius:15px;padding:17px}.card h2{font-size:16px;margin:0 0 6px}.card p{margin:0;color:var(--muted);font-size:13px}
-    .results{margin-top:22px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:var(--panel)}.results-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.results-head h2{margin:0;font-size:17px}.result{padding:14px 18px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(145px,1fr) 110px 2fr;gap:12px;align-items:start}.result:last-child{border-bottom:0}.result small{color:var(--muted)}.status{font-size:11px;font-weight:800;letter-spacing:.04em;border-radius:999px;padding:4px 8px;text-align:center;width:max-content}.pass{background:#123c32;color:#82edc0}.warn{background:#46351c;color:#ffd18a}.info{background:#1b3558;color:#a9ccff}.fail{background:#4a252b;color:#ffaaaa}.pending{background:#29364b;color:#c4d0e2}
-    .foot{color:var(--muted);font-size:12px;margin-top:22px}.foot a{color:var(--blue)}.hidden{display:none}
+    h1{font-size:clamp(30px,5vw,44px);line-height:1.1;margin:8px 0 12px}h2{font-size:20px;margin:0 0 8px}.intro{color:var(--muted);max-width:760px;margin:0 0 24px}.notice{border:1px solid #66502d;background:#302719;color:#ffe2ae;padding:13px 15px;border-radius:12px;margin:18px 0 24px}
+    .section{margin-top:30px}.section-intro{color:var(--muted);font-size:13px;margin:0 0 15px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 24px}button{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--blue);color:#081426}button.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}button:disabled{opacity:.6;cursor:wait}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{background:linear-gradient(160deg,var(--panel),#101a2b);border:1px solid var(--line);border-radius:15px;padding:17px}.card h3{font-size:16px;margin:0 0 6px}.card p{margin:0;color:var(--muted);font-size:13px}
+    .results{margin-top:18px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:var(--panel)}.results-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.results-head h2{margin:0;font-size:17px}.result{padding:14px 18px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(165px,1fr) 110px 2fr;gap:12px;align-items:start}.result:last-child{border-bottom:0}.result small{color:var(--muted)}.status{font-size:11px;font-weight:800;letter-spacing:.04em;border-radius:999px;padding:4px 8px;text-align:center;width:max-content}.pass{background:#123c32;color:#82edc0}.warn{background:#46351c;color:#ffd18a}.info{background:#1b3558;color:#a9ccff}.fail{background:#4a252b;color:#ffaaaa}.pending{background:#29364b;color:#c4d0e2}
+    .foot{color:var(--muted);font-size:12px;margin-top:22px}.foot a{color:var(--blue)}.hidden{display:none}.subtle{font-size:12px;color:var(--muted)}
     @media(max-width:620px){.result{grid-template-columns:1fr auto}.result small{grid-column:1/-1}.results-head{align-items:flex-start;flex-direction:column}}
   </style>
 </head>
@@ -21,131 +21,229 @@
 <main>
   <div class="top"><div class="brand">TECHNOVA / SECURITY</div><div class="tag">READ-ONLY CHECKER · PREVIEW</div></div>
   <h1>Security Centre</h1>
-  <p class="intro">A small, safe set of browser checks for the TechNova website. It checks transport security, selected response headers and whether known page routes respond. It does not attempt logins, change data, or test access by bypassing permissions.</p>
-  <div class="notice"><strong>Important:</strong> A page returning HTTP 200 only means its HTML route responded. It does not prove that its data or administrator actions are accessible. Database permissions and admin authorization require separate verification.</div>
-  <div class="actions">
-    <button id="run">Run safe checks</button>
-    <button id="clear" class="secondary">Clear results</button>
-  </div>
-  <section class="grid" aria-label="What this page checks">
-    <article class="card"><h2>🔒 Connection</h2><p>Checks HTTPS and whether the browser reports a secure context.</p></article>
-    <article class="card"><h2>🛡️ Response headers</h2><p>Looks for common browser security headers on the current page response.</p></article>
-    <article class="card"><h2>📄 Page routes</h2><p>Requests the known admin page HTML without sending your sign-in cookies.</p></article>
-    <article class="card"><h2>👤 Permissions</h2><p>Clearly marks real admin authorization and database access as not tested here.</p></article>
+  <p class="intro">A safe diagnostic page for TechNova. Stage 1 checks browser and website configuration. Stage 2 validates your own sign-in and administrator role, then makes limited read-only requests to confirm that admin-only database access is enforced.</p>
+  <div class="notice"><strong>Safety:</strong> This page never changes database records, calls write functions, tests other users' accounts, or attempts to bypass permissions. It does not display your user ID, email, tokens or private records.</div>
+
+  <section class="section">
+    <h2>Stage 1 · Website checks</h2>
+    <p class="section-intro">Connection, response headers and static page routes. A page route responding does not prove its data is accessible.</p>
+    <div class="grid">
+      <article class="card"><h3>🔒 Connection</h3><p>Checks HTTPS and whether the browser reports a secure context.</p></article>
+      <article class="card"><h3>🛡️ Response headers</h3><p>Looks for common browser security headers on the current page response.</p></article>
+      <article class="card"><h3>📄 Page routes</h3><p>Requests known admin page HTML without sending your sign-in cookies.</p></article>
+    </div>
+    <div class="actions"><button id="run">Run Stage 1 checks</button><button id="clear" class="secondary">Clear results</button></div>
+    <section class="results" aria-live="polite">
+      <div class="results-head"><h2>Stage 1 results</h2><span id="summary" class="tag">Not run yet</span></div>
+      <div id="results"><div class="result"><strong>Ready</strong><span class="status pending">PENDING</span><small>Select “Run Stage 1 checks” to begin.</small></div></div>
+    </section>
   </section>
-  <section class="results" aria-live="polite">
-    <div class="results-head"><h2>Test results</h2><span id="summary" class="tag">Not run yet</span></div>
-    <div id="results"><div class="result"><strong>Ready</strong><span class="status pending">PENDING</span><small>Select “Run safe checks” to begin. No account or database changes will be made.</small></div></div>
+
+  <section class="section">
+    <h2>Stage 2 · Administrator and database checks</h2>
+    <p class="section-intro">Uses the existing TechNova browser session. You must be signed in with an administrator account to run the admin-only checks.</p>
+    <div class="notice">The live checks only read your own role row and perform an empty-result/count-style read against the reports table plus a read-only admin statistics function. No report contents or statistics are displayed.</div>
+    <div class="actions"><button id="run-admin">Run Stage 2 checks</button></div>
+    <section class="results" aria-live="polite">
+      <div class="results-head"><h2>Stage 2 results</h2><span id="admin-summary" class="tag">Not run yet</span></div>
+      <div id="admin-results"><div class="result"><strong>Sign-in validation</strong><span class="status pending">PENDING</span><small>Run Stage 2 to validate your current session.</small></div></div>
+    </section>
+    <div id="snapshot" class="hidden">
+      <h2 style="margin-top:24px">Database policy review snapshot</h2>
+      <p class="section-intro">Read-only inspection of the connected Supabase project, checked 23 November 2026. This is a dated database snapshot, not a live browser introspection of PostgreSQL system catalogs.</p>
+      <section class="results">
+        <div class="result"><strong>Public tables with RLS</strong><span class="status pass">PASS</span><small>All 27 inspected public tables had Row Level Security enabled.</small></div>
+        <div class="result"><strong>Tables without policies</strong><span class="status warn">REVIEW</span><small>Five tables had RLS enabled but no policies. Four had no anon/authenticated SELECT or INSERT grants. One demo-chunks table had grants but no policies, so RLS should deny row access by default; confirm that this is intentional.</small></div>
+        <div class="result"><strong>Admin-only functions</strong><span class="status pass">GUARDS FOUND</span><small>The ten inspected admin functions checked for a signed-in user and private.is_admin() before returning data or changing records. This is a code review result, not a live attempt to invoke a write function.</small></div>
+        <div class="result"><strong>SECURITY DEFINER function grants</strong><span class="status warn">REVIEW</span><small>Supabase Advisor reported two anonymous-callable and nineteen authenticated-callable SECURITY DEFINER functions. Some may be intentional; inspect each function's body and grants. The ten admin functions reviewed above contain administrator checks.</small></div>
+        <div class="result"><strong>Leaked password protection</strong><span class="status warn">WARNING</span><small>Supabase Advisor reported this Auth protection is disabled. Review the Auth password security setting in Supabase.</small></div>
+      </section>
+      <p class="subtle">A browser page cannot securely call Supabase Security Advisor or read pg_policies directly using a public client key. Those checks must be refreshed from the Supabase dashboard or an appropriately protected administrative connection.</p>
+    </div>
   </section>
-  <p class="foot">This page is a diagnostic aid, not a penetration test or a security certification. Do not enter passwords, tokens, API keys or other secrets here. For the full review, verify Supabase Row Level Security and server-side admin checks separately.</p>
+
+  <p class="foot">This diagnostic is not a penetration test or a security certification. It is not itself an access-control boundary: the database's RLS policies and server-side function checks must enforce permissions. Never enter passwords, tokens, API keys or other secrets here. <a href="https://supabase.com/docs/guides/observability/advisors" target="_blank" rel="noopener noreferrer">Supabase Advisor documentation</a>.</p>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
   const runButton = document.getElementById('run');
   const clearButton = document.getElementById('clear');
   const results = document.getElementById('results');
   const summary = document.getElementById('summary');
+  const adminButton = document.getElementById('run-admin');
+  const adminResults = document.getElementById('admin-results');
+  const adminSummary = document.getElementById('admin-summary');
+  const snapshot = document.getElementById('snapshot');
   const siteOrigin = 'https://technova-bmm.pages.dev';
 
-  function add(name, status, detail) {
+  function add(target, name, status, detail) {
     const row = document.createElement('div');
     row.className = 'result';
     const title = document.createElement('strong');
     title.textContent = name;
     const badge = document.createElement('span');
-    badge.className = 'status ' + ({PASS:'pass', WARNING:'warn', INFO:'info', FAIL:'fail', 'NOT TESTED':'pending'}[status] || 'pending');
+    badge.className = 'status ' + ({PASS:'pass', WARNING:'warn', REVIEW:'warn', INFO:'info', FAIL:'fail', 'NOT TESTED':'pending', 'GUARDS FOUND':'pass'}[status] || 'pending');
     badge.textContent = status;
     const note = document.createElement('small');
     note.textContent = detail;
     row.append(title, badge, note);
-    results.append(row);
+    target.append(row);
   }
 
-  function reset() {
-    results.replaceChildren();
-    summary.textContent = 'Running…';
+  function reset(target, message) {
+    target.replaceChildren();
+    if (message) {
+      const row = document.createElement('div');
+      row.className = 'result';
+      const title = document.createElement('strong');
+      title.textContent = 'Ready';
+      const badge = document.createElement('span');
+      badge.className = 'status pending';
+      badge.textContent = 'PENDING';
+      const note = document.createElement('small');
+      note.textContent = message;
+      row.append(title, badge, note);
+      target.append(row);
+    }
   }
 
-  async function run() {
+  async function runBasic() {
     runButton.disabled = true;
-    reset();
-    let completed = 0;
-    let warnings = 0;
+    reset(results);
+    summary.textContent = 'Running…';
+    let completed = 0, warnings = 0;
     const check = (name, status, detail) => {
-      add(name, status, detail);
+      add(results, name, status, detail);
       completed++;
       if (status === 'WARNING' || status === 'FAIL') warnings++;
     };
 
     check('Correct website', location.origin === siteOrigin ? 'PASS' : 'FAIL',
       location.origin === siteOrigin ? 'Running on the TechNova production origin.' : 'This checker is intended for the TechNova production origin.');
-
     check('HTTPS connection', location.protocol === 'https:' ? 'PASS' : 'FAIL',
       location.protocol === 'https:' ? 'The page is using HTTPS.' : 'The page is not using HTTPS.');
-
     check('Secure browser context', window.isSecureContext ? 'PASS' : 'WARNING',
       window.isSecureContext ? 'The browser reports a secure context.' : 'The browser does not report a secure context.');
 
     try {
-      const response = await fetch(location.href, { method: 'GET', credentials: 'same-origin', cache: 'no-store' });
+      const response = await fetch(location.href, {method:'GET', credentials:'same-origin', cache:'no-store'});
       const headers = response.headers;
-      const headerChecks = [
-        ['Strict-Transport-Security', 'Strict-Transport-Security'],
-        ['Content-Security-Policy', 'Content-Security-Policy'],
-        ['X-Content-Type-Options', 'X-Content-Type-Options'],
-        ['Referrer-Policy', 'Referrer-Policy'],
-        ['Permissions-Policy', 'Permissions-Policy']
-      ];
-      for (const [label, header] of headerChecks) {
+      for (const header of ['Strict-Transport-Security','Content-Security-Policy','X-Content-Type-Options','Referrer-Policy','Permissions-Policy']) {
         const value = headers.get(header);
-        if (value) check(label, 'PASS', 'Header present: ' + value.slice(0, 180));
-        else check(label, 'WARNING', 'Header not visible in this response. Confirm at the hosting/CDN configuration; some headers may be set elsewhere.');
+        check(header, value ? 'PASS' : 'WARNING', value ? 'Header present: ' + value.slice(0,160) : 'Header not visible in this response; confirm at hosting/CDN level.');
       }
       const csp = headers.get('Content-Security-Policy') || '';
       const frameProtected = /frame-ancestors/i.test(csp) || !!headers.get('X-Frame-Options');
       check('Clickjacking protection header', frameProtected ? 'PASS' : 'WARNING',
         frameProtected ? 'A frame restriction header was detected.' : 'No frame restriction header was detected in this response.');
     } catch (error) {
-      check('Current page response headers', 'WARNING', 'Could not inspect headers: ' + error.message);
+      check('Current page response headers', 'WARNING', 'Could not inspect response headers.');
     }
 
-    const routes = [
-      ['/pages/admin-reports.html', 'Admin reports route'],
-      ['/pages/admin-quiz.html', 'Admin quiz route']
-    ];
-    for (const [path, label] of routes) {
+    for (const [path,label] of [['/pages/admin-reports.html','Admin reports route'],['/pages/admin-quiz.html','Admin quiz route']]) {
       try {
-        const response = await fetch(siteOrigin + path, {
-          method: 'GET',
-          credentials: 'omit',
-          cache: 'no-store',
-          redirect: 'follow'
-        });
-        check(label, 'INFO',
-          'HTTP ' + response.status + '. The request sent no sign-in cookies. This confirms only whether the HTML route responds, not whether admin data/actions are protected.');
+        const response = await fetch(siteOrigin + path, {method:'GET',credentials:'omit',cache:'no-store',redirect:'follow'});
+        check(label,'INFO','HTTP ' + response.status + '. No sign-in cookies were sent. This tests the HTML route only, not access to admin data or actions.');
       } catch (error) {
-        check(label, 'WARNING', 'Request could not complete: ' + error.message);
+        check(label,'WARNING','The route request could not complete from this browser.');
       }
     }
-
-    add('Signed-out access enforcement', 'NOT TESTED', 'Requires a separate review of the actual admin page guard and server-side checks. A static HTML response is not proof of access.');
-    add('Supabase Row Level Security', 'NOT TESTED', 'Requires read-only policy inspection and carefully scoped tests with appropriate test accounts.');
-    add('Admin database functions', 'NOT TESTED', 'Requires checking function grants and role checks. This page does not call or modify database functions.');
-    add('Session invalidation after sign-out', 'NOT TESTED', 'Requires a controlled sign-in/sign-out test in a separate browser session.');
-
-    summary.textContent = completed + ' basic checks · ' + warnings + ' warnings · 4 areas not tested';
+    add(results,'Signed-out access enforcement','NOT TESTED','A static page response does not prove whether admin data or actions are protected.');
+    summary.textContent = completed + ' basic checks · ' + warnings + ' warnings · access enforcement requires Stage 2';
     runButton.disabled = false;
   }
 
-  runButton.addEventListener('click', run);
-  clearButton.addEventListener('click', () => {
-    results.replaceChildren();
-    const row = document.createElement('div');
-    row.className = 'result';
-    row.innerHTML = '<strong>Ready</strong><span class="status pending">PENDING</span><small>Results cleared. Select “Run safe checks” to begin.</small>';
-    results.append(row);
+  async function getClient() {
+    if (!window.supabase || typeof window.supabase.createClient !== 'function') throw new Error('Supabase client library did not load.');
+    const response = await fetch('/js/supabase-config.js', {credentials:'omit',cache:'no-store'});
+    if (!response.ok) throw new Error('Could not read the public TechNova Supabase configuration.');
+    const source = await response.text();
+    const url = source.match(/window\.TECHNOVA_SUPABASE_URL\s*=\s*['"]([^'"]+)['"]/);
+    const key = source.match(/window\.TECHNOVA_SUPABASE_PUBLISHABLE_KEY\s*=\s*['"]([^'"]+)['"]/);
+    if (!url || !key) throw new Error('The public Supabase configuration could not be parsed.');
+    return window.supabase.createClient(url[1],key[1],{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  }
+
+  async function runAdmin() {
+    adminButton.disabled = true;
+    reset(adminResults);
+    adminSummary.textContent = 'Running…';
+    snapshot.classList.add('hidden');
+    let pass = 0, warning = 0, fail = 0;
+    const result = (name,status,detail) => {
+      add(adminResults,name,status,detail);
+      if (status === 'PASS') pass++;
+      else if (status === 'WARNING' || status === 'NOT TESTED') warning++;
+      else if (status === 'FAIL') fail++;
+    };
+
+    try {
+      const client = await getClient();
+      const {data:authData,error:authError} = await client.auth.getUser();
+      if (authError) {
+        result('Session validation','FAIL','Supabase could not validate the current session. Sign in again and retry.');
+        throw new Error('stop');
+      }
+      const user = authData && authData.user;
+      if (!user) {
+        result('Session validation','WARNING','No signed-in TechNova user was found in this browser. Sign in, then return to this page.');
+        result('Administrator role','NOT TESTED','A role cannot be checked without a validated signed-in session.');
+        result('Admin-only database read','NOT TESTED','Skipped because no signed-in session was found.');
+        result('Admin read-only function','NOT TESTED','Skipped because no signed-in session was found.');
+        throw new Error('stop');
+      }
+      result('Session validation','PASS','Supabase validated the signed-in session. Account identifiers are not displayed.');
+
+      const {data:roleRow,error:roleError} = await client.from('user_roles').select('role').eq('user_id',user.id).maybeSingle();
+      if (roleError) {
+        result('Own-role RLS check','FAIL','The signed-in session could not read its own role row. Error code: ' + (roleError.code || 'unavailable') + '.');
+        result('Administrator role','NOT TESTED','Role verification failed; no administrator-only checks were attempted.');
+        result('Admin-only database read','NOT TESTED','Skipped because the role could not be verified.');
+        result('Admin read-only function','NOT TESTED','Skipped because the role could not be verified.');
+        throw new Error('stop');
+      }
+      if (!roleRow) {
+        result('Own-role RLS check','WARNING','The role query succeeded but returned no role row for this account.');
+        result('Administrator role','FAIL','No administrator role was found. Admin-only checks were not attempted.');
+        result('Admin-only database read','NOT TESTED','Skipped for a non-admin or unassigned role.');
+        result('Admin read-only function','NOT TESTED','Skipped for a non-admin or unassigned role.');
+        throw new Error('stop');
+      }
+      result('Own-role RLS check','PASS','The session could read only the role row matching its own authenticated user ID. No other users were queried.');
+      if (roleRow.role !== 'admin') {
+        result('Administrator role','FAIL','This signed-in account does not have the administrator role. Admin-only checks were safely skipped.');
+        result('Admin-only database read','NOT TESTED','Skipped because this account is not an administrator.');
+        result('Admin read-only function','NOT TESTED','Skipped because this account is not an administrator.');
+        throw new Error('stop');
+      }
+      result('Administrator role','PASS','The database role row identifies this signed-in account as an administrator.');
+
+      const {error:reportsError} = await client.from('reports').select('id',{count:'exact',head:true});
+      if (reportsError) result('Admin-only reports read','FAIL','The admin-only reports query was rejected. Error code: ' + (reportsError.code || 'unavailable') + '.');
+      else result('Admin-only reports read','PASS','The current session was allowed to run a count-only read under the reports table RLS policy. No report rows or counts were displayed.');
+
+      const {error:rpcError} = await client.rpc('admin_quiz_stats');
+      if (rpcError) result('Admin read-only function','FAIL','The admin statistics function rejected this session. Error code: ' + (rpcError.code || 'unavailable') + '.');
+      else result('Admin read-only function','PASS','The server-side admin_quiz_stats function accepted this administrator session. Returned statistics were discarded.');
+
+      snapshot.classList.remove('hidden');
+    } catch (error) {
+      if (error.message !== 'stop') {
+        result('Stage 2 setup','FAIL','Could not complete the checks. Verify that the Supabase client library and public site configuration are available.');
+      }
+    } finally {
+      adminSummary.textContent = pass + ' passed · ' + fail + ' failed · ' + warning + ' skipped / warnings';
+      adminButton.disabled = false;
+    }
+  }
+
+  runButton.addEventListener('click',runBasic);
+  clearButton.addEventListener('click',() => {
+    reset(results,'Results cleared. Select “Run Stage 1 checks” to begin.');
     summary.textContent = 'Not run yet';
   });
+  adminButton.addEventListener('click',runAdmin);
 })();
 </script>
 </body>
