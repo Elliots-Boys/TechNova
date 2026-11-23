@@ -688,6 +688,25 @@ const TECHNOVA_WORDBANK = [
 
 ];
 
+let techNovaCurrentDocument = null;
+function answerEverydayQuestion(message) {
+ const q=String(message||'').toLowerCase(); const now=new Date();
+ const fmt={weekday:'long',year:'numeric',month:'long',day:'numeric'};
+ if(/\b(what time is it|current time|local time|time is it)\b/.test(q)) return 'The current local time is '+new Intl.DateTimeFormat(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit',timeZoneName:'short'}).format(now)+'.';
+ if(/\b(what day is it|what date is it|today'?s date|current date|what is today)\b/.test(q)) return 'Today is '+new Intl.DateTimeFormat(undefined,fmt).format(now)+'.';
+ if(/\b(tomorrow'?s date|what day is tomorrow|what is tomorrow)\b/.test(q)){const d=new Date(now);d.setDate(d.getDate()+1);return 'Tomorrow is '+new Intl.DateTimeFormat(undefined,fmt).format(d)+'.';}
+ if(/\b(yesterday'?s date|what day was yesterday)\b/.test(q)){const d=new Date(now);d.setDate(d.getDate()-1);return 'Yesterday was '+new Intl.DateTimeFormat(undefined,fmt).format(d)+'.';}
+ if(/\b(what year is it|current year)\b/.test(q)) return 'The current year is '+now.getFullYear()+'.';
+ if(/\b(what month is it|current month)\b/.test(q)) return 'It is '+new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'}).format(now)+'.';
+ if(/\b(how are you|hru)\b/.test(q)) return 'I’m doing well, thanks for asking! What would you like help with?';
+ if(/^(hi|hello|hey|hiya|good morning|good afternoon|good evening)\b/.test(q)) return 'Hello! I can answer date and time questions, search uploaded documents and answer from my built-in knowledge bank.';
+ if(/\b(thank you|thanks|ty)\b/.test(q)) return 'You’re welcome!';
+ return null;
+}
+function summaryFromText(text){const sentences=String(text||'').replace(/\s+/g,' ').match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[];const useful=sentences.map(s=>s.trim()).filter(s=>s.length>35);return useful.slice(0,7).join(' ');}
+function findDocPassages(question,text){const terms=(String(question).toLowerCase().match(/[a-z0-9]{3,}/g)||[]).filter(w=>!['what','when','where','which','with','from','that','this','does','about','explain','tell','summarise','summary'].includes(w));const parts=String(text||'').split(/(?<=[.!?])\s+|\n+/).map(s=>s.trim()).filter(s=>s.length>35);return parts.map((s,i)=>({s,i,score:terms.reduce((n,t)=>n+(s.toLowerCase().includes(t)?1:0),0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,4).sort((a,b)=>a.i-b.i).map(x=>x.s);}
+async function readTechNovaFile(file){if(!file)throw Error('Choose a file first.');if(file.size>10*1024*1024)throw Error('Files must be 10 MB or smaller.');const n=file.name.toLowerCase();if(n.endsWith('.txt')||n.endsWith('.md')||n.endsWith('.csv'))return (await file.text()).slice(0,1000000);if(n.endsWith('.json'))return JSON.stringify(JSON.parse(await file.text()),null,2).slice(0,1000000);if(n.endsWith('.docx')){if(!window.mammoth)throw Error('Word reader unavailable. Refresh and try again.');return (await window.mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()})).value.slice(0,1000000);}if(n.endsWith('.pdf')){const pdfjsVersion='6.5.438';const pdfjs=await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@'+pdfjsVersion+'/build/pdf.mjs');pdfjs.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@'+pdfjsVersion+'/build/pdf.worker.mjs';const pdf=await pdfjs.getDocument({data:await file.arrayBuffer(),isEvalSupported:false,enableScripting:false}).promise;let out='';for(let p=1;p<=Math.min(pdf.numPages,100);p++){const page=await pdf.getPage(p);const c=await page.getTextContent();out+=c.items.map(x=>x.str||'').join(' ')+'\n';if(out.length>1000000)break;}if(!out.trim())throw Error('No selectable text found. Scanned PDFs need OCR, which is not included.');return out.slice(0,1000000);}throw Error('Supported files: PDF, DOCX, TXT, MD, CSV and JSON.');}
+function answerFromDocument(message){if(!techNovaCurrentDocument)return null;const q=String(message).toLowerCase();if(/\b(summarise|summarize|summary|overview)\b/.test(q))return 'Extractive summary of '+techNovaCurrentDocument.name+':\n\n'+summaryFromText(techNovaCurrentDocument.text)+'\n\nThis selects existing sentences; it does not generate new analysis.';if(/\b(make|create|generate)\b/.test(q)&&/\b(questions|quiz|revision)\b/.test(q)){const p=findDocPassages('key facts main ideas important points',techNovaCurrentDocument.text);return p.length?'Revision prompts based on '+techNovaCurrentDocument.name+':\n\n'+p.map((s,i)=>(i+1)+'. Explain this point in your own words: '+s.slice(0,180)).join('\n\n'):'I could not find enough readable text to create prompts.';}const p=findDocPassages(message,techNovaCurrentDocument.text);return p.length?'Relevant passages from '+techNovaCurrentDocument.name+':\n\n'+p.map(s=>'• '+s).join('\n\n')+'\n\nThese are keyword matches, so I may miss implied meaning.':'I could not find a close text match. Try using words that appear in the document.';}
 function normaliseWordbankText(value) {
   return ` ${String(value || '')
     .toLowerCase()
@@ -750,27 +769,14 @@ async function liveEventsAnswer() {
   }
 }
 
-async function answerFromWordbank(message) {
-  const lower = normaliseWordbankText(message);
-
-  if (
-    lower.includes(' event ') ||
-    lower.includes(' events ') ||
-    lower.includes(' coming up ') ||
-    lower.includes(' upcoming ')
-  ) {
-    return liveEventsAnswer();
-  }
-
-  return findWordbankAnswer(message) ||
-    'I do not have a reliable answer for that in my current knowledge bank yet. Try rephrasing your question or asking about AI, programming, web development, databases, cybersecurity basics, networking, computer hardware, cloud services, TechNova features or upcoming events. The knowledge bank is curated and does not cover every possible question.';
-}
+async function answerFromWordbank(message) { const everyday=answerEverydayQuestion(message); if(everyday)return everyday; const doc=answerFromDocument(message); if(doc)return doc; const lower=normaliseWordbankText(message); if(lower.includes(' event ')||lower.includes(' events ')||lower.includes(' coming up ')||lower.includes(' upcoming '))return liveEventsAnswer(); return findWordbankAnswer(message)||'I do not have a reliable answer for that yet. I can answer date and time questions, search uploaded documents and answer topics covered by my curated knowledge bank. I do not use a paid AI model, so I will say when I cannot find a reliable answer.'; }
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('aiForm');
   const input = document.getElementById('aiInput');
   const chat = document.getElementById('aiChat');
   const status = document.getElementById('aiStatus');
+  const fileInput=document.getElementById('aiFile'); const fileStatus=document.getElementById('aiFileStatus'); const removeFile=document.getElementById('aiRemoveFile');
 
   if (!form || !input || !chat) return;
 
@@ -795,6 +801,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } catch (_) {}
   };
+
+  if(fileInput) fileInput.addEventListener('change',async()=>{const f=fileInput.files&&fileInput.files[0];if(!f)return;fileStatus.textContent='Reading '+f.name+' locally…';try{const text=await readTechNovaFile(f);if(!text.trim())throw Error('No readable text found.');techNovaCurrentDocument={name:f.name,text};fileStatus.textContent='Ready: '+f.name+'. Text stays in this browser tab.';}catch(err){techNovaCurrentDocument=null;fileStatus.textContent=err.message;fileInput.value='';}});
+  if(removeFile)removeFile.addEventListener('click',()=>{techNovaCurrentDocument=null;if(fileInput)fileInput.value='';if(fileStatus)fileStatus.textContent='Document removed from this chat.';});
 
   const ask = async message => {
     addMessage(message, 'user');
