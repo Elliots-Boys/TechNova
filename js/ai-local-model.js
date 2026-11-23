@@ -104,12 +104,22 @@
     if (busy) throw new Error('The local model is already answering. Please wait.');
     busy = true;
     try {
-      const result = await generator(String(prompt).slice(0, 4200), {
-        max_new_tokens: 128,
-        do_sample: false
+      // FLAN-T5-small is compact. Keep prompts short and discourage loops.
+      const result = await generator(String(prompt).slice(0, 2200), {
+        max_new_tokens: 96,
+        do_sample: false,
+        repetition_penalty: 1.2,
+        no_repeat_ngram_size: 3,
+        num_beams: 2
       });
       const answer = result && result[0] && result[0].generated_text;
-      return typeof answer === 'string' && answer.trim() ? answer.trim() : null;
+      if (typeof answer !== 'string' || !answer.trim()) return null;
+      const clean = answer.trim();
+      const words = clean.toLowerCase().match(/[a-z0-9'-]+/g) || [];
+      const uniqueRatio = words.length ? new Set(words).size / words.length : 0;
+      const repeatedPhrase = /(.{1,18})(?:\s+\1){2,}/i.test(clean);
+      if (words.length < 2 || (words.length >= 8 && uniqueRatio < 0.38) || repeatedPhrase) return null;
+      return clean;
     } finally {
       busy = false;
     }
