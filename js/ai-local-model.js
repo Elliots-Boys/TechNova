@@ -122,7 +122,8 @@
       const shortLoop = compact.length >= 3 && compact.length <= 8 &&
         compact.every((word, index) => word === compact[index % 2]) &&
         new Set(compact).size <= 2;
-      if (words.length < 2 || (words.length >= 8 && uniqueRatio < 0.38) || repeatedPhrase || shortLoop) return null;
+      const repeatedTinyAnswer = words.length >= 2 && words.length <= 4 && new Set(words).size === 1;
+      if (words.length < 2 || (words.length >= 8 && uniqueRatio < 0.38) || repeatedPhrase || shortLoop || repeatedTinyAnswer) return null;
       return clean;
     } finally {
       busy = false;
