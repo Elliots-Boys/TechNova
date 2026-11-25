@@ -17,15 +17,15 @@ function makeEventItem(event,kind){
  if(event?.id){const link=document.createElement('a');link.href='event.html?id='+encodeURIComponent(event.id);link.textContent='View';item.append(link);}
  return item;
 }
-async function loadSavedEvents(user){
+async function loadSavedEvents(){
  const container=$('dashboardSavedEvents');if(!container)return;
  try{
   const rows=await window.TechNovaSavedEvents.list();
-  setCount('dashboardSavedCount',rows.length);
   container.replaceChildren();
   if(!rows.length){const empty=document.createElement('p');empty.className='dashboard-empty';empty.textContent='No saved events yet. Browse events and save the ones you want to revisit.';container.append(empty);return;}
   rows.slice(0,4).forEach(row=>container.append(makeEventItem(row.events,'saved')));
- }catch(error){setCount('dashboardSavedCount',NaN);container.textContent='Your saved events could not be loaded right now.';console.warn('Dashboard saved events unavailable:',error?.message);}
+  return true;
+ }catch(error){container.textContent='Your saved events could not be loaded right now.';console.warn('Dashboard saved events unavailable:',error?.message);return false;}
 }
 async function loadStats(user){
  const requests=[
@@ -37,8 +37,7 @@ async function loadStats(user){
  else setCount('dashboardRegistrationCount',NaN);
  if(saved.status==='fulfilled'&&!saved.value.error)setCount('dashboardSavedCount',saved.value.count??0);
  else setCount('dashboardSavedCount',NaN);
- if(registrations.status==='rejected'||registrations.value?.error||saved.status==='rejected'||saved.value?.error)showStatus('Some overview totals are unavailable. Your account and event list may still be accessible.',true);
- else showStatus('Your dashboard is up to date.');
+ return !(registrations.status==='rejected'||registrations.value?.error||saved.status==='rejected'||saved.value?.error);
 }
 async function loadAdminShortcut(user){
  const link=$('adminLink');if(!link)return;
@@ -62,7 +61,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
   const {data:{user},error}=await client().auth.getUser();
   if(error)throw error;
   if(!user){location.href='login.html';return;}
-  await Promise.all([loadStats(user),loadSavedEvents(user),loadAdminShortcut(user)]);
+  const [statsOk,savedOk]=await Promise.all([loadStats(user),loadSavedEvents(),loadAdminShortcut(user)]);
+  showStatus(statsOk&&savedOk?'Your dashboard is up to date.':'Some dashboard information is unavailable. Refresh the page to try again.',!(statsOk&&savedOk));
   syncProfile();
  }catch(error){showStatus(error?.message||'Your dashboard could not load. Please refresh and try again.',true);console.error('TechNova dashboard initialisation failed:',error);}
 });
