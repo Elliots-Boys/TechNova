@@ -817,11 +817,10 @@ One integrated PR adds the following built-in Desktop applications and system fe
 ### Optional Supabase sync
 
 - Uses the existing Supabase project and existing `user-files` private Storage bucket.
-- Adds a migration for `public.desktop_sync_records`, storing structured app payloads keyed by authenticated user, app and record key.
-- RLS is enabled and every SELECT/INSERT/UPDATE/DELETE policy checks `auth.uid() = user_id`; anonymous access is revoked and authenticated CRUD grants are explicit.
-- Structured sync is opt-in and disabled by default. Local-first features continue to work if the migration has not been applied or cloud requests fail.
-- The migration is included in the PR only. It is not applied to the hosted database by this PR. No Supabase project settings, authentication settings, Edge Functions, production records or bucket policies are changed.
-- File blobs are stored separately in the existing private bucket under the authenticated user's own `<user-id>/desktop/` prefix. The existing bucket policy is reused; no new bucket or storage policy is introduced.
+- Structured app records are stored as JSON objects in the existing private `user-files` Storage bucket under the authenticated user's ` <user-id>/desktop-sync/ ` prefix.
+- Cloud sync is opt-in and disabled by default. The existing bucket's authenticated user-folder Storage policies provide ownership isolation; no service-role key or secret is exposed to the browser.
+- The existing bucket's private setting, file-size limit and allowed MIME types are reused. No new bucket, Storage policy, database table, RLS policy, Edge Function or project setting is introduced.
+- File blobs uploaded through Storage Manager 2.0 are stored separately under the authenticated user's `<user-id>/desktop/` prefix. Local-first features continue to work if cloud requests fail.
 - No service-role key, secret key, provider password or API credential is embedded in frontend code.
 
 ### Limitations and verification
@@ -832,7 +831,7 @@ One integrated PR adds the following built-in Desktop applications and system fe
 - Media playback depends on browser codec support and does not bypass DRM.
 - Website Designer creates static files; it does not publish websites.
 - Mail Centre is a draft organiser only; a real inbox requires a separate provider OAuth integration.
-- Supabase cloud sync requires applying the included migration after PR review/merge. It has not been tested against the live Data API in this PR.
+- Supabase cloud sync uses the existing private Storage bucket and must be tested with two separate signed-in accounts to confirm isolation. No live database schema or settings are changed by this PR.
 - Manual signed-in browser, responsive, accessibility, two-account RLS and cloud Storage tests remain required; see `docs/technova-os-expansion-pr50-qa.md`.
 
 ### Files
@@ -841,10 +840,9 @@ One integrated PR adds the following built-in Desktop applications and system fe
 - `js/technova-desktop.js`
 - `js/technova-os-expansion.js`
 - `css/technova-desktop.css`
-- `supabase/migrations/20261125141500_add_technova_desktop_cloud_sync.sql`
 - `docs/technova-os-expansion-pr50-qa.md`
 - `TECHNOVA_MASTER_DOCUMENT.md`
 
 ### Pull request
 
-[PR #50 — Expand TechNova Desktop into a full operating environment](https://github.com/Elliots-Boys/TechNova/pull/50). Status: open draft, not merged, not deployed. The Supabase migration is committed but not applied to the hosted project. No Cloudflare deployment is performed.
+[PR #50 — Expand TechNova Desktop into a full operating environment](https://github.com/Elliots-Boys/TechNova/pull/50). Status: open draft, not merged, not deployed. Cloud sync uses the existing private Storage bucket; no Supabase schema or settings changes are included. No Cloudflare deployment is performed.
