@@ -295,7 +295,8 @@ This table records known PR history. Where a final state has not been verified, 
 | #39 | Personal dashboard workspace refinement | Merged into `main` on 25 November 2026; adds upcoming registrations and recent activity and fixes the registered-events panel |
 | #40 | Personal dashboard command-centre enhancement | Merged into `main` on 25 November 2026; searchable directory, local pins/recent pages/notes/widget preferences |
 | #41 | Dashboard AI workspace integration | Merged into `main` on 25 November 2026 (verified via GitHub); embeds the existing free assistant and tools in the personal dashboard while retaining the dedicated AI page |
-| #42 | Personal dashboard command palette | Merged into `main` on 25 November 2026; local searchable Quick open dialog with Ctrl/Cmd+K and keyboard navigation |\n| #43 | Personal dashboard focus workspace | Open draft PR: [#43](https://github.com/Elliots-Boys/TechNova/pull/43); private browser-local task planner and visual refinements; not merged or deployed |
+| #42 | Personal dashboard command palette | Merged into `main` on 25 November 2026; local searchable Quick open dialog with Ctrl/Cmd+K and keyboard navigation |
+| #43 | Personal dashboard focus workspace | Merged into `main` on 25 November 2026; private browser-local task planner and visual refinements; merge commit `c0d5f3329e68f697a4857bfaa109d063b30727d5` |
 
 | #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser/provider QA remains outstanding |
 | #38 | Refresh cached authentication script for dashboard redirects | Open draft PR; updates the login and signup script cache version; no auth logic or backend changes |
@@ -455,7 +456,7 @@ This section intentionally records uncertainty so historical notes are not mista
 | PR #39 | Personal dashboard workspace refinement | Merged into `main` on 25 November 2026; browser/device QA remains outstanding |
 | PR #40 | Personal dashboard command-centre enhancement | Merged into `main` on 25 November 2026; browser/device and signed-in account QA remain outstanding |
 | PR #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser QA outstanding |
-| PR #39 | Personal dashboard workspace refinement | Open draft PR; browser QA outstanding; no backend changes |
+| PR #43 | Personal dashboard focus workspace | Merged into `main` on 25 November 2026; browser QA outstanding; no backend changes |
 | Admin dashboard | Existing `pages/admin.html` includes overview, user, event, registration, article, quiz, website and activity sections; PR #37 refines its workspace UI and refresh flow | Browser QA outstanding |
 | Login destination | PR #37 changes the default post-login destination to `pages/dashboard.html`; explicit same-origin OAuth redirects and supported `next` destinations remain | Test email and each configured OAuth provider on preview/live domains |
 | Community | Earlier review found no complete post/reply forum | Current implementation |
@@ -473,9 +474,43 @@ This section intentionally records uncertainty so historical notes are not mista
 | Date | Update |
 |---|---|
 | 25 Nov 2026 | Consolidated project identity, infrastructure, page map, historical architecture decisions, AI roadmap, PR history, development rules and verification gaps from available project context and repository inspection. |
-| 25 Nov 2026 | Verified PRs #33–#37 merged into `main`; PR #36 personal dashboard and PR #37 admin dashboard/auth routing are merged. |\n| 25 Nov 2026 | Verified PRs #40, #41 and #42 merged into `main`; PR #43 adds a browser-local focus planner to the personal dashboard. |
+| 25 Nov 2026 | Verified PRs #33–#37 merged into `main`; PR #36 personal dashboard and PR #37 admin dashboard/auth routing are merged. |
+| 25 Nov 2026 | Verified PRs #40–#43 merged into `main`; PR #43 adds a browser-local focus planner to the personal dashboard. |
 
 ---
+
+## 22. Expanded personal dashboard workspace (PR #44 — branch implementation)
+
+The user requested that the dashboard receive the full set of suggested personal workspace additions. PR #43 was inspected and verified merged into `main` before this work began. The new implementation is isolated on branch `feature/technova-dashboard-complete-workspace-44`.
+
+Scope:
+- Add a personal calendar widget with month navigation, date selection, browser-local reminders and markers/list entries for due dates from the existing Focus task board.
+- Add a habit tracker with daily check-ins, current streaks, a maximum of 12 habits and local persistence.
+- Add a multi-note workspace with note creation, editing, search, deletion and TXT export; retain the existing quick scratchpad separately.
+- Add personal insights calculated from real local task, habit, reminder and project records, plus the existing signed-in account registration/saved-event totals.
+- Add a lightweight local project list with Planning, In progress, On hold and Complete stages.
+- Add local developer utilities for JSON formatting/minification/validation and colour selection/HEX copying, plus links to existing developer tools.
+- Add study prompt buttons that prefill the existing TechNova Assistant, plus links to existing Learning/Academy content.
+- Add a community and spaces hub linking to existing Community, Ideas, Leaderboard, Showcase, Directory, Learning, Private Cloud and Google Drive pages.
+- Add administrator quick links to existing admin pages only after the existing role check succeeds. The admin panel is deliberately excluded from ordinary widget visibility toggles so a non-admin cannot reveal it by changing Personalise settings.
+- Add Personalise toggles for the new member-facing widgets and a manual QA checklist.
+
+Files:
+- `pages/dashboard.html`
+- `js/dashboard-workspace.js`
+- `docs/technova-dashboard-complete-workspace-pr44-qa.md`
+- `TECHNOVA_MASTER_DOCUMENT.md`
+
+Privacy, architecture and limitations:
+- Calendar reminders, habits, notes and projects are stored only in the current browser's local storage. They are not synced to Supabase or other devices.
+- Insights use actual local workspace records and the dashboard's existing read-only, user-scoped account totals. No fabricated statistics are introduced.
+- JSON formatting parses and serialises data; it does not execute code. The study controls only prefill the existing free browser-based assistant; they do not add a generative model.
+- Community, Academy, cloud storage, and advanced developer tools are linked to existing pages. This dashboard PR does not create a new discussion forum, messaging system, app store, cloud-sync service, new courses, or server-side community features.
+- Admin quick links are navigation only; the destination pages keep their own permission checks.
+- No Supabase schema, RLS, settings, Edge Functions, credentials, production data, other page implementations, or Cloudflare deployment changes.
+- JavaScript syntax and static markup checks passed before PR creation. Real signed-in browser, responsive, keyboard and screen-reader testing remains a manual QA requirement.
+
+Pull request status: branch implementation is prepared for a draft PR; the exact PR number and URL will be added here after GitHub creates it. No merge or deployment is authorised.
 
 ## 17. Instructions for future maintainers and AI assistants
 
@@ -568,4 +603,4 @@ Privacy and technical boundaries:
 - No Supabase schema, RLS, settings, Edge Functions, credentials, production data, admin dashboard or other page changes.
 - No Cloudflare deployment. Signed-in browser, mobile, keyboard and screen-reader QA remain required.
 
-Pull request: [#43 — Add a personal focus planner to the TechNova dashboard](https://github.com/Elliots-Boys/TechNova/pull/43). Created as a draft for review; not merged or deployed.
+Pull request: [#43 — Add a personal focus planner to the TechNova dashboard](https://github.com/Elliots-Boys/TechNova/pull/43). Merged into `main` on 25 November 2026 (verified via GitHub; merge commit `c0d5f3329e68f697a4857bfaa109d063b30727d5`). No Cloudflare deployment was performed.
