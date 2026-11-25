@@ -2,8 +2,8 @@
 (() => {
 'use strict';
 const $=id=>document.getElementById(id);
-const K={tasks:'technova.dashboard.tasks.v1',schedule:'technova.os.timetable.v1',cards:'technova.os.flashcards.v1',grades:'technova.os.grades.v1',dismissed:'technova.os.dismissed.v1',layout:'technova.os.layout.v1',code:'technova.os.code.v1'};
-const allKeys=[K.tasks,'technova.dashboard.calendar.v1','technova.dashboard.habits.v1','technova.dashboard.notes.v1','technova.dashboard.projects.v1','technova.dashboard.pins.v1','technova.dashboard.recent.v1','technova.dashboard.note.v1','technova.dashboard.widgets.v1',K.schedule,K.cards,K.grades,K.dismissed,K.layout,K.code];
+const K={tasks:'technova.dashboard.tasks.v1',schedule:'technova.os.timetable.v1',cards:'technova.os.flashcards.v1',grades:'technova.os.grades.v1',dismissed:'technova.os.dismissed.v1',layout:'technova.os.layout.v1',code:'technova.os.code.v1',sessions:'technova.os.focus-sessions.v1'};
+const allKeys=[K.tasks,'technova.dashboard.calendar.v1','technova.dashboard.habits.v1','technova.dashboard.notes.v1','technova.dashboard.projects.v1','technova.dashboard.pins.v1','technova.dashboard.recent.v1','technova.dashboard.note.v1','technova.dashboard.widgets.v1',K.schedule,K.cards,K.grades,K.dismissed,K.layout,K.code,K.sessions];
 const read=(key,fb)=>{try{const v=localStorage.getItem(key);return v===null?fb:JSON.parse(v)}catch{return fb}};
 const write=(key,v)=>{try{localStorage.setItem(key,JSON.stringify(v));return true}catch{return false}};
 const id=()=>crypto?.randomUUID?.()||String(Date.now())+Math.random().toString(36).slice(2);
@@ -23,7 +23,7 @@ function setupTimer(){
  let seconds=1500,handle=null;const display=$('osTimerDisplay'),status=$('osTimerStatus'),start=$('osTimerStart');if(!display)return;
  const paint=()=>{display.textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')};
  const stop=()=>{if(handle){clearInterval(handle);handle=null}start.textContent='Start'};
- start.addEventListener('click',()=>{if(handle){clearInterval(handle);handle=null;start.textContent='Resume';status.textContent='Paused.';return}start.textContent='Pause';status.textContent='Focus session in progress.';handle=setInterval(()=>{seconds--;paint();if(seconds<=0){clearInterval(handle);handle=null;start.textContent='Start';status.textContent='Session complete — take a short break.';if('Notification'in window&&Notification.permission==='granted')new Notification('TechNova focus session complete');}},1000)});
+ start.addEventListener('click',()=>{if(handle){clearInterval(handle);handle=null;start.textContent='Resume';status.textContent='Paused.';return}start.textContent='Pause';status.textContent='Focus session in progress.';handle=setInterval(()=>{seconds--;paint();if(seconds<=0){clearInterval(handle);handle=null;start.textContent='Start';status.textContent='Session complete — take a short break.';const sessions=read(K.sessions,[]);sessions.push({id:id(),date:today(),minutes:25,completedAt:Date.now()});write(K.sessions,sessions.slice(-500));if('Notification'in window&&Notification.permission==='granted')new Notification('TechNova focus session complete');}},1000)});
  $('osTimerReset').addEventListener('click',()=>{stop();seconds=1500;paint();status.textContent='Timer reset.'});paint();
 }
 function setupSchedule(){

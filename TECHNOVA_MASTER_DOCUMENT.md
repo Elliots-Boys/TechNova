@@ -478,6 +478,7 @@ This section intentionally records uncertainty so historical notes are not mista
 | 25 Nov 2026 | Verified PRs #33–#37 merged into `main`; PR #36 personal dashboard and PR #37 admin dashboard/auth routing are merged. |
 | 25 Nov 2026 | Verified PRs #40–#43 merged into `main`; PR #43 adds a browser-local focus planner to the personal dashboard. |
 | 25 Nov 2026 | PR #44 merged with calendar, habit, notes, insights, project, developer, study and community workspace widgets; no Cloudflare deployment. |
+| 25 Nov 2026 | PR #45 merged with TechNova OS task, study, developer and creative workspace; focus sessions, Phase 2 analytics, recurring task templates, notes organisation, multi-file ZIP export and personalisation added in PR #46. |
 
 ---
 
@@ -645,4 +646,40 @@ Privacy, architecture and limitations:
 Validation:
 - JavaScript syntax parsing and static ID/reference checks performed before PR creation; manual browser, keyboard, responsive, signed-in account and screen-reader QA remain outstanding.
 
-Pull request: [#45 — Build TechNova OS into the personal dashboard](https://github.com/Elliots-Boys/TechNova/pull/45). Created as a draft, not merged or deployed.
+Pull request: [#45 — Build TechNova OS into the personal dashboard](https://github.com/Elliots-Boys/TechNova/pull/45). Merged into `main` on 25 November 2026 (verified via GitHub). No Cloudflare deployment was performed.
+
+
+## 24. Phase 2 personal workspace expansion (PR #46)
+
+PR #45 was verified merged into `main` on 25 November 2026 before this follow-up. PR #46 expands the existing TechNova OS without changing authentication, public pages, the administrator dashboard or backend services.
+
+Scope:
+- Add advanced task views with local search, status and priority filters, subtask tracking, and recurring task templates. Recurring templates create the next dated task when the user chooses; they do not silently generate tasks in the background.
+- Record completed 25-minute focus sessions locally and show task completion, grade average, total focus minutes and a seven-day focus chart using actual saved records.
+- Add a smart 14-day agenda combining due tasks, calendar reminders and weekly timetable sessions.
+- Add folders and comma-separated tags to existing notes, with folder and tag filters. Existing note content and storage are preserved.
+- Expand the developer studio with a multi-file project workspace, path-based folders, isolated live preview, individual file download, portable JSON export and ZIP export.
+- Add local personalisation controls for Midnight/Aurora/Light themes, accent colour, panel density and workspace width.
+- Add a QA checklist.
+
+Files:
+- `pages/dashboard.html`
+- `js/dashboard-os.js`
+- `js/dashboard-phase2.js`
+- `docs/technova-phase-two-workspace-pr46-qa.md`
+- `TECHNOVA_MASTER_DOCUMENT.md`
+
+Privacy and technical boundaries:
+- New task templates, subtask metadata, focus-session history, developer project files and personalisation settings are stored in this browser only.
+- Focus-session analytics begin when the updated timer records completed sessions; earlier timer sessions are not reconstructed.
+- The agenda is a local 14-day view, not a remote calendar integration or push-notification service.
+- Notes folders and tags extend the existing local notes records; rich-text formatting and note attachments are not included in this increment.
+- The developer studio supports multiple named files and ZIP export, but it remains a lightweight editor rather than a full IDE; syntax highlighting, package installation and hosted deployment are not included. The preview uses a sandboxed iframe.
+- ZIP creation is performed in the browser and includes the project's text files. Project JSON export remains available as an additional portable format.
+- No Supabase schema, RLS, settings, Edge Functions, credentials, production data, authentication, admin dashboard or Cloudflare deployment changes.
+
+Validation:
+- JavaScript syntax parsing and static markup checks were performed before PR creation.
+- Manual signed-in browser testing, ZIP extraction verification, responsive checks, keyboard testing and screen-reader testing remain required.
+
+Pull request: [#46 — Expand TechNova OS with Phase 2 workspace tools](https://github.com/Elliots-Boys/TechNova/pull/46). Created as a draft; merge and deployment status must be updated after verification.
