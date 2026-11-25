@@ -31,7 +31,7 @@ function setupCalendar(){
  const grid=$('workspaceCalendarGrid'),heading=$('workspaceCalendarHeading'),list=$('workspaceCalendarList'),form=$('workspaceReminderForm'),title=$('workspaceReminderTitle'),dateInput=$('workspaceReminderDate'),status=$('workspaceCalendarStatus');
  if(!grid||!heading||!list||!form)return;
  let reminders=read(KEYS.calendar,[]);
- if(!Array.isArray(reminders))reminders=[];
+ if(!Array.isArray(reminders))reminders=[];reminders=reminders.filter(x=>x&&typeof x.id==='string'&&typeof x.title==='string'&&typeof x.date==='string');
  let view=new Date();view.setDate(1);
  let selected=today();
  const taskItems=()=>{const tasks=read('technova.dashboard.tasks.v1',[]);return Array.isArray(tasks)?tasks.filter(t=>t&&t.dueDate&&!t.done):[];};
@@ -80,7 +80,7 @@ function setupCalendar(){
 function setupHabits(){
  const form=$('workspaceHabitForm'),input=$('workspaceHabitName'),list=$('workspaceHabitList'),status=$('workspaceHabitStatus'),summary=$('workspaceHabitSummary');
  if(!form||!input||!list)return;
- let habits=read(KEYS.habits,[]);if(!Array.isArray(habits))habits=[];
+ let habits=read(KEYS.habits,[]);if(!Array.isArray(habits))habits=[];habits=habits.filter(h=>h&&typeof h.id==='string'&&typeof h.name==='string').map(h=>({...h,logs:Array.isArray(h.logs)?h.logs.filter(x=>typeof x==='string').slice(-366):[]}));
  const streakFor=logs=>{
   const set=new Set(logs||[]);let cursor=new Date();let count=0;
   if(!set.has(today()))cursor.setDate(cursor.getDate()-1);
@@ -107,7 +107,7 @@ function setupHabits(){
 function setupNotes(){
  const list=$('workspaceNotesList'),search=$('workspaceNotesSearch'),title=$('workspaceNoteTitle'),body=$('workspaceNoteBody'),status=$('workspaceNotesStatus'),add=$('workspaceAddNote'),remove=$('workspaceDeleteNote'),exportBtn=$('workspaceExportNote');
  if(!list||!title||!body)return;
- let notes=read(KEYS.notes,[]);if(!Array.isArray(notes))notes=[];
+ let notes=read(KEYS.notes,[]);if(!Array.isArray(notes))notes=[];notes=notes.filter(n=>n&&typeof n.id==='string').map(n=>({...n,title:String(n.title||'Untitled note'),body:String(n.body||''),updatedAt:Number(n.updatedAt)||Date.now()}));
  let active='';
  const save=()=>write(KEYS.notes,notes,status);
  const current=()=>notes.find(n=>n.id===active);
@@ -148,14 +148,13 @@ function setupNotes(){
   const note=current();if(!note)return;
   const blob=new Blob([note.title+'\n\n'+note.body],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(note.title||'technova-note').replace(/[^a-z0-9-_]+/gi,'-').slice(0,60)+'.txt';a.click();URL.revokeObjectURL(url);
  });
- const originalRender=render;
  render();if(!notes.length){const first={id:makeId(),title:'Welcome to Notes',body:'Use this space for ideas, reminders and project notes.',updatedAt:Date.now()};notes.push(first);active=first.id;save();render();}
 }
 
 function setupProjects(){
  const form=$('workspaceProjectForm'),input=$('workspaceProjectName'),list=$('workspaceProjectList'),status=$('workspaceProjectStatus');
  if(!form||!input||!list)return;
- let projects=read(KEYS.projects,[]);if(!Array.isArray(projects))projects=[];
+ let projects=read(KEYS.projects,[]);if(!Array.isArray(projects))projects=[];projects=projects.filter(p=>p&&typeof p.id==='string'&&typeof p.name==='string').map(p=>({...p,stage:['Planning','In progress','On hold','Complete'].includes(p.stage)?p.stage:'Planning'}));
  const stages=['Planning','In progress','On hold','Complete'];
  const render=()=>{
   list.replaceChildren();if(!projects.length){empty(list,'Your projects will appear here.');return;}
@@ -175,20 +174,29 @@ function setupProjects(){
 }
 
 function setupInsights(){
- const tasks=read('technova.dashboard.tasks.v1',[]),habits=read(KEYS.habits,[]),reminders=read(KEYS.calendar,[]),projects=read(KEYS.projects,[]);
- const safeTasks=Array.isArray(tasks)?tasks:[],safeHabits=Array.isArray(habits)?habits:[],safeReminders=Array.isArray(reminders)?reminders:[],safeProjects=Array.isArray(projects)?projects:[];
- const done=safeTasks.filter(t=>t&&t.done).length,open=safeTasks.filter(t=>t&&!t.done).length;
- const habitsDone=safeHabits.filter(h=>(h.logs||[]).includes(today())).length;
- const upcoming=safeReminders.filter(r=>r.date>=today()).length;
- const completeProjects=safeProjects.filter(p=>p.stage==='Complete').length;
- const stats=[['Open tasks',open],['Tasks completed',done],['Habits today',habitsDone+' / '+safeHabits.length],['Upcoming reminders',upcoming],['Projects complete',completeProjects+' / '+safeProjects.length]];
- const container=$('workspaceInsights');if(!container)return;container.replaceChildren();
- stats.forEach(([label,value])=>{const card=el('div','workspace-insight');card.append(el('strong','',String(value)),el('small','',label));container.append(card);});
- const accountReg=$('dashboardRegistrationCount')?.textContent||'—';const accountSaved=$('dashboardSavedCount')?.textContent||'—';
- const account=$('workspaceAccountInsight');if(account)account.textContent='TechNova account activity: '+accountReg+' registrations · '+accountSaved+' saved events. These totals come from your signed-in account.';
- const taskProgress=$('workspaceTaskProgress');if(taskProgress){const total=done+open;taskProgress.textContent=total?Math.round(done/total*100)+'% of your focus tasks completed':'No focus tasks yet';}
+ const container=$('workspaceInsights');if(!container)return;
+ const refresh=()=>{
+  const tasks=read('technova.dashboard.tasks.v1',[]),habits=read(KEYS.habits,[]),reminders=read(KEYS.calendar,[]),projects=read(KEYS.projects,[]);
+  const safeTasks=Array.isArray(tasks)?tasks.filter(t=>t&&typeof t.done==='boolean'):[];
+  const safeHabits=Array.isArray(habits)?habits.filter(h=>h&&typeof h.name==='string'):[];
+  const safeReminders=Array.isArray(reminders)?reminders.filter(r=>r&&typeof r.date==='string'):[];
+  const safeProjects=Array.isArray(projects)?projects.filter(p=>p&&typeof p.stage==='string'):[];
+  const done=safeTasks.filter(t=>t.done).length,open=safeTasks.filter(t=>!t.done).length;
+  const habitsDone=safeHabits.filter(h=>Array.isArray(h.logs)&&h.logs.includes(today())).length;
+  const upcoming=safeReminders.filter(r=>r.date>=today()).length;
+  const completeProjects=safeProjects.filter(p=>p.stage==='Complete').length;
+  const stats=[['Open tasks',open],['Tasks completed',done],['Habits today',habitsDone+' / '+safeHabits.length],['Upcoming reminders',upcoming],['Projects complete',completeProjects+' / '+safeProjects.length]];
+  container.replaceChildren();
+  stats.forEach(([label,value])=>{const card=el('div','workspace-insight');card.append(el('strong','',String(value)),el('small','',label));container.append(card);});
+  const accountReg=$('dashboardRegistrationCount')?.textContent||'—',accountSaved=$('dashboardSavedCount')?.textContent||'—';
+  const account=$('workspaceAccountInsight');if(account)account.textContent='TechNova account activity: '+accountReg+' registrations · '+accountSaved+' saved events. These totals come from your signed-in account.';
+  const taskProgress=$('workspaceTaskProgress');if(taskProgress){const total=done+open;taskProgress.textContent=total?Math.round(done/total*100)+'% of your focus tasks completed':'No focus tasks yet';}
+ };
+ refresh();
+ ['focusTaskList','workspaceHabitList','workspaceCalendarList','workspaceProjectList','dashboardRegistrationCount','dashboardSavedCount'].forEach(id=>{
+  const node=$(id);if(node)new MutationObserver(refresh).observe(node,{childList:true,subtree:true,characterData:true});
+ });
 }
-
 function setupDeveloperTools(){
  const input=$('workspaceJsonInput'),output=$('workspaceJsonOutput'),status=$('workspaceJsonStatus');
  $('workspaceJsonFormat')?.addEventListener('click',()=>{
