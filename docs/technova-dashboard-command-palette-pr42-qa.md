@@ -15,7 +15,7 @@ Adds a keyboard-accessible quick launcher to the signed-in personal dashboard. I
 - [ ] Sign in and open Quick open using its button.
 - [ ] Open the palette using Ctrl+K on Windows/Linux and Cmd+K on macOS.
 - [ ] Search by page name, category and keyword.
-- [ ] Use Arrow Up/Down to move selection and Enter to open the highlighted destination.
+- [ ] Use Arrow Up/Down to move selection and Enter to open the highlighted destination; confirm the active result is exposed through the search field's accessible active-descendant state.
 - [ ] Use Escape and the Close button; confirm focus returns to the trigger.
 - [ ] Click outside the dialog to close it.
 - [ ] Confirm opening a destination updates the existing Recently opened list.
