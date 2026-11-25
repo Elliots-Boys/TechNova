@@ -779,5 +779,70 @@ Validation:
 - JavaScript syntax parsing and static markup/ID checks are performed before PR creation.
 - Manual signed-in browser testing, cross-origin embedding checks, tab/history/bookmark behaviour, private-session behaviour, download fallback, responsive layout, keyboard navigation and screen-reader QA remain required.
 
-Pull request: [#49 — Add the advanced TechNova Browser to Desktop](https://github.com/Elliots-Boys/TechNova/pull/49). Created as a draft; not merged or deployed.
+Pull request: [#49 — Add the advanced TechNova Browser to Desktop](https://github.com/Elliots-Boys/TechNova/pull/49). Merged into `main` on 25 November 2026 (merge commit `72217023cbfa3b4e934b1b55439468e72b2b96ee`). The Browser UI and runtime are subsequently removed from the Desktop by the unified OS expansion in PR #50.
 
+
+
+---
+
+## 28. TechNova OS Expansion — unified desktop application suite
+
+**Status:** Proposed implementation in PR #50; open draft, unmerged and not deployed. The Browser application is intentionally removed from the Desktop interface by this PR because the user decided to scrap it in favour of a wider OS expansion. Historical PR #49 remains in GitHub history and its merge is not reversed.
+
+### Scope
+
+One integrated PR adds the following built-in Desktop applications and system features:
+
+1. **TechNova App Store:** curated built-in application catalogue with enable/disable controls. It does not execute arbitrary third-party extensions.
+2. **Virtual Desktops:** separate workspaces, create/rename/delete, window assignment and Ctrl+Alt+Arrow navigation.
+3. **Whiteboard Studio:** pointer/touch drawing, sticky notes, local persistence and PNG export.
+4. **Document Studio:** lightweight rich-text editor, saved documents, HTML/TXT export and print-to-PDF.
+5. **Spreadsheet Studio:** editable grid, cell references, basic arithmetic, SUM/AVERAGE/MIN/MAX ranges, row/column expansion and CSV export.
+6. **API Studio:** browser-origin HTTP requests, JSON headers/body, response inspection and saved request collections; CORS restrictions apply.
+7. **Desktop Widgets:** local clock/calendar/task/quick-note widgets, hide/show and drag-to-reorder.
+8. **Control Centre:** appearance settings, reduced motion, local backup/restore, clear expansion data and optional cloud sync controls.
+9. **Media Centre:** local audio/video library stored in IndexedDB and playback through browser-supported media elements.
+10. **Website Designer:** editable page sections, sandboxed preview and standalone HTML download; no hosting/deployment.
+11. **Mail Centre:** local draft manager and mailto handoff only. No mailbox OAuth, inbox access or server-side email sending is included.
+12. **Storage Manager 2.0:** local IndexedDB file library plus list/upload/download/delete in the existing private `user-files` Supabase Storage bucket, using the existing user-folder ownership policies.
+
+### Shared desktop architecture
+
+- Extends the existing application registry and window manager; multiple windows can remain open and be moved/minimised/maximised.
+- Workspace assignment is stored locally and windows are shown only in the active virtual desktop.
+- All expansion applications are loaded from a single `js/technova-os-expansion.js` module after the existing Desktop shell.
+- The former Browser window markup and Browser script include are removed from `pages/desktop.html`; the obsolete Browser application is removed from the launcher registry. The historical Browser source/PR remains part of Git history.
+- Existing Desktop apps and sign-in guard are retained.
+
+### Optional Supabase sync
+
+- Uses the existing Supabase project and existing `user-files` private Storage bucket.
+- Structured app records are stored as JSON objects in the existing private `user-files` Storage bucket under the authenticated user's `<user-id>/desktop-sync/` prefix. API request collections remain local-only so credentials are not automatically synchronised.
+- Cloud sync is opt-in and disabled by default. The existing bucket's authenticated user-folder Storage policies provide ownership isolation; no service-role key or secret is exposed to the browser. API request headers with credential-like names are excluded from saved collections.
+- The existing bucket's private setting, file-size limit and allowed MIME types are reused. No new bucket, Storage policy, database table, RLS policy, Edge Function or project setting is introduced.
+- File blobs uploaded through Storage Manager 2.0 are stored separately under the authenticated user's `<user-id>/desktop/` prefix. Local-first features continue to work if cloud requests fail.
+- No service-role key, secret key, provider password or API credential is embedded in frontend code.
+
+### Limitations and verification
+
+- Document Studio is not a full Microsoft Word replacement; DOCX export is not included.
+- Spreadsheet formulas are intentionally limited; not Excel-compatible.
+- API Studio can be blocked by browser CORS and should not store secrets in collections.
+- Media playback depends on browser codec support and does not bypass DRM.
+- Website Designer creates static files; it does not publish websites.
+- Mail Centre is a draft organiser only; a real inbox requires a separate provider OAuth integration.
+- Supabase cloud sync uses the existing private Storage bucket and must be tested with two separate signed-in accounts to confirm isolation. No live database schema or settings are changed by this PR.
+- Manual signed-in browser, responsive, accessibility, two-account RLS and cloud Storage tests remain required; see `docs/technova-os-expansion-pr50-qa.md`.
+
+### Files
+
+- `pages/desktop.html`
+- `js/technova-desktop.js`
+- `js/technova-os-expansion.js`
+- `css/technova-desktop.css`
+- `docs/technova-os-expansion-pr50-qa.md`
+- `TECHNOVA_MASTER_DOCUMENT.md`
+
+### Pull request
+
+[PR #50 — Expand TechNova Desktop into a full operating environment](https://github.com/Elliots-Boys/TechNova/pull/50). Status: open draft, not merged, not deployed. Cloud sync uses the existing private Storage bucket; no Supabase schema or settings changes are included. No Cloudflare deployment is performed.
