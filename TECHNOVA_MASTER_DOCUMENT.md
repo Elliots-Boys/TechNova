@@ -494,6 +494,7 @@ Planned/implemented scope on branch `feature/technova-personal-dashboard-command
 - Add a searchable, category-filtered directory of existing TechNova pages and tools, with a link to the full site map.
 - Add locally saved pinned shortcuts and a recently opened list.
 - Add a browser-local quick note and controls to show/hide supported dashboard widgets.
+- Retain a preview of the user's saved events using the existing saved-events helper.
 - Retain read-only, authenticated-user-scoped registration and saved-event counts, event previews and the existing admin role lookup.
 - Keep the normal website pages, their routes, and the admin dashboard implementation unchanged.
 
