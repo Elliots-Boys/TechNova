@@ -30,7 +30,7 @@ One integrated expansion PR adding the App Store catalogue, Virtual Desktops, Wh
 - [ ] Media import, playback and clear-library flow work for supported browser formats.
 - [ ] Website Designer sections, preview and HTML download work.
 - [ ] Mail drafts save/reopen/delete; mailto opens external mail application.
-- [ ] Configure a Google OAuth Web Client ID, enable Gmail API and add `gmail.readonly` and `gmail.send` scopes to the OAuth consent screen.
+- [ ] Follow `docs/technova-gmail-oauth-setup.md` to configure the Google OAuth Web Client ID, enable Gmail API and add `gmail.readonly` and `gmail.send` scopes to the OAuth consent screen.
 - [ ] Add the production and preview TechNova origins as authorised JavaScript origins; add the intended Google account as a test user while the consent screen is in Testing.
 - [ ] Connect Gmail, load inbox messages, open a message, send a plain-text test email, disconnect and reconnect after access-token expiry.
 - [ ] Confirm the Google OAuth client ID is stored locally only, access tokens are not persisted by the Mail Centre, and no client secret is present in the repository.
