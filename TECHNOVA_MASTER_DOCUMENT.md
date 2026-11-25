@@ -842,8 +842,9 @@ One integrated PR adds the following built-in Desktop applications and system fe
 - `js/technova-os-expansion.js`
 - `css/technova-desktop.css`
 - `docs/technova-os-expansion-pr50-qa.md`
+- `docs/technova-gmail-oauth-setup.md`
 - `TECHNOVA_MASTER_DOCUMENT.md`
 
 ### Pull request
 
-[PR #50 — Expand TechNova Desktop into a full operating environment](https://github.com/Elliots-Boys/TechNova/pull/50). Status: open draft, not merged, not deployed. Cloud sync uses the existing private Storage bucket; no Supabase schema or settings changes are included. The Mail Centre includes an optional Gmail API connection that requires owner-provided Google Cloud OAuth configuration; no Google client secret is committed. No Cloudflare deployment is performed.
+[PR #50 — Expand TechNova Desktop into a full operating environment](https://github.com/Elliots-Boys/TechNova/pull/50). Status: open draft, not merged, not deployed. Cloud sync uses the existing private Storage bucket; no Supabase schema or settings changes are included. The Mail Centre includes an optional Gmail API connection that requires owner-provided Google Cloud OAuth configuration; see `docs/technova-gmail-oauth-setup.md`. No Google client secret is committed. No Cloudflare deployment is performed.
