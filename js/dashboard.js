@@ -147,6 +147,21 @@ async function loadSavedEvents(){
  try{const rows=await window.TechNovaSavedEvents.list();const valid=rows.filter(row=>row.events).slice(0,4);container.replaceChildren();if(!valid.length)emptyMessage(container,'No saved events yet.');else valid.forEach(row=>container.append(makeEventItem(row.events,'saved')));return true;}
  catch(error){console.warn('Dashboard saved events unavailable:',error?.message);return false;}
 }
+async function loadSavedEvents(){
+ const container=$('dashboardSavedEvents');if(!container)return true;
+ try{
+  const rows=await window.TechNovaSavedEvents.list();
+  const valid=(rows||[]).filter(row=>row.events).slice(0,4);
+  container.replaceChildren();
+  if(!valid.length)emptyMessage(container,'No saved events yet. Browse events and bookmark the ones you want to revisit.');
+  else valid.forEach(row=>container.append(makeEventItem(row.events,'saved')));
+  return true;
+ }catch(error){
+  emptyMessage(container,'Saved events could not be loaded right now.');
+  console.warn('Dashboard saved events unavailable:',error?.message);
+  return false;
+ }
+}
 async function loadStats(user){
  const requests=[
   client().from('event_registrations').select('event_id',{count:'exact',head:true}).eq('user_id',user.id),
@@ -183,8 +198,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
   const {data:{user},error}=await client().auth.getUser();if(error)throw error;
   if(!user){location.href='login.html';return;}
   syncProfile(user);
-  const results=await Promise.allSettled([loadStats(user),loadRegistrations(user),loadAdminShortcut(user)]);
-  const failed=results.some((result,index)=>result.status==='rejected'||(index===0&&result.value===false));
+  const results=await Promise.allSettled([loadStats(user),loadRegistrations(user),loadSavedEvents(),loadAdminShortcut(user)]);
+  const failed=results.some((result,index)=>result.status==='rejected'||((index===0||index===2)&&result.value===false));
   if(failed)showStatus('Your workspace is ready, but some account information could not be loaded. You can refresh to try again.',true);
   else showStatus('Your TechNova workspace is up to date.');
  }catch(error){
