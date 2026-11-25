@@ -30,11 +30,13 @@ One integrated expansion PR adding the App Store catalogue, Virtual Desktops, Wh
 - [ ] Cloud sync is disabled by default; after applying migration, opt-in upload/restore works with two accounts and cannot cross-read or overwrite another user's records.
 - [ ] Responsive, keyboard, reduced-motion and screen-reader checks.
 
-## Supabase migration
-- [ ] Review and apply `supabase/migrations/20261125141500_add_technova_desktop_cloud_sync.sql` only after reviewing/merging the PR.
-- [ ] Verify the table is exposed only to authenticated users with explicit grants and RLS.
-- [ ] Run Supabase security and performance advisors after migration.
-- [ ] Confirm cloud autosave fails closed and local functionality remains available if the table is absent.
+## Supabase Storage sync
+- [ ] Confirm cloud autosave is disabled by default.
+- [ ] Enable sync and upload supported workspace records to the signed-in user's `user-files/<user-id>/desktop-sync/` folder.
+- [ ] Restore cloud copies and verify the expected local records are updated.
+- [ ] Sign in as a second test account and verify it cannot list, download, overwrite or delete the first account's sync objects.
+- [ ] Confirm cloud sync errors do not stop local application use.
+- [ ] Confirm no new database tables, RLS policies, bucket policies or project settings are required.
 
 ## Limitations
 - API requests are browser-origin fetches and can fail due to CORS.
