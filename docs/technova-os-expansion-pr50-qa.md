@@ -9,7 +9,7 @@ One integrated expansion PR adding the App Store catalogue, Virtual Desktops, Wh
 - [ ] All app registry IDs have matching windows after expansion initialisation.
 - [ ] Confirm browser script is no longer loaded and browser app is absent from registry.
 - [ ] Confirm no secret/service-role key is added to frontend or repository.
-- [ ] Confirm migration enables RLS and scopes every row to `auth.uid()`.
+- [ ] Confirm no new database migration, table, RLS policy or Supabase setting is required.
 
 ## Manual signed-in browser QA
 - [ ] Desktop authentication guard and sign-out still work.
@@ -22,13 +22,20 @@ One integrated expansion PR adding the App Store catalogue, Virtual Desktops, Wh
 - [ ] Spreadsheet cells, supported formulas, row/column addition and CSV export work.
 - [ ] API Studio handles valid requests, invalid JSON headers, network/CORS errors and bounded response display.
 - [ ] API request collections remain local-only; credential-like header names are excluded when saving requests.
-- [ ] Widget visibility, ordering and quick-note persistence work.
+- [ ] Widget visibility, ordering and quick-note persistence work; quick-note content is included in backup and optional cloud sync.
+- [ ] Whiteboard PNG export includes both drawings and sticky notes.
+- [ ] Spreadsheet formulas display their calculated results and reject oversized ranges safely.
+- [ ] Desktop search keeps the launcher open while the user types.
 - [ ] Control Centre appearance controls, backup export/import and local clear confirmation work.
 - [ ] Media import, playback and clear-library flow work for supported browser formats.
 - [ ] Website Designer sections, preview and HTML download work.
-- [ ] Mail drafts save/reopen/delete; mailto opens external mail application. No inbox integration is claimed.
+- [ ] Mail drafts save/reopen/delete; mailto opens external mail application.
+- [ ] Follow `docs/technova-gmail-oauth-setup.md` to configure the Google OAuth Web Client ID, enable Gmail API and add `gmail.readonly` and `gmail.send` scopes to the OAuth consent screen.
+- [ ] Add the production and preview TechNova origins as authorised JavaScript origins; add the intended Google account as a test user while the consent screen is in Testing.
+- [ ] Connect Gmail, load inbox messages, open a message, send a plain-text test email, disconnect and reconnect after access-token expiry.
+- [ ] Confirm the Google OAuth client ID is stored locally only, access tokens are not persisted by the Mail Centre, and no client secret is present in the repository.
 - [ ] Storage Manager local import/download/delete and private cloud list/upload/download/delete work.
-- [ ] Cloud sync is disabled by default; after applying migration, opt-in upload/restore works with two accounts and cannot cross-read or overwrite another user's records.
+- [ ] Cloud sync is disabled by default; opt-in upload/restore works with two accounts and cannot cross-read or overwrite another user's records.
 - [ ] Responsive, keyboard, reduced-motion and screen-reader checks.
 
 ## Supabase Storage sync
@@ -44,6 +51,6 @@ One integrated expansion PR adding the App Store catalogue, Virtual Desktops, Wh
 - Document Studio is a lightweight rich-text editor; PDF uses print dialog, DOCX export is not included.
 - Spreadsheet Studio supports a deliberately limited formula set, not full Excel compatibility.
 - Website Designer exports static HTML and does not deploy websites.
-- Mail Centre manages local drafts and opens the system email client; it does not fetch an inbox or send through TechNova.
+- Mail Centre supports local drafts and optional Gmail inbox reading/plain-text sending through Google Identity Services. Google Cloud OAuth configuration and Gmail API enablement are required; no inbox integration works until the owner supplies the Web Client ID and configures the Google consent screen. Attachments are not supported.
 - Media Centre plays local files in browser-supported formats; DRM streams are not supported.
 - Cloud sync covers supported structured workspace data. Media blobs/local files are uploaded separately by the user through Storage Manager 2.0.
