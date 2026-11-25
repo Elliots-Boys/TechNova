@@ -146,6 +146,47 @@
 .dashboard-command-footer kbd{padding:3px 6px;border:1px solid #34516c;border-radius:5px;background:#10243a;color:#c7d9e9}
 .dashboard-command-close{border:1px solid #294660;border-radius:9px;padding:7px 10px;background:#10243a;color:#dcecff;cursor:pointer}
 @media(max-width:520px){.dashboard-command-inner{padding:13px}.dashboard-command-results{max-height:52vh}.dashboard-command-footer{align-items:flex-start}}
+
+/* Personal focus workspace */
+.dashboard-hero{background-image:linear-gradient(90deg,#102b47eF,#0a1524d9 74%),linear-gradient(#4cc9f51a 1px,transparent 1px),linear-gradient(90deg,#4cc9f51a 1px,transparent 1px),radial-gradient(ellipse at 88% 15%,#226a9b66,transparent 36%),radial-gradient(ellipse at 65% 120%,#6545a744,transparent 40%);background-size:auto,34px 34px,34px 34px,auto,auto}
+.dashboard-hero-art{border-color:#55c9ed66;background:radial-gradient(circle at 50% 50%,#1e5c7d 0,#132e4d 42%,#111b36 72%);box-shadow:inset 0 1px #ffffff20,0 20px 60px #0007,0 0 55px #42d7ff15}
+.dashboard-orbit{position:relative;border-width:1px;border-color:#6be4ff88;box-shadow:0 0 0 16px #42d7ff09,0 0 0 34px #42d7ff07,0 0 55px #32d6ff2b}
+.dashboard-orbit:before,.dashboard-orbit:after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:#9b83ff;box-shadow:0 0 16px #9b83ff;top:9px;right:14px}
+.dashboard-orbit:after{width:6px;height:6px;background:#71e7ff;box-shadow:0 0 15px #71e7ff;top:auto;right:auto;bottom:16px;left:3px}
+.dashboard-stat{transition:transform .18s,border-color .18s,box-shadow .18s}
+.dashboard-stat:hover{transform:translateY(-3px);border-color:#3d91b8;box-shadow:0 12px 28px #0003}
+.dashboard-focus-panel{position:relative;overflow:hidden;border-color:#315777;background:radial-gradient(ellipse at 100% 0%,#2d719244,transparent 38%),linear-gradient(145deg,#10243a,#091522 76%)}
+.dashboard-focus-panel:after{content:"";position:absolute;right:-54px;top:-90px;width:210px;height:210px;border:1px solid #5acff522;border-radius:50%;box-shadow:0 0 0 24px #5acff508,0 0 0 50px #5acff505;pointer-events:none}
+.dashboard-focus-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(210px,.55fr);gap:20px;align-items:center}
+.dashboard-focus-form{display:grid;grid-template-columns:minmax(0,1fr) 150px auto;gap:8px}
+.dashboard-focus-form input{box-sizing:border-box;width:100%;min-width:0;min-height:44px;padding:10px 12px;border:1px solid #2b4966;border-radius:11px;background:#071321;color:#eaf5ff;font:inherit;font-size:13px}
+.dashboard-focus-form input::placeholder{color:#7890a8}
+.dashboard-focus-form button{min-height:44px;padding:9px 14px;border:0;border-radius:11px;background:linear-gradient(110deg,#42d7ff,#9b83ff);color:#06111e;font:inherit;font-size:12px;font-weight:900;cursor:pointer}
+.dashboard-focus-progress{padding:16px;border:1px solid #294966;border-radius:15px;background:#071725cc}
+.dashboard-focus-progress-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.dashboard-focus-progress-top strong{font-size:13px}
+.dashboard-focus-progress-top span{color:#8edfff;font-size:12px;font-weight:800}
+.dashboard-focus-track{height:9px;overflow:hidden;border-radius:999px;background:#1a3046}
+.dashboard-focus-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#42d7ff,#9b83ff);transition:width .2s}
+.dashboard-focus-progress p{margin:9px 0 0;color:#9cb2c8;font-size:11px;line-height:1.5}
+.dashboard-focus-list{display:grid;gap:8px;margin-top:15px}
+.dashboard-focus-task{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #223f5b;border-radius:12px;background:#091827}
+.dashboard-focus-task input{width:17px;height:17px;accent-color:#52d8f5;flex:none}
+.dashboard-focus-task-copy{min-width:0;flex:1}
+.dashboard-focus-task-copy strong{display:block;color:#e5f3ff;font-size:13px;overflow-wrap:anywhere}
+.dashboard-focus-task-copy small{display:block;margin-top:3px;color:#93a9bf;font-size:10px}
+.dashboard-focus-task.is-complete .dashboard-focus-task-copy strong{text-decoration:line-through;color:#8ca2b7}
+.dashboard-focus-task.is-overdue{border-color:#81505d}
+.dashboard-focus-task.is-overdue .dashboard-focus-task-copy small{color:#ffabb9}
+.dashboard-focus-remove{width:29px;height:29px;border:1px solid #29445f;border-radius:8px;background:#10243a;color:#a9bfd3;cursor:pointer}
+.dashboard-focus-remove:hover{border-color:#ff8f9e;color:#ffd9de}
+.dashboard-focus-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:11px}
+.dashboard-focus-actions small{color:#8fa7bc;font-size:11px}
+.dashboard-focus-clear{border:1px solid #294660;border-radius:9px;padding:7px 10px;background:#10243a;color:#bcd0e3;font:inherit;font-size:11px;cursor:pointer}
+.dashboard-focus-clear:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:760px){.dashboard-focus-layout{grid-template-columns:1fr}.dashboard-focus-form{grid-template-columns:minmax(0,1fr) 130px}.dashboard-focus-form button{grid-column:1/-1}}
+@media(max-width:520px){.dashboard-focus-form{grid-template-columns:1fr}.dashboard-focus-form button{grid-column:auto}.dashboard-focus-panel{padding:16px}}
+@media(prefers-reduced-motion:reduce){.dashboard-stat,.dashboard-focus-fill{transition:none}.dashboard-stat:hover{transform:none}}
 .dashboard-hidden{display:none!important}
 @media(max-width:980px){.dashboard-grid{grid-template-columns:1fr}.dashboard-side-column{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-side-column [data-widget-section=profile]{grid-column:1/-1}}
 @media(max-width:700px){.dashboard-hero{grid-template-columns:1fr}.dashboard-hero-art{display:none}.dashboard-stats{grid-template-columns:1fr}.dashboard-side-column{grid-template-columns:1fr}.dashboard-side-column [data-widget-section=profile]{grid-column:auto}}
@@ -199,6 +240,7 @@
 </dialog>
 <div class="dashboard-widget-controls" id="widgetControls" aria-label="Dashboard widget visibility">
 <label><input type="checkbox" data-widget-toggle="assistant" checked> AI Assistant</label>
+<label><input type="checkbox" data-widget-toggle="focus" checked> Focus planner</label>
 <label><input type="checkbox" data-widget-toggle="overview" checked> Overview</label>
 <label><input type="checkbox" data-widget-toggle="apps" checked> Explore TechNova</label>
 <label><input type="checkbox" data-widget-toggle="events" checked> Events</label>
@@ -226,6 +268,25 @@
 </form>
 <div id="aiStatus" class="ai-status" role="status" aria-live="polite"></div>
 <div class="dashboard-ai-footer"><small>Free browser-based assistant. Uploaded files are processed locally in this tab; no paid AI model is connected.</small><a class="dashboard-section-link" href="ai-assistant.html">Open the full AI Assistant page →</a></div>
+</section>
+<section class="dashboard-panel dashboard-focus-panel" aria-labelledby="focusTitle" data-widget-section="focus">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">MAKE TODAY COUNT</div><h2 id="focusTitle">Your focus board</h2><p>Keep track of the things you want to get done. Your tasks stay private in this browser.</p></div><span class="dashboard-ai-badge">PERSONAL WORKSPACE</span></div>
+<div class="dashboard-focus-layout">
+<div>
+<form class="dashboard-focus-form" id="focusTaskForm">
+<input id="focusTaskInput" type="text" maxlength="120" placeholder="Add a task or priority…" aria-label="New task" required>
+<input id="focusTaskDate" type="date" aria-label="Optional task due date">
+<button type="submit">＋ Add task</button>
+</form>
+<div id="focusTaskList" class="dashboard-focus-list" aria-live="polite"><p class="dashboard-empty">Add your first task to get started.</p></div>
+<div class="dashboard-focus-actions"><small id="focusTaskStatus" role="status">Saved only on this device</small><button class="dashboard-focus-clear" id="clearCompletedTasks" type="button" disabled>Clear completed</button></div>
+</div>
+<div class="dashboard-focus-progress" role="group" aria-label="Task completion">
+<div class="dashboard-focus-progress-top"><strong>Progress</strong><span id="focusProgressText">0%</span></div>
+<div class="dashboard-focus-track" id="focusProgressBar" role="progressbar" aria-label="Tasks completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="dashboard-focus-fill" id="focusProgressFill"></div></div>
+<p id="focusProgressLabel">Add a task to set your priorities for today.</p>
+</div>
+</div>
 </section>
 <div class="dashboard-grid">
 <div class="dashboard-main-column">
@@ -352,7 +413,7 @@
 <script src="../js/supabase-config.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/saved-events.js"></script>
-<script src="../js/dashboard.js?v=5"></script>
+<script src="../js/dashboard.js?v=6"></script>
 <script src="../js/script.js"></script>
 <script src="https://unpkg.com/mammoth@1.9.0/mammoth.browser.min.js" defer></script>
 <script src="../js/ai-assistant.js?v=11"></script>
