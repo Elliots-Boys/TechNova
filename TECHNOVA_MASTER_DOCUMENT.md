@@ -682,4 +682,46 @@ Validation:
 - JavaScript syntax parsing and static markup checks were performed before PR creation.
 - Manual signed-in browser testing, ZIP extraction verification, responsive checks, keyboard testing and screen-reader testing remain required.
 
-Pull request: [#46 — Expand TechNova OS with Phase 2 workspace tools](https://github.com/Elliots-Boys/TechNova/pull/46). Created as a draft; merge and deployment status must be updated after verification.
+Pull request: [#46 — Expand TechNova OS with Phase 2 workspace tools](https://github.com/Elliots-Boys/TechNova/pull/46). Merged into `main` on 25 November 2026 (verified via GitHub). No Cloudflare deployment was performed.
+
+
+## 25. TechNova Desktop environment (PR #47)
+
+PR #47 creates a separate authenticated desktop-style workspace at `pages/desktop.html`, linked from the existing personal dashboard. It is an application-style environment within the browser, not a replacement for the operating system or a native desktop installer.
+
+Applications included:
+- Desktop home, app launcher, dock and taskbar, application search, and resizable/draggable app windows with minimise, maximise and close controls.
+- Developer Studio with a local multi-file project, nested file paths, sandboxed preview, individual file downloads and browser-generated ZIP export.
+- Project Manager with project deadlines, per-project tasks, a three-stage board and completion progress.
+- Calendar & Planner with monthly navigation, date selection and locally stored events/reminders.
+- Knowledge Centre with searchable notes, folders, tags, Markdown/plain-text editing, deletion and Markdown export.
+- Analytics Centre with local project, task, note and focus-session metrics and a seven-day focus chart.
+- Personalisation Centre with theme, accent, wallpaper, density and reduced-motion settings.
+- File Manager using IndexedDB for files imported by the user, with folder labels, search, download and deletion. Existing Google Drive and Cloud Manager pages are linked for their separately configured services.
+- AI & Study Centre with local flashcards and manually entered grade records, plus a link to the existing TechNova AI Assistant for its current study and document tools.
+- Notification Centre deriving in-app reminders from local project deadlines and calendar entries.
+- Extensions Marketplace to enable/disable built-in desktop modules. It does not install or execute arbitrary third-party code.
+
+Privacy and technical boundaries:
+- The desktop checks for an existing Supabase Auth session and redirects signed-out visitors to the existing login page. It does not change authentication configuration or roles.
+- Desktop projects, calendar entries, notes, study cards, grade records, extension choices and preferences are stored in this browser. Imported files are stored in browser IndexedDB.
+- The File Manager is a local browser library. Cloud storage remains accessible through the existing Google Drive and Cloud Manager pages; this PR does not create cloud synchronisation or copy local files to Supabase.
+- The AI & Study Centre links to the existing assistant; it does not claim that the deterministic browser assistant is a new generative model.
+- Notifications are in-app reminders, not remote push notifications.
+- The extension marketplace only toggles built-in modules; there is no third-party code marketplace or plugin execution.
+- Developer preview runs in a sandboxed iframe. Projects are not hosted or deployed by the editor.
+- No Supabase schema, RLS, settings, Edge Functions, credentials, production data, admin dashboard or Cloudflare deployment changes.
+
+Files:
+- `pages/desktop.html`
+- `css/technova-desktop.css`
+- `js/technova-desktop.js`
+- `pages/dashboard.html` (link to the desktop)
+- `docs/technova-desktop-pr47-qa.md`
+- `TECHNOVA_MASTER_DOCUMENT.md`
+
+Validation:
+- JavaScript syntax parsing, static HTML ID checks and module-link checks are performed before PR creation.
+- Signed-in browser testing, file import/download checks, ZIP extraction, responsive layout, keyboard navigation and screen-reader QA remain to be completed manually.
+
+Pull request: [#47 — Build TechNova Desktop with integrated workspace apps](https://github.com/Elliots-Boys/TechNova/pull/47). Created as a draft; merge and deployment status must be updated after verification.
