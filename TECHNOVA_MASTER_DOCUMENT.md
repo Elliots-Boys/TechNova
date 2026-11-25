@@ -292,7 +292,7 @@ This table records known PR history. Where a final state has not been verified, 
 | #34 | Central TechNova master document | Merged into `main` on 25 November 2026 (verified before dashboard work) |
 | #35 | Browser-based Quiz Generator | Merged into `main` on 25 November 2026; deterministic note-based questions, scoring and explanations; no AI API or backend changes |
 | #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; responsive member workspace, read-only user-scoped totals and saved-event previews; merge verified via GitHub |
-| #37 | Admin dashboard refinement and dashboard-first login redirects | Draft PR created; admin workspace styling, manual refresh, tab accessibility and default post-login destination; master document updated in the same PR |
+| #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026 at 10:29 UTC; merge verified via GitHub. Browser/provider QA remains outstanding |
 
 ### 10.1 PR #32 — Advanced assistant controls
 
@@ -358,7 +358,7 @@ The generator creates multiple-choice, true/false or mixed revision questions fr
 On 25 November 2026, the user approved improving both dashboards in separate PRs, with the personal dashboard first.
 
 - **Personal dashboard:** PR #36 (`feature/technova-personal-dashboard-36`) was merged into `main` on 25 November 2026 (verified via GitHub). It refreshes `pages/dashboard.html` as a responsive member workspace with account identity/profile, user-scoped read-only registration and saved-event totals, registered-event activity, saved-event previews and links to existing TechNova areas. Browser/device QA remains a manual check.
-- **Admin dashboard:** PR #37 is the separate follow-up for `pages/admin.html`. It refines the existing administrator workspace rather than replacing its existing event, user, registration, article, quiz, website-content and audit-log tools. The existing `checkAdmin()` role verification remains in place.
+- **Admin dashboard:** PR #37 (`feature/technova-admin-dashboard-and-login-redirect-37`) was merged into `main` on 25 November 2026 at 10:29 UTC (verified via GitHub). It refines the existing administrator workspace rather than replacing its existing event, user, registration, article, quiz, website-content and audit-log tools. The existing `checkAdmin()` role verification remains in place.
 
 Dashboard work must preserve existing account/authentication behaviour, avoid fake activity or fabricated statistics, keep user-scoped data protected by existing RLS, and avoid backend changes unless the user separately approves them. Every feature PR must update this master document in that same PR.
 
@@ -446,9 +446,10 @@ This section intentionally records uncertainty so historical notes are not mista
 | PR #24 | Knowledge-bank expansion was proposed | Current PR/commit and merge status |
 | PR #31 | Model removal PR was previously open/draft | Current PR status and whether removal is in main |
 | PR #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; browser/device QA outstanding |
-| PR #37 | Admin dashboard refinement and dashboard-first login redirects | Draft PR; review/merge and browser QA outstanding |
+| PR #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; live email sign-in behaviour still needs browser verification |
+| PR #38 | Authentication script cache-busting update | Open PR; review/merge and then verify email sign-in in browser |
 | Admin dashboard | Existing `pages/admin.html` includes overview, user, event, registration, article, quiz, website and activity sections; PR #37 refines its workspace UI and refresh flow | Browser QA, review and merge status |
-| Login destination | PR #37 changes the default post-login destination to `pages/dashboard.html`; explicit same-origin OAuth redirects and supported `next` destinations remain | Test email and each configured OAuth provider on preview/live domains |
+| Login destination | PR #37 changes the default post-login destination to `pages/dashboard.html`; PR #38 changes the login/signup script URL to force a fresh browser fetch | Test email and each configured OAuth provider on preview/live domains; confirm the new script is served after deployment |
 | Community | Earlier review found no complete post/reply forum | Current implementation |
 | OAuth providers | Roblox/Telegram and other providers were discussed | Actual Supabase provider configuration and live flows |
 | OAuth app authorisation | Consent, authorised-app and developer pages exist | Full OAuth protocol, callback, scopes and security validation |
@@ -465,6 +466,7 @@ This section intentionally records uncertainty so historical notes are not mista
 |---|---|
 | 25 Nov 2026 | Consolidated project identity, infrastructure, page map, historical architecture decisions, AI roadmap, PR history, development rules and verification gaps from available project context and repository inspection. |
 | 25 Nov 2026 | Verified PRs #33–#36 merged into `main`; PR #36 personal dashboard is merged. Recorded PR #37 admin dashboard refinement and default dashboard-after-login routing. |
+| 25 Nov 2026 | Verified PR #37 merged at 10:29 UTC. PR #38 updates the authentication script cache-busting query on login and signup pages; the PR is open and not yet deployed. |
 
 ---
 
