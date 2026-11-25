@@ -22,10 +22,10 @@
     return out;
   }
   const replacements = {
-    formal: [[/\b lots of \b/gi, 'many '], [/\bkids\b/gi, 'children'], [/\bget\b/gi, 'obtain'], [/\b a bit \b/gi, 'some '], [/\bcan't\b/gi, 'cannot'], [/\bdon't\b/gi, 'do not'], [/\bwon't\b/gi, 'will not'], [/\bthing\b/gi, 'matter']],
+    formal: [[/\blots of\b/gi, 'many '], [/\bkids\b/gi, 'children'], [/\bget\b/gi, 'obtain'], [/\ba bit\b/gi, 'some '], [/\bcan't\b/gi, 'cannot'], [/\bdon't\b/gi, 'do not'], [/\bwon't\b/gi, 'will not'], [/\bthing\b/gi, 'matter']],
     friendly: [[/\btherefore\b/gi, 'so'], [/\bhowever\b/gi, 'but'], [/\bcommence\b/gi, 'start'], [/\bassistance\b/gi, 'help']],
-    simple: [[/\butilise\b/gi, 'use'], [/\butilize\b/gi, 'use'], [/\bdemonstrate\b/gi, 'show'], [/\bapproximately\b/gi, 'about'], [/\badditional\b/gi, 'more'], [/\bcommence\b/gi, 'start'], [/\bconsequently\b/gi, 'so'], [/\bpurchase\b/gi, 'buy'], [/\b require \b/gi, ' need '], [/\bassist\b/gi, 'help']],
-    concise: [[/\b in order to \b/gi, ' to '], [/\b due to the fact that \b/gi, ' because '], [/\b at this point in time \b/gi, ' now '], [/\b it is important to note that \b/gi, ''], [/\b very \b/gi, ' '], [/\b really \b/gi, ' '], [/\b basically \b/gi, ' '], [/\b actually \b/gi, ' ']]
+    simple: [[/\butilise\b/gi, 'use'], [/\butilize\b/gi, 'use'], [/\bdemonstrate\b/gi, 'show'], [/\bapproximately\b/gi, 'about'], [/\badditional\b/gi, 'more'], [/\bcommence\b/gi, 'start'], [/\bconsequently\b/gi, 'so'], [/\bpurchase\b/gi, 'buy'], [/\brequire\b/gi, ' need '], [/\bassist\b/gi, 'help']],
+    concise: [[/\bin order to\b/gi, ' to '], [/\bdue to the fact that\b/gi, ' because '], [/\bat this point in time\b/gi, ' now '], [/\bit is important to note that\b/gi, ''], [/\bvery\b/gi, ' '], [/\breally\b/gi, ' '], [/\bbasically\b/gi, ' '], [/\bactually\b/gi, ' ']]
   };
   function transform(text, action) {
     if (action === 'proofread') return proofread(text);
