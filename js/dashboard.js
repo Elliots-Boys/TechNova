@@ -180,6 +180,45 @@ function setupWidgets(){
   const open=controls.classList.toggle('open');button.setAttribute('aria-expanded',String(open));
  });
 }
+const TASK_STORAGE='technova.dashboard.tasks.v1';
+function setupFocusBoard(){
+ const form=$('focusTaskForm'),input=$('focusTaskInput'),dateInput=$('focusTaskDate'),list=$('focusTaskList'),progress=$('focusProgressBar'),fill=$('focusProgressFill'),progressText=$('focusProgressText'),progressLabel=$('focusProgressLabel'),status=$('focusTaskStatus'),clear=$('clearCompletedTasks');
+ if(!form||!input||!list)return;
+ const readTasks=()=>{const tasks=safeRead(TASK_STORAGE,[]);return Array.isArray(tasks)?tasks.filter(task=>task&&typeof task.id==='string'&&typeof task.title==='string'&&typeof task.done==='boolean'):[];};
+ let tasks=readTasks();
+ const save=()=>{const saved=safeWrite(TASK_STORAGE,tasks);if(status)status.textContent=saved?'Saved only on this device':'Your browser could not save this list';return saved;};
+ const localDate=()=>{const now=new Date();return now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');};
+ const render=()=>{
+  list.replaceChildren();
+  const completed=tasks.filter(task=>task.done).length,remaining=tasks.length-completed,percent=tasks.length?Math.round(completed/tasks.length*100):0;
+  if(progress)progress.setAttribute('aria-valuenow',String(percent));
+  if(fill)fill.style.width=percent+'%';
+  if(progressText)progressText.textContent=percent+'%';
+  if(progressLabel)progressLabel.textContent=tasks.length?completed+' of '+tasks.length+' completed · '+remaining+' remaining': 'Add a task to set your priorities for today.';
+  if(clear)clear.disabled=completed===0;
+  if(!tasks.length){emptyMessage(list,'Your focus board is clear. Add a task above when you are ready.');return;}
+  const today=localDate();
+  const sorted=[...tasks].sort((a,b)=>Number(a.done)-Number(b.done)||(a.dueDate||'9999-12-31').localeCompare(b.dueDate||'9999-12-31')||a.createdAt-b.createdAt);
+  sorted.forEach(task=>{
+   const row=document.createElement('div');row.className='dashboard-focus-task'+(task.done?' is-complete':'')+(!task.done&&task.dueDate&&task.dueDate<today?' is-overdue':'');
+   const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=task.done;checkbox.setAttribute('aria-label',(task.done?'Reopen ':'Complete ')+task.title);
+   checkbox.addEventListener('change',()=>{tasks=tasks.map(item=>item.id===task.id?{...item,done:checkbox.checked}:item);save();render();});
+   const copy=document.createElement('div');copy.className='dashboard-focus-task-copy';
+   const title=document.createElement('strong');title.textContent=task.title;copy.append(title);
+   if(task.dueDate){const meta=document.createElement('small');const due=new Date(task.dueDate+'T00:00:00');const formatted=new Intl.DateTimeFormat(undefined,{weekday:'short',day:'numeric',month:'short'}).format(due);meta.textContent=task.done?'Completed · Due '+formatted:task.dueDate<today?'Overdue · '+formatted:task.dueDate===today?'Due today': 'Due '+formatted;copy.append(meta);}
+   const remove=document.createElement('button');remove.type='button';remove.className='dashboard-focus-remove';remove.textContent='×';remove.setAttribute('aria-label','Delete task: '+task.title);remove.addEventListener('click',()=>{tasks=tasks.filter(item=>item.id!==task.id);save();render();});
+   row.append(checkbox,copy,remove);list.append(row);
+  });
+ };
+ form.addEventListener('submit',event=>{
+  event.preventDefault();const title=input.value.trim();if(!title){input.focus();return;}
+  if(tasks.length>=50){if(status)status.textContent='You can keep up to 50 tasks here. Complete or remove one to add another.';return;}
+  tasks.push({id:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(36).slice(2),title,dueDate:dateInput.value||'',done:false,createdAt:Date.now()});
+  save();input.value='';dateInput.value='';render();input.focus();
+ });
+ clear?.addEventListener('click',()=>{const completed=tasks.filter(task=>task.done).length;if(!completed)return;tasks=tasks.filter(task=>!task.done);save();render();});
+ render();
+}
 function setupNote(){
  const note=$('dashboardNote'),status=$('noteSaveStatus'),count=$('noteCount');if(!note)return;
  try{note.value=localStorage.getItem(STORAGE.note)||'';}catch{note.value='';}
@@ -253,7 +292,7 @@ function syncProfile(user){
  const title=$('dashboardTitle');if(title)title.firstChild.textContent=greeting+', ';
 }
 document.addEventListener('DOMContentLoaded',async()=>{
- setupDirectory();setupCommandPalette();setupWidgets();setupNote();
+ setupDirectory();setupCommandPalette();setupWidgets();setupFocusBoard();setupNote();
  try{
   const {data:{user},error}=await client().auth.getUser();if(error)throw error;
   if(!user){location.href='login.html';return;}
