@@ -184,7 +184,7 @@ function getAuthReturnPath() {
     return '/pages/google-drive.html';
   }
 
-  return '/pages/account.html';
+  return '/pages/dashboard.html';
 }
 
 
@@ -1465,7 +1465,23 @@ async function cancelEvent(
 */
 document.addEventListener(
   'DOMContentLoaded',
-  () => {
+  async () => {
+
+    /*
+      Signed-in visitors should not land back on the login form.
+      Keep explicit same-origin redirects and password-reset flows intact.
+    */
+    if (
+      document.querySelector('#loginForm') &&
+      !new URLSearchParams(location.search).has('reset')
+    ) {
+      const { data: { session }, error: sessionError } =
+        await supabaseClient.auth.getSession();
+      if (!sessionError && session) {
+        location.replace(getAuthReturnPath());
+        return;
+      }
+    }
 
     /*
       Preserve an OAuth authorization request while the user
