@@ -73,7 +73,10 @@ async function cloudAutosave(appKey,payload){
  if(!read(STORE.cloud,false))return;
  const sb=cloudClient();if(!sb)return;
  try{const auth=await sb.auth.getUser();if(!auth.data.user)return;
-  const result=await sb.from('desktop_sync_records').upsert({user_id:auth.data.user.id,app_key:appKey,record_key:'workspace',payload,updated_at:new Date().toISOString()},{onConflict:'user_id,app_key,record_key'});
+  const serialized=JSON.stringify(payload),blob=new Blob([serialized],{type:'application/json'});
+  if(blob.size>1048576)throw new Error('This workspace record is larger than the 1 MB sync limit.');
+  const path=auth.data.user.id+'/desktop-sync/'+appKey+'.json';
+  const result=await sb.storage.from('user-files').upload(path,blob,{contentType:'application/json',upsert:true});
   if(result.error)throw result.error;
  }catch(e){console.warn('TechNova cloud autosave unavailable:',e.message)}
 }
@@ -84,14 +87,15 @@ const cloudKeys=[
 async function cloudTransfer(mode){
  const sb=cloudClient();if(!sb)throw new Error('Supabase client is unavailable.');
  const auth=await sb.auth.getUser();if(auth.error)throw auth.error;if(!auth.data.user)throw new Error('Please sign in again.');
+ const folder=auth.data.user.id+'/desktop-sync',bucket=sb.storage.from('user-files');
  if(mode==='upload'){
-  for(const [appKey,key] of cloudKeys){const payload=read(key,null);if(payload===null)continue;const r=await sb.from('desktop_sync_records').upsert({user_id:auth.data.user.id,app_key:appKey,record_key:'workspace',payload,updated_at:new Date().toISOString()},{onConflict:'user_id,app_key,record_key'});if(r.error)throw r.error}
-  return 'Local workspace uploaded to your TechNova account.';
+  for(const [appKey,key] of cloudKeys){const payload=read(key,null);if(payload===null)continue;const blob=new Blob([JSON.stringify(payload)],{type:'application/json'});if(blob.size>1048576)throw new Error(appKey+' is larger than the 1 MB per-record sync limit.');const r=await bucket.upload(folder+'/'+appKey+'.json',blob,{contentType:'application/json',upsert:true});if(r.error)throw r.error}
+  return 'Local workspace uploaded to your private TechNova cloud folder.';
  }
- const r=await sb.from('desktop_sync_records').select('app_key,payload').eq('user_id',auth.data.user.id);
- if(r.error)throw r.error;
- (r.data||[]).forEach(row=>{const entry=cloudKeys.find(x=>x[0]===row.app_key);if(entry&&row.payload!==null)localStorage.setItem(entry[1],JSON.stringify(row.payload))});
- renderAll();return 'Cloud workspace restored. Local records for supported apps were replaced by the saved cloud copies.';
+ const listing=await bucket.list(folder,{limit:100,sortBy:{column:'name',order:'asc'}});if(listing.error)throw listing.error;
+ const available=new Set((listing.data||[]).filter(x=>x.name).map(x=>x.name));
+ for(const [appKey,key] of cloudKeys){if(!available.has(appKey+'.json'))continue;const file=await bucket.download(folder+'/'+appKey+'.json');if(file.error)throw file.error;const payload=JSON.parse(await file.data.text());localStorage.setItem(key,JSON.stringify(payload))}
+ renderAll();return 'Cloud workspace restored. Available cloud copies replaced the matching local records.';
 }
 function renderAll(){renderWorkspaces();renderWhiteboard();renderDocuments();renderSheet();renderApiSaved();renderWidgets();renderMedia();renderMail();renderStorageLocal();refreshStorageCloud()}
 function onOpen(id){
@@ -203,7 +207,7 @@ function loadControl(){
 }
 function setupControl(){
  $('osApply').onclick=()=>{$('settingTheme').value=$('osTheme').value;$('settingAccent').value=$('osAccent').value;$('settingWallpaper').value=$('osWallpaper').value;$('settingReduceMotion').checked=$('osReduceMotion').checked;$('settingsApply').click();setStatus('osPrivacyStatus','Appearance settings applied.')};
- $('osCloudEnabled').onchange=e=>{write(STORE.cloud,e.target.checked);setStatus('osCloudStatus',e.target.checked?'Cloud autosave enabled. The desktop_sync_records migration must be applied before cloud sync can work.':'Cloud autosave disabled.')};
+ $('osCloudEnabled').onchange=e=>{write(STORE.cloud,e.target.checked);setStatus('osCloudStatus',e.target.checked?'Cloud autosave enabled. Your private TechNova cloud folder is ready for supported workspace records.':'Cloud autosave disabled.')};
  $('osCloudUpload').onclick=async()=>{setStatus('osCloudStatus','Uploading…');try{setStatus('osCloudStatus',await cloudTransfer('upload'))}catch(e){setStatus('osCloudStatus','Cloud upload unavailable: '+e.message)}};
  $('osCloudRestore').onclick=async()=>{if(!confirm('Restore cloud copies over local copies for supported applications?'))return;setStatus('osCloudStatus','Restoring…');try{setStatus('osCloudStatus',await cloudTransfer('restore'))}catch(e){setStatus('osCloudStatus','Cloud restore unavailable: '+e.message)}};
  $('osBackup').onclick=()=>{const data={version:1,created_at:new Date().toISOString(),records:cloudKeys.map(([app,key])=>({app,payload:read(key,null)})).filter(x=>x.payload!==null)};download('technova-os-backup.json',JSON.stringify(data,null,2),'application/json')};
