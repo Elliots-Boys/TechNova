@@ -294,7 +294,7 @@ This table records known PR history. Where a final state has not been verified, 
 | #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; responsive member workspace, read-only user-scoped totals and saved-event previews; merge verified via GitHub |
 | #39 | Personal dashboard workspace refinement | Merged into `main` on 25 November 2026; adds upcoming registrations and recent activity and fixes the registered-events panel |
 | #40 | Personal dashboard command-centre enhancement | Merged into `main` on 25 November 2026; searchable directory, local pins/recent pages/notes/widget preferences |
-| #41 | Dashboard AI workspace integration | Open draft PR; embeds the existing free assistant and tools in the personal dashboard while retaining the dedicated AI page |
+| #41 | Dashboard AI workspace integration | Open draft PR: [#41](https://github.com/Elliots-Boys/TechNova/pull/41); embeds the existing free assistant and tools in the personal dashboard while retaining the dedicated AI page |
 | #40 | Personal dashboard command-centre enhancement | Open draft PR: [#40](https://github.com/Elliots-Boys/TechNova/pull/40); searchable directory, local pins/recent pages/notes/widget preferences and preserved event/profile data |
 | #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser/provider QA remains outstanding |
 | #38 | Refresh cached authentication script for dashboard redirects | Open draft PR; updates the login and signup script cache version; no auth logic or backend changes |
@@ -528,4 +528,4 @@ Important limitations and privacy:
 - No Supabase schema, RLS, settings, Edge Functions, credentials, production data, other pages or admin dashboard changes.
 - No Cloudflare deployment. Signed-in browser and device QA is required.
 
-Pull request URL and final status will be recorded after the PR is opened. Update this section when review, merge or deployment status changes.
+Pull request: [#41 — Embed the TechNova AI assistant in the personal dashboard](https://github.com/Elliots-Boys/TechNova/pull/41). It is an open draft PR, not merged or deployed. Update this section when review, merge or deployment status changes.
