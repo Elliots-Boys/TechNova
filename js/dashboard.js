@@ -115,10 +115,11 @@ function setupCommandPalette(){
   const query=input.value.trim().toLowerCase();
   visible=entries.filter(item=>[item.title,item.category,item.keywords].join(' ').toLowerCase().includes(query)).slice(0,12);
   results.replaceChildren();
+  input.removeAttribute('aria-activedescendant');
   if(!visible.length){const empty=document.createElement('div');empty.className='dashboard-command-empty';empty.textContent='No matching TechNova pages. Try another search.';results.append(empty);activeIndex=0;return;}
   activeIndex=Math.min(activeIndex,visible.length-1);
   visible.forEach((item,index)=>{
-   const button=document.createElement('button');button.type='button';button.className='dashboard-command-result';button.setAttribute('role','option');button.setAttribute('aria-selected',String(index===activeIndex));
+   const button=document.createElement('button');button.type='button';button.id='dashboardCommandOption-'+index;button.className='dashboard-command-result';button.setAttribute('role','option');button.setAttribute('aria-selected',String(index===activeIndex));
    const copy=document.createElement('span');const title=document.createElement('strong');title.textContent=item.title;const meta=document.createElement('small');meta.textContent=item.category+' · '+item.keywords.split(' ').slice(0,4).join(' ');copy.append(title,meta);
    const key=document.createElement('kbd');key.textContent=index===0?'↵':'Open';button.append(copy,key);
    button.addEventListener('mouseenter',()=>{activeIndex=index;syncActive();});
@@ -127,6 +128,7 @@ function setupCommandPalette(){
   });
  };
  const syncActive=()=>{
+  input.setAttribute('aria-activedescendant','dashboardCommandOption-'+activeIndex);
   Array.from(results.querySelectorAll('[role="option"]')).forEach((item,index)=>item.setAttribute('aria-selected',String(index===activeIndex)));
   results.querySelector('[aria-selected="true"]')?.scrollIntoView({block:'nearest'});
  };
