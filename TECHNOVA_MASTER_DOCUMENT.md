@@ -84,6 +84,7 @@ The current sitemap and repository inspection show these page areas. A page exis
 | FAQ | `pages/faq.html` | Frequently asked questions |
 | Support | `pages/support.html` | Support information |
 | AI Assistant | `pages/ai-assistant.html` | Assistant and browser-based tools |
+| Personal dashboard | `pages/dashboard.html` | Signed-in member workspace; refreshed in PR #36 |
 | OAuth consent | `pages/oauth-consent.html` | Application authorisation/consent UI |
 | Authorised apps | `pages/authorized-apps.html` | User's authorised applications UI |
 | OAuth developer information | `pages/oauth-developers.html` | Developer-facing sign-in information |
@@ -188,7 +189,7 @@ The user explicitly decided:
 3. Build the agreed roadmap in order, one feature/PR at a time.
 4. Keep the platform completely free; do not introduce paid external AI APIs.
 5. Do not reintroduce the experimental local AI model.
-6. Do not change the dashboard as part of the AI roadmap.
+6. Dashboard work is now an explicitly approved, separate phase after the AI roadmap: personal dashboard first, admin dashboard in a later separate PR.
 7. Preserve existing features and create separate PRs for review/merge by the user.
 8. Do not deploy production without permission.
 9. Leave Supabase untouched unless separately approved.
@@ -271,7 +272,7 @@ The agreed roadmap is to extend the existing assistant with useful free tools. T
 - No paid AI APIs, paid model inference, or experimental local AI model.
 - Do not promise generative capabilities from deterministic templates or substitutions.
 - Preserve existing assistant, uploads, chat history and quick tools.
-- No dashboard changes.
+- Dashboard work is outside the AI feature roadmap and is handled in separately approved dashboard PRs.
 - No Supabase changes without separate approval.
 
 ## 10. Pull request and development history
@@ -287,7 +288,7 @@ This table records known PR history. Where a final state has not been verified, 
 | #30 | Short repetitive-output guard | Closed, not merged; superseded by #31 |
 | #31 | Remove experimental local model | Last recorded as open draft; current state must be checked |
 | #32 | Advanced assistant controls | Confirmed merged by user |
-| #33 | AI Writing Studio | Created 25 November 2026 as an open draft; not merged at creation |
+| #33 | AI Writing Studio | Merged into `main` on 25 November 2026 (verified via GitHub PR state) |
 
 ### 10.1 PR #32 — Advanced assistant controls
 
@@ -331,9 +332,32 @@ Limitations:
 - Users must review the output.
 - Manual browser/device testing remains necessary.
 
-At creation, PR #33 was open, draft and unmerged. Do not assume it has since been merged; check GitHub before starting the next sequential AI feature.
+PR #33 was subsequently merged into `main` on 25 November 2026. Its original implementation details and limitations remain as described above.
 
-## 11. Non-negotiable development workflow
+### 10.3 PR #35 — Browser-based Quiz Generator
+
+PR: [https://github.com/Elliots-Boys/TechNova/pull/35](https://github.com/Elliots-Boys/TechNova/pull/35)
+
+Branch: `feature/technova-ai-quiz-generator-35`
+
+Merged into `main` on 25 November 2026 (verified in GitHub).
+
+Files:
+- `js/ai-quiz-generator.js`
+- `pages/ai-assistant.html`
+- `docs/technova-ai-pr35-qa.md`
+
+The generator creates multiple-choice, true/false or mixed revision questions from user-pasted notes, with heuristic difficulty, answer checking, explanations, progress and scoring. It runs in the browser and does not upload or persist source text. It is a deterministic revision aid, not a generative AI model; generated questions can be awkward or ambiguous and should be checked against the source notes. Browser/device regression testing remains a manual QA task.
+
+## 11. Dashboard refresh — approved direction
+
+On 25 November 2026, the user approved improving both dashboards in separate stages:
+1. **Personal dashboard first** — refresh `pages/dashboard.html` as a responsive member workspace, showing account identity/profile, read-only counts for the signed-in user's event registrations and saved events, registered-event activity, saved-event previews and shortcuts to existing TechNova areas.
+2. **Admin dashboard separately afterwards** — review and improve `pages/admin.html` only in a later, separate PR after the personal dashboard PR has been reviewed/merged.
+
+The dashboard work must preserve existing account/authentication behaviour, avoid fake activity or fabricated statistics, keep user-scoped data protected by existing RLS, and avoid backend changes unless the user separately approves them. The personal dashboard PR updates this master document in the same PR. Future feature PRs must also include their corresponding master-document update in the same PR.
+
+## 12. Non-negotiable development workflow
 
 These instructions reflect the user's explicit preferences.
 
@@ -343,7 +367,7 @@ These instructions reflect the user's explicit preferences.
 4. **User controls merging.** Create the PR; the user reviews and merges it.
 5. **No production deployment without explicit permission.**
 6. **No Supabase/backend changes without separate explicit approval.**
-7. **No dashboard changes** during the agreed AI roadmap.
+7. **Dashboard work is separately scoped.** The personal dashboard is first; the admin dashboard follows in its own PR after review/merge.
 8. **No unrelated refactoring.** Change only files required for the approved scope.
 9. **Preserve existing functionality.** Consider chat, history, uploads, assistant tools, navigation and other site features when regression testing.
 10. **Be honest about testing.** Distinguish syntax checks, static inspection, automated tests, manual browser tests and production verification. Never claim a test passed if it was not run.
@@ -365,7 +389,7 @@ These instructions reflect the user's explicit preferences.
 - [ ] Open a draft PR with scope, limitations and test evidence.
 - [ ] Verify any Cloudflare preview before sharing it.
 - [ ] Wait for the user to review and merge.
-- [ ] Update this master document after merge and record the merge commit/deployment separately.
+- [ ] Update this master document in the same PR with the feature scope, files, decisions, testing and PR link/status; update the record again when merge/deployment is verified.
 
 ## 12. SEO and public discovery
 
@@ -390,7 +414,8 @@ This section intentionally records uncertainty so historical notes are not mista
 |---|---|---|
 | PR #24 | Knowledge-bank expansion was proposed | Current PR/commit and merge status |
 | PR #31 | Model removal PR was previously open/draft | Current PR status and whether removal is in main |
-| PR #33 | Writing Studio PR was created open/draft | Current review, merge and preview status |
+| PR #36 | Personal dashboard refresh PR is newly created | Review/merge and preview status; browser QA outstanding |
+| Admin dashboard | Existing `pages/admin.html` includes overview, user, event, registration, article, quiz, website and activity sections | Review after personal dashboard PR is merged; changes must be separate |
 | Community | Earlier review found no complete post/reply forum | Current implementation |
 | OAuth providers | Roblox/Telegram and other providers were discussed | Actual Supabase provider configuration and live flows |
 | OAuth app authorisation | Consent, authorised-app and developer pages exist | Full OAuth protocol, callback, scopes and security validation |
@@ -406,7 +431,7 @@ This section intentionally records uncertainty so historical notes are not mista
 | Date | Update |
 |---|---|
 | 25 Nov 2026 | Consolidated project identity, infrastructure, page map, historical architecture decisions, AI roadmap, PR history, development rules and verification gaps from available project context and repository inspection. |
-| Future updates | Add dated entries for important decisions, merged PRs, backend changes approved by the user, deployments and verified feature status. |
+| 25 Nov 2026 | Verified PR #33 (AI Writing Studio), PR #34 (master document) and PR #35 (Quiz Generator) are merged into `main`; PR #35 merge verified via GitHub on 25 Nov. Recorded the user's decision to refresh both dashboards in separate PRs, personal dashboard first and admin dashboard later. |
 
 ---
 
