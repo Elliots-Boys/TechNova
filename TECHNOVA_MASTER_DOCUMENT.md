@@ -809,7 +809,7 @@ One integrated PR adds the following built-in Desktop applications and system fe
 ### Shared desktop architecture
 
 - Extends the existing application registry and window manager; multiple windows can remain open and be moved/minimised/maximised.
-- Workspace assignment is stored locally and windows are shown only in the active virtual desktop.
+- Workspace assignment is stored locally and windows are shown only in the active virtual desktop; assignments and quick-note data are included in optional workspace sync and manual backup.
 - All expansion applications are loaded from a single `js/technova-os-expansion.js` module after the existing Desktop shell.
 - The former Browser window markup and Browser script include are removed from `pages/desktop.html`; the obsolete Browser application is removed from the launcher registry. The historical Browser source/PR remains part of Git history.
 - Existing Desktop apps and sign-in guard are retained.
@@ -830,9 +830,10 @@ One integrated PR adds the following built-in Desktop applications and system fe
 - API Studio can be blocked by browser CORS and should not store secrets in collections.
 - Media playback depends on browser codec support and does not bypass DRM.
 - Website Designer creates static files; it does not publish websites.
-- Mail Centre is a draft organiser only; a real inbox requires a separate provider OAuth integration.
+- Gmail access requires the owner to enable the Gmail API, configure the Google OAuth consent screen and add the required Gmail scopes and authorised JavaScript origin. The app cannot connect until a valid Web Client ID and those Google Cloud settings are supplied. Gmail API access may require Google verification for public production use; testing can be limited to configured test users. Tokens expire and the user must reconnect.
 - Supabase cloud sync uses the existing private Storage bucket and must be tested with two separate signed-in accounts to confirm isolation. No live database schema or settings are changed by this PR.
-- Manual signed-in browser, responsive, accessibility, two-account RLS and cloud Storage tests remain required; see `docs/technova-os-expansion-pr50-qa.md`.
+- Follow-up fixes add the missing expansion-app styling, correct desktop search launcher behaviour, include sticky notes in Whiteboard PNG exports, expose spreadsheet formula results, harden IndexedDB transaction completion, and persist virtual-desktop assignments in cloud sync/backup.
+- Manual signed-in browser, responsive, accessibility, Gmail OAuth, two-account Storage isolation and cloud sync tests remain required; see `docs/technova-os-expansion-pr50-qa.md`.
 
 ### Files
 
@@ -845,4 +846,4 @@ One integrated PR adds the following built-in Desktop applications and system fe
 
 ### Pull request
 
-[PR #50 — Expand TechNova Desktop into a full operating environment](https://github.com/Elliots-Boys/TechNova/pull/50). Status: open draft, not merged, not deployed. Cloud sync uses the existing private Storage bucket; no Supabase schema or settings changes are included. No Cloudflare deployment is performed.
+[PR #50 — Expand TechNova Desktop into a full operating environment](https://github.com/Elliots-Boys/TechNova/pull/50). Status: open draft, not merged, not deployed. Cloud sync uses the existing private Storage bucket; no Supabase schema or settings changes are included. The Mail Centre includes an optional Gmail API connection that requires owner-provided Google Cloud OAuth configuration; no Google client secret is committed. No Cloudflare deployment is performed.
