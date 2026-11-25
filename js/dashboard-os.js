@@ -1,0 +1,78 @@
+/* TechNova OS: browser-local productivity, study, notification, backup and creative tools. */
+(() => {
+'use strict';
+const $=id=>document.getElementById(id);
+const K={tasks:'technova.dashboard.tasks.v1',schedule:'technova.os.timetable.v1',cards:'technova.os.flashcards.v1',grades:'technova.os.grades.v1',dismissed:'technova.os.dismissed.v1',layout:'technova.os.layout.v1',code:'technova.os.code.v1'};
+const allKeys=[K.tasks,'technova.dashboard.calendar.v1','technova.dashboard.habits.v1','technova.dashboard.notes.v1','technova.dashboard.projects.v1','technova.dashboard.pins.v1','technova.dashboard.recent.v1','technova.dashboard.note.v1','technova.dashboard.widgets.v1',K.schedule,K.cards,K.grades,K.dismissed,K.layout,K.code];
+const read=(key,fb)=>{try{const v=localStorage.getItem(key);return v===null?fb:JSON.parse(v)}catch{return fb}};
+const write=(key,v)=>{try{localStorage.setItem(key,JSON.stringify(v));return true}catch{return false}};
+const id=()=>crypto?.randomUUID?.()||String(Date.now())+Math.random().toString(36).slice(2);
+const node=(tag,cls,txt)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n};
+const action=(label,fn)=>{const b=node('button','',label);b.type='button';b.addEventListener('click',fn);return b};
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+function setupTasks(){
+ const form=$('osTaskForm'),input=$('osTaskTitle'),due=$('osTaskDue'),priority=$('osTaskPriority');if(!form)return;
+ const get=()=>{let a=read(K.tasks,[]);return Array.isArray(a)?a.filter(t=>t&&typeof t.id==='string'&&typeof t.title==='string').map(t=>({...t,status:t.done?'done':(['todo','doing','done'].includes(t.status)?t.status:'todo')})):[]};
+ const save=a=>{write(K.tasks,a);render()};
+ function render(){const a=get();[['todo','osTodo','osTodoCount'],['doing','osDoing','osDoingCount'],['done','osDone','osDoneCount']].forEach(([s,list,count])=>{const box=$(list);box.replaceChildren();const items=a.filter(t=>t.status===s);$(count).textContent=items.length;items.forEach(t=>{const card=node('article','os-task');card.draggable=true;card.dataset.taskId=t.id;card.append(node('strong','',t.title),node('small','',(t.priority||'Normal')+(t.dueDate?' · Due '+t.dueDate:'')));const controls=node('div','os-task-actions');const cycle=action(s==='todo'?'Start':s==='doing'?'Complete':'Reopen',()=>{const n=get().find(x=>x.id===t.id);if(n){n.status=s==='todo'?'doing':s==='doing'?'done':'todo';n.done=n.status==='done';save(get().map(x=>x.id===n.id?n:x))}});controls.append(cycle,action('Delete',()=>save(get().filter(x=>x.id!==t.id))));card.append(controls);card.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',t.id);card.classList.add('dragging')});card.addEventListener('dragend',()=>card.classList.remove('dragging'));box.append(card)});if(!items.length)box.append(node('p','os-muted','Drop tasks here'))});$('osTaskCount').textContent=a.length+' tasks'}
+ document.querySelectorAll('.os-lane').forEach(lane=>{lane.addEventListener('dragover',e=>{e.preventDefault();lane.classList.add('drag-over')});lane.addEventListener('dragleave',()=>lane.classList.remove('drag-over'));lane.addEventListener('drop',e=>{e.preventDefault();lane.classList.remove('drag-over');const taskId=e.dataTransfer.getData('text/plain'),status=lane.dataset.status;const a=get().map(t=>t.id===taskId?{...t,status,done:status==='done'}:t);save(a)})});
+ form.addEventListener('submit',e=>{e.preventDefault();const title=input.value.trim();if(!title)return;const a=get();if(a.length>=100){alert('The workspace supports up to 100 tasks.');return}a.push({id:id(),title,dueDate:due.value||'',priority:priority.value,done:false,status:'todo',createdAt:Date.now()});input.value='';due.value='';save(a)});
+ render();
+}
+function setupTimer(){
+ let seconds=1500,handle=null;const display=$('osTimerDisplay'),status=$('osTimerStatus'),start=$('osTimerStart');if(!display)return;
+ const paint=()=>{display.textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')};
+ const stop=()=>{if(handle){clearInterval(handle);handle=null}start.textContent='Start'};
+ start.addEventListener('click',()=>{if(handle){clearInterval(handle);handle=null;start.textContent='Resume';status.textContent='Paused.';return}start.textContent='Pause';status.textContent='Focus session in progress.';handle=setInterval(()=>{seconds--;paint();if(seconds<=0){clearInterval(handle);handle=null;start.textContent='Start';status.textContent='Session complete — take a short break.';if('Notification'in window&&Notification.permission==='granted')new Notification('TechNova focus session complete');}},1000)});
+ $('osTimerReset').addEventListener('click',()=>{stop();seconds=1500;paint();status.textContent='Timer reset.'});paint();
+}
+function setupSchedule(){
+ const form=$('osScheduleForm'),list=$('osScheduleList');if(!form)return;const get=()=>{const a=read(K.schedule,[]);return Array.isArray(a)?a.filter(x=>x&&typeof x.title==='string'):[]};
+ function render(){list.replaceChildren();const a=get().sort((x,y)=>['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].indexOf(x.day)-['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].indexOf(y.day)||x.time.localeCompare(y.time));if(!a.length)list.append(node('p','os-muted','No sessions planned yet.'));a.forEach(x=>{const row=node('div','os-list-item');const copy=node('div');copy.append(node('strong','',x.title),node('small','',x.day+' · '+x.time));row.append(copy,action('Remove',()=>{write(K.schedule,get().filter(y=>y.id!==x.id));render()}));list.append(row)})}
+ form.addEventListener('submit',e=>{e.preventDefault();const a=get();a.push({id:id(),title:$('osScheduleTitle').value.trim(),day:$('osScheduleDay').value,time:$('osScheduleTime').value});write(K.schedule,a);form.reset();render()});render();
+}
+function setupStudy(){
+ let cards=read(K.cards,[]);if(!Array.isArray(cards))cards=[];let index=0,revealed=false;
+ const face=$('osCardFace'),hint=$('osCardHint');
+ function render(){const c=cards[index];face.textContent=c?(revealed?c.back:c.front):'Add a card to begin';hint.textContent=c?(revealed?'Answer · tap to see question':'Question · tap to reveal'):'Create your first revision card';$('osCardCount').textContent=cards.length+' cards'}
+ const flip=()=>{if(cards.length){revealed=!revealed;render()}};$('osFlashcard').addEventListener('click',flip);$('osFlashcard').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip()}});
+ $('osCardForm').addEventListener('submit',e=>{e.preventDefault();cards.push({id:id(),front:$('osCardFront').value.trim(),back:$('osCardBack').value.trim()});write(K.cards,cards);e.target.reset();index=cards.length-1;revealed=false;render()});
+ $('osCardNext').addEventListener('click',()=>{if(cards.length){index=(index+1)%cards.length;revealed=false;render()}});
+ let grades=read(K.grades,[]);if(!Array.isArray(grades))grades=[];
+ function renderGrades(){const list=$('osGradeList');list.replaceChildren();if(!grades.length)list.append(node('p','os-muted','No assessment results recorded.'));grades.forEach(g=>{const row=node('div','os-list-item');row.append(node('span','',g.subject+' · '+g.name),node('strong','',g.score+'%'));list.append(row)})}
+ $('osGradeForm').addEventListener('submit',e=>{e.preventDefault();grades.push({id:id(),subject:$('osGradeSubject').value.trim(),name:$('osGradeName').value.trim(),score:Number($('osGradeScore').value)});write(K.grades,grades);e.target.reset();renderGrades()});render();renderGrades();
+}
+function setupNotifications(){
+ const list=$('osNotifications');if(!list)return;const dismissed=()=>read(K.dismissed,[]);
+ function render(){list.replaceChildren();const tasks=read(K.tasks,[]),reminders=read('technova.dashboard.calendar.v1',[]),items=[];(Array.isArray(tasks)?tasks:[]).filter(t=>t&&!t.done&&t.dueDate&&t.dueDate<=today()).forEach(t=>items.push({id:'task-'+t.id,title:'Task due: '+t.title,detail:t.dueDate}));(Array.isArray(reminders)?reminders:[]).filter(r=>r&&r.date>=today()&&r.date<=new Date(Date.now()+7*86400000).toISOString().slice(0,10)).forEach(r=>items.push({id:'reminder-'+r.id,title:r.title,detail:r.date}));const hidden=dismissed();const visible=items.filter(x=>!hidden.includes(x.id));if(!visible.length)list.append(node('p','os-muted','You are all caught up.'));visible.forEach(x=>{const row=node('div','os-list-item');const copy=node('div');copy.append(node('strong','',x.title),node('small','',x.detail));row.append(copy,action('Dismiss',()=>{write(K.dismissed,[...dismissed(),x.id]);render()}));list.append(row)})}
+ $('osClearNotifications').addEventListener('click',()=>{write(K.dismissed,[]);render()});render();
+}
+function setupSearch(){
+ const input=$('osGlobalSearch'),results=$('osSearchResults');if(!input)return;
+ const source=()=>{const out=[];document.querySelectorAll('[data-app-link]').forEach(a=>out.push({title:a.dataset.title||a.textContent.trim(),detail:'TechNova tool',href:a.querySelector('a')?.getAttribute('href')}));['tasks','calendar','habits','notes','projects'].forEach(kind=>{const key={tasks:K.tasks,calendar:'technova.dashboard.calendar.v1',habits:'technova.dashboard.habits.v1',notes:'technova.dashboard.notes.v1',projects:'technova.dashboard.projects.v1'}[kind];const data=read(key,[]);if(Array.isArray(data))data.forEach(x=>out.push({title:x.title||x.name||x.front||kind,detail:kind,href:''}))});return out};
+ input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();results.replaceChildren();if(!q){results.hidden=true;return}const matches=source().filter(x=>(x.title+' '+x.detail).toLowerCase().includes(q)).slice(0,12);results.hidden=false;if(!matches.length){results.textContent='No matches found.';return}matches.forEach(x=>{const b=action(x.title+' · '+x.detail,()=>{if(x.href)location.href=x.href;else results.textContent=x.title+' is saved in your local workspace.'});results.append(b)})});
+ document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='/'){e.preventDefault();input.focus()}});
+}
+function setupLayout(){
+ const layout=$('osLayout');if(!layout)return;let order=read(K.layout,[]);const apply=()=>{const cards=[...layout.querySelectorAll('[data-os-widget]')];cards.sort((a,b)=>{const x=order.indexOf(a.dataset.osWidget),y=order.indexOf(b.dataset.osWidget);return (x<0?999:x)-(y<0?999:y)}).forEach(c=>layout.append(c))};apply();
+ let dragging=null;layout.querySelectorAll('[data-os-widget]').forEach(card=>{card.addEventListener('dragstart',()=>{dragging=card;card.classList.add('dragging')});card.addEventListener('dragend',()=>{card.classList.remove('dragging');layout.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'));order=[...layout.querySelectorAll('[data-os-widget]')].map(x=>x.dataset.osWidget);write(K.layout,order)});card.addEventListener('dragover',e=>{if(!dragging||dragging===card)return;e.preventDefault();card.classList.add('drag-over')});card.addEventListener('dragleave',()=>card.classList.remove('drag-over'));card.addEventListener('drop',e=>{e.preventDefault();card.classList.remove('drag-over');if(dragging&&dragging!==card){const r=card.getBoundingClientRect();layout.insertBefore(dragging,e.clientY<r.top+r.height/2?card:card.nextSibling)}})});
+ $('osLayoutReset').addEventListener('click',()=>{order=[];write(K.layout,order);apply()});
+}
+function setupBackup(){
+ $('osBackup').addEventListener('click',()=>{const data={format:'technova-os-backup',version:1,createdAt:new Date().toISOString(),storage:{}};allKeys.forEach(k=>{const v=localStorage.getItem(k);if(v!==null)data.storage[k]=v});const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=node('a');a.href=url;a.download='technova-workspace-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)});
+ $('osRestore').addEventListener('click',()=>$('osRestoreFile').click());
+ $('osRestoreFile').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>2*1024*1024)throw new Error('Backup must be 2 MB or smaller.');const data=JSON.parse(await file.text());if(data.format!=='technova-os-backup'||data.version!==1||!data.storage||typeof data.storage!=='object')throw new Error('This is not a supported TechNova backup.');const allowed=new Set(allKeys);const entries=Object.entries(data.storage);if(!entries.length||entries.some(([k,v])=>!allowed.has(k)||typeof v!=='string'))throw new Error('Backup contains unsupported workspace data.');if(!confirm('Restore this backup? Matching local workspace data will be replaced.'))return;entries.forEach(([k,v])=>localStorage.setItem(k,v));alert('Backup restored. Reloading the dashboard.');location.reload()}catch(err){alert('Could not restore backup: '+err.message)}finally{e.target.value=''}});
+}
+function setupStudio(){
+ const editors={html:$('osCodeHtml'),css:$('osCodeCss'),js:$('osCodeJs')};let active='html';
+ document.querySelectorAll('[data-code-tab]').forEach(b=>b.addEventListener('click',()=>{active=b.dataset.codeTab;Object.entries(editors).forEach(([k,v])=>v.hidden=k!==active);document.querySelectorAll('[data-code-tab]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))}));
+ const saved=read(K.code,null);if(saved&&typeof saved==='object')Object.entries(editors).forEach(([k,v])=>{if(typeof saved[k]==='string')v.value=saved[k]});
+ Object.values(editors).forEach(v=>v.addEventListener('input',()=>write(K.code,Object.fromEntries(Object.entries(editors).map(([k,x])=>[k,x.value])))));
+ const build=()=>{const safeJs=editors.js.value.replace(/<\/script/gi,'<\\/script');return '<!doctype html><meta charset="utf-8"><style>'+editors.css.value+'</style>'+editors.html.value+'<script>'+safeJs+'<'+'/script>'};
+ $('osRunCode').addEventListener('click',()=>{$('osCodePreview').srcdoc=build()});
+ $('osDownloadCode').addEventListener('click',()=>{const blob=new Blob([build()],{type:'text/html'}),url=URL.createObjectURL(blob),a=node('a');a.href=url;a.download='technova-project.html';a.click();URL.revokeObjectURL(url)});
+ $('osPosterGenerate').addEventListener('click',()=>{const c=$('osPosterCanvas'),ctx=c.getContext('2d'),bg=$('osPosterColour').value;ctx.fillStyle=bg;ctx.fillRect(0,0,c.width,c.height);const grad=ctx.createLinearGradient(0,0,c.width,c.height);grad.addColorStop(0,'#42d7ff');grad.addColorStop(1,'#9b83ff');ctx.fillStyle=grad;ctx.globalAlpha=.16;ctx.beginPath();ctx.arc(730,120,220,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;ctx.fillStyle='#ffffff';ctx.font='900 76px system-ui';ctx.fillText($('osPosterTitle').value||'TECHNOVA',70,280,760);ctx.fillStyle='#b9d9ed';ctx.font='32px system-ui';ctx.fillText($('osPosterSubtitle').value||'',74,340,750);ctx.fillStyle='#42d7ff';ctx.fillRect(74,385,150,7)});
+ $('osPosterGenerate').click();$('osPosterDownload').addEventListener('click',()=>{$('osPosterCanvas').toBlob(blob=>{if(!blob)return;const url=URL.createObjectURL(blob),a=node('a');a.href=url;a.download='technova-poster.png';a.click();URL.revokeObjectURL(url)},'image/png')});
+}
+document.addEventListener('DOMContentLoaded',()=>{setupTasks();setupTimer();setupSchedule();setupStudy();setupNotifications();setupSearch();setupLayout();setupBackup();setupStudio()});
+})();
