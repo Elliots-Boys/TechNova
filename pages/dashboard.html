@@ -3,79 +3,105 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Your personal TechNova workspace for events, saved items and learning.">
+<meta name="description" content="Your personal TechNova command centre. Discover tools, manage events and pick up where you left off.">
+<meta name="theme-color" content="#07111f">
 <title>My Dashboard · TechNova</title>
 <link rel="stylesheet" href="../css/style.css">
 <style>
-.dashboard-page{max-width:1200px;margin:0 auto;padding:42px 22px 80px}
-.dashboard-hero{position:relative;display:flex;justify-content:space-between;align-items:center;gap:24px;overflow:hidden;padding:clamp(24px,5vw,42px);border:1px solid #28466b;border-radius:24px;background:radial-gradient(circle at 90% 10%,#1c5480aa,transparent 38%),linear-gradient(135deg,#102844,#0a1422 75%);box-shadow:0 20px 60px #0004}
-.dashboard-hero-copy{min-width:0;position:relative;z-index:1}
-.dashboard-hero h1{font-size:clamp(38px,6vw,64px);line-height:1.04;margin:8px 0}
-.dashboard-hero h1 span{background:linear-gradient(90deg,#32d6ff,#9b6cff);color:transparent;background-clip:text}
-.dashboard-hero .lead{margin:10px 0 0}
-.dashboard-identity{display:flex;align-items:center;gap:13px;margin-top:22px;flex-wrap:wrap}
-.dashboard-avatar{width:54px;height:54px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(145deg,#32d6ff,#9b6cff);color:#06101d;font-weight:950;font-size:20px;flex:none}
-.dashboard-identity small{display:block;color:#91a0b7;overflow-wrap:anywhere}
-.dashboard-hero-art{width:112px;height:112px;border:1px solid #3b7097;border-radius:30px;background:linear-gradient(145deg,#123e61,#101b35);display:grid;place-items:center;font-size:52px;box-shadow:0 0 70px #32d6ff20;flex:none}
-.dashboard-section{margin-top:26px}
-.dashboard-date{display:block;color:#b8c9dd;font-size:13px;font-weight:700;margin-top:8px}
-.dashboard-hero{min-height:270px}
-.dashboard-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
-.dashboard-stat{min-height:112px}
-.dashboard-link{min-height:105px;align-items:center}
-.dashboard-event-date{display:inline-flex;padding:5px 8px;border-radius:8px;background:#102844;color:#8edfff;font-size:11px;font-weight:800;margin-top:6px}
-.dashboard-activity-list{display:grid;gap:10px;margin-top:16px}
-.dashboard-activity-item{display:flex;gap:11px;align-items:flex-start;padding:12px;border:1px solid #20324b;border-radius:12px;background:#08111e}
-.dashboard-activity-dot{width:10px;height:10px;border-radius:50%;background:#32d6ff;margin:5px 0 0 3px;flex:none}
-.dashboard-activity-item strong{display:block}
-.dashboard-activity-item small{display:block;color:#91a0b7;margin-top:3px}
-@media(max-width:760px){.dashboard-stats{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.dashboard-stats{grid-template-columns:1fr}.dashboard-hero{min-height:0}}
-.dashboard-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:14px}
-.dashboard-section-head h2{margin:2px 0 0;font-size:25px}
-.dashboard-section-head p{margin:3px 0 0;color:#91a0b7}
-.dashboard-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
-.dashboard-stat,.dashboard-panel{background:linear-gradient(180deg,#0d1728,#09111e);border:1px solid #20324b;border-radius:17px;padding:20px}
-.dashboard-stat{display:flex;align-items:center;gap:15px}
-.dashboard-stat-icon{width:46px;height:46px;border-radius:13px;background:#102b46;display:grid;place-items:center;font-size:22px;flex:none}
-.dashboard-stat-label{color:#91a0b7;font-size:13px;font-weight:700}
-.dashboard-stat strong{display:block;font-size:30px;line-height:1.2;color:#32d6ff;margin-top:2px}
-.dashboard-stat small{display:block;color:#91a0b7;margin-top:2px}
-.dashboard-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
-.dashboard-link{display:flex;gap:13px;align-items:flex-start;padding:18px;border:1px solid #20324b;border-radius:15px;background:linear-gradient(180deg,#0d1728,#09111e);transition:transform .18s ease,border-color .18s ease}
-.dashboard-link:hover{transform:translateY(-2px);border-color:#32d6ff}
-.dashboard-link-icon{font-size:24px;line-height:1.2}
-.dashboard-link strong{display:block}
-.dashboard-link small{display:block;color:#91a0b7;margin-top:4px;line-height:1.45}
-.dashboard-columns{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}
-.dashboard-panel h3{margin:0;font-size:20px}
-.dashboard-panel-intro{color:#91a0b7;margin:4px 0 0}
-.dashboard-event-list{display:grid;gap:10px;margin-top:16px}
-#myEvents .event-item{display:flex;align-items:flex-start;gap:12px;padding:13px;border:1px solid #20324b;border-radius:12px;background:#08111e}
-#myEvents .event-icon{width:40px;height:40px;display:grid;place-items:center;background:#102844;border-radius:11px;flex:none}
-#myEvents .event-title{font-weight:800;overflow-wrap:anywhere}
-#myEvents .event-meta{color:#91a0b7;font-size:13px;margin-top:3px}
-#myEvents .event-actions{margin-left:auto}
-#myEvents .cancel-event{background:#20131a;border:1px solid #59303c;color:#ffb7c5;cursor:pointer;padding:8px 11px;border-radius:9px}
-#myEvents .cancel-event:disabled{opacity:.55;cursor:wait}
-.dashboard-event{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid #20324b;border-radius:12px;background:#08111e}
-.dashboard-event-icon{width:40px;height:40px;display:grid;place-items:center;background:#102844;border-radius:11px;flex:none}
+:root{--dash-bg:#07111f;--dash-panel:#0c1929;--dash-panel2:#10233a;--dash-line:#213a55;--dash-muted:#93a9bf;--dash-cyan:#42d7ff;--dash-violet:#9b83ff}
+.dashboard-shell{max-width:1440px;margin:0 auto;padding:28px clamp(14px,3vw,38px) 76px}
+.dashboard-topline{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.dashboard-breadcrumb{color:var(--dash-muted);font-size:13px}
+.dashboard-top-actions{display:flex;gap:9px;flex-wrap:wrap}
+.dashboard-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--dash-line);border-radius:11px;padding:10px 14px;background:#10243a;color:#dcecff;text-decoration:none;font:inherit;font-size:13px;font-weight:750;cursor:pointer}
+.dashboard-button:hover{border-color:var(--dash-cyan);color:#fff}
+.dashboard-button.primary{background:linear-gradient(110deg,#28bde9,#8b7aff);border:0;color:#06111e}
+.dashboard-button:focus-visible,.dashboard-shell a:focus-visible,.dashboard-shell button:focus-visible,.dashboard-shell input:focus-visible,.dashboard-shell textarea:focus-visible{outline:3px solid var(--dash-cyan);outline-offset:3px}
+.dashboard-hero{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(220px,.5fr);gap:24px;align-items:center;padding:clamp(24px,4vw,48px);border:1px solid #294969;border-radius:26px;background:radial-gradient(ellipse at 88% 15%,#226a9b66,transparent 36%),radial-gradient(ellipse at 65% 120%,#6545a744,transparent 40%),linear-gradient(125deg,#102b47,#0a1524 70%);box-shadow:0 22px 65px #0005}
+.dashboard-hero:after{content:"";position:absolute;z-index:-1;width:300px;height:300px;right:3%;top:-190px;border:1px solid #4b93ba55;border-radius:50%;box-shadow:0 0 0 28px #4b93ba0b,0 0 0 58px #4b93ba08}
+.dashboard-kicker{color:#80dfff;font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
+.dashboard-hero h1{font-size:clamp(36px,5.2vw,64px);line-height:1.04;letter-spacing:-.045em;margin:12px 0 10px}
+.dashboard-hero h1 span{background:linear-gradient(90deg,#49dcff,#a995ff);background-clip:text;color:transparent}
+.dashboard-hero-copy>p:not(.dashboard-kicker){max-width:680px;color:#b2c5d8;line-height:1.65;margin:0}
+.dashboard-date{color:#d3e7f8;font-size:13px;font-weight:700;margin-top:18px}
+.dashboard-userline{display:flex;align-items:center;gap:12px;margin-top:22px}
+.dashboard-avatar{width:48px;height:48px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(145deg,#42d7ff,#9b83ff);color:#06111e;font-size:17px;font-weight:950;flex:none;box-shadow:0 8px 28px #42d7ff20}
+.dashboard-userline strong,.dashboard-userline small{display:block;overflow-wrap:anywhere}
+.dashboard-userline small{color:var(--dash-muted);margin-top:3px}
+.dashboard-hero-art{justify-self:center;position:relative;width:min(100%,220px);aspect-ratio:1;border:1px solid #4b83a766;border-radius:36px;background:linear-gradient(145deg,#153b5c,#111b36);display:grid;place-items:center;box-shadow:inset 0 1px #ffffff14,0 20px 60px #0005}
+.dashboard-orbit{width:116px;height:116px;border:1px solid #52cfff66;border-radius:50%;display:grid;place-items:center;box-shadow:0 0 55px #32d6ff20}
+.dashboard-orbit span{font-size:56px;color:#70e5ff;text-shadow:0 0 30px #32d6ff88}
+.dashboard-hero-foot{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.75fr);gap:18px;margin-top:20px;align-items:start}
+.dashboard-main-column,.dashboard-side-column{display:grid;gap:18px;min-width:0}
+.dashboard-panel{min-width:0;padding:21px;border:1px solid var(--dash-line);border-radius:19px;background:linear-gradient(165deg,#0e1d30,#091522 78%);box-shadow:0 12px 35px #0002}
+.dashboard-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:15px}
+.dashboard-panel-head h2,.dashboard-panel-head h3{margin:3px 0 0;font-size:21px;letter-spacing:-.02em}
+.dashboard-panel-head p{margin:5px 0 0;color:var(--dash-muted);font-size:13px;line-height:1.5}
+.dashboard-eyebrow{color:#7ccfea;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+.dashboard-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.dashboard-stat{display:flex;gap:12px;align-items:center;padding:16px;border:1px solid #203b57;border-radius:15px;background:linear-gradient(145deg,#112842,#0a1727)}
+.dashboard-stat-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:#173b59;font-size:20px;flex:none}
+.dashboard-stat strong{display:block;color:var(--dash-cyan);font-size:27px;line-height:1.1}
+.dashboard-stat small{display:block;color:var(--dash-muted);font-size:11px;margin-top:4px}
+.dashboard-search{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #2b4b69;border-radius:14px;background:#071321}
+.dashboard-search span{font-size:18px;color:#83dfff}
+.dashboard-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#e8f4ff;font:inherit;font-size:14px}
+.dashboard-search input::placeholder{color:#7890a8}
+.dashboard-filter-row{display:flex;gap:7px;flex-wrap:wrap;margin:13px 0 16px}
+.dashboard-filter{border:1px solid #28435f;border-radius:999px;padding:7px 11px;background:#0b1b2d;color:#a9bfd3;font-size:11px;font-weight:800;cursor:pointer}
+.dashboard-filter[aria-pressed=true]{background:#173e59;border-color:#39c9f3;color:#e4faff}
+.dashboard-app-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dashboard-app{position:relative;display:flex;align-items:center;gap:12px;min-width:0;padding:13px 42px 13px 13px;border:1px solid #203b57;border-radius:14px;background:linear-gradient(135deg,#10243a,#0a1726);color:#e8f4ff;text-decoration:none;transition:border-color .16s,transform .16s,background .16s}
+.dashboard-app:hover{transform:translateY(-2px);border-color:#42d7ff;background:linear-gradient(135deg,#153451,#0c1b2c)}
+.dashboard-app-icon{width:39px;height:39px;display:grid;place-items:center;border-radius:12px;background:#173b59;font-size:19px;flex:none}
+.dashboard-app-copy{min-width:0}
+.dashboard-app-copy strong{display:block;font-size:13px;line-height:1.35}
+.dashboard-app-copy small{display:block;color:var(--dash-muted);font-size:11px;line-height:1.4;margin-top:3px}
+.dashboard-pin{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:28px;height:28px;border:1px solid #294660;border-radius:9px;background:#0a1726;color:#9bb5cc;cursor:pointer}
+.dashboard-pin[aria-pressed=true]{color:#ffe18a;border-color:#987b3d;background:#342b18}
+.dashboard-app[hidden],.dashboard-app-group[hidden]{display:none}
+.dashboard-app-group+.dashboard-app-group{margin-top:18px}
+.dashboard-app-group h3{margin:0 0 10px;color:#b8cee2;font-size:12px;text-transform:uppercase;letter-spacing:.1em}
+.dashboard-pinned-list{display:grid;gap:8px}
+.dashboard-pinned-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border:1px solid #223d57;border-radius:12px;background:#0b1a2a}
+.dashboard-pinned-item a{color:#e5f3ff;text-decoration:none;font-size:13px;font-weight:750}
+.dashboard-pinned-item button{border:0;background:transparent;color:#ffdb8a;cursor:pointer;font-size:17px}
+.dashboard-empty{padding:15px;border:1px dashed #29445f;border-radius:12px;color:var(--dash-muted);font-size:13px;line-height:1.5}
+.dashboard-event-list,.dashboard-activity-list{display:grid;gap:9px}
+.dashboard-event{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid #203a55;border-radius:13px;background:#091725;min-width:0}
+.dashboard-event-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:#173b59;flex:none}
 .dashboard-event-copy{min-width:0;flex:1}
-.dashboard-event-copy strong{display:block;overflow-wrap:anywhere}
-.dashboard-event-copy small{display:block;color:#91a0b7;margin-top:2px}
-.dashboard-event a{color:#32d6ff;font-weight:750;white-space:nowrap}
-.dashboard-empty{color:#91a0b7;padding:16px;border:1px dashed #29415e;border-radius:12px;margin-top:15px}
-.dashboard-profile-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #20324b}
+.dashboard-event-copy strong{display:block;font-size:13px;overflow-wrap:anywhere}
+.dashboard-event-copy small{display:block;color:var(--dash-muted);font-size:11px;margin-top:3px;overflow-wrap:anywhere}
+.dashboard-event-date{display:inline-block;margin-top:5px;padding:4px 7px;border-radius:7px;background:#102a42;color:#9ce7ff;font-size:10px;font-weight:800}
+.dashboard-event>a{color:#66dfff;text-decoration:none;font-size:12px;font-weight:800}
+.dashboard-activity-item{display:flex;gap:11px;align-items:flex-start;padding:11px;border-bottom:1px solid #1c344c}
+.dashboard-activity-item:last-child{border-bottom:0}
+.dashboard-activity-dot{width:9px;height:9px;margin:5px 0 0 2px;border-radius:50%;background:#4bd9ff;box-shadow:0 0 12px #4bd9ff66;flex:none}
+.dashboard-activity-item strong{display:block;font-size:12px}
+.dashboard-activity-item small{display:block;color:var(--dash-muted);font-size:11px;margin-top:4px}
+.dashboard-note{width:100%;min-height:150px;resize:vertical;border:1px solid #29445f;border-radius:13px;background:#071321;color:#e5f3ff;padding:13px;font:inherit;font-size:13px;line-height:1.6}
+.dashboard-note-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--dash-muted);font-size:11px;margin-top:8px}
+.dashboard-profile-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #20384f;font-size:12px}
 .dashboard-profile-row:last-child{border-bottom:0}
-.dashboard-profile-row span{color:#91a0b7}
+.dashboard-profile-row span{color:var(--dash-muted)}
 .dashboard-profile-row strong{text-align:right;overflow-wrap:anywhere}
-.dashboard-status{margin-top:12px;color:#91a0b7;font-size:13px}
-.dashboard-status.error{color:#ffb4c0}
-.dashboard-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.dashboard-widget-controls{display:none;gap:10px;flex-wrap:wrap;padding:13px;margin:0 0 15px;border:1px solid #29445f;border-radius:13px;background:#091725}
+.dashboard-widget-controls.open{display:flex}
+.dashboard-widget-controls label{display:flex;align-items:center;gap:7px;color:#c2d4e5;font-size:12px}
+.dashboard-status{color:var(--dash-muted);font-size:12px;line-height:1.5}
+.dashboard-status.error{color:#ffabb9}
+.dashboard-section-link{color:#70dfff;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
+.dashboard-directory-note{color:var(--dash-muted);font-size:12px;line-height:1.5;margin:10px 0 0}
+.dashboard-no-results{display:none;padding:15px;color:var(--dash-muted);font-size:13px}
+.dashboard-no-results.show{display:block}
+.dashboard-footer-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .dashboard-hidden{display:none!important}
-@media(max-width:850px){.dashboard-links{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-columns{grid-template-columns:1fr}}
-@media(max-width:560px){.dashboard-page{padding:25px 14px 55px}.dashboard-hero{align-items:flex-start}.dashboard-hero-art{width:65px;height:65px;border-radius:19px;font-size:30px}.dashboard-stats,.dashboard-links{grid-template-columns:1fr}.dashboard-stat{padding:16px}.dashboard-event{align-items:flex-start;flex-wrap:wrap}.dashboard-event a{margin-left:52px}}
-@media(prefers-reduced-motion:reduce){.dashboard-link{transition:none}.dashboard-link:hover{transform:none}}
+@media(max-width:980px){.dashboard-grid{grid-template-columns:1fr}.dashboard-side-column{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-side-column [data-widget-section=profile]{grid-column:1/-1}}
+@media(max-width:700px){.dashboard-hero{grid-template-columns:1fr}.dashboard-hero-art{display:none}.dashboard-stats{grid-template-columns:1fr}.dashboard-side-column{grid-template-columns:1fr}.dashboard-side-column [data-widget-section=profile]{grid-column:auto}}
+@media(max-width:520px){.dashboard-shell{padding:18px 12px 52px}.dashboard-panel{padding:16px}.dashboard-app-grid{grid-template-columns:1fr}.dashboard-hero{padding:23px 19px}.dashboard-hero h1{font-size:39px}.dashboard-topline{align-items:flex-start}}
+@media(prefers-reduced-motion:reduce){.dashboard-app{transition:none}.dashboard-app:hover{transform:none}}
 </style>
 </head>
 <body>
@@ -90,66 +116,149 @@
 </nav>
 <button id="logoutBtn" class="btn" type="button">Log out</button>
 </header>
-<main class="dashboard-page" id="main-content" tabindex="-1">
+<main class="dashboard-shell" id="main-content" tabindex="-1">
+<div class="dashboard-topline">
+<div class="dashboard-breadcrumb">TECHNOVA <span aria-hidden="true">/</span> PERSONAL WORKSPACE</div>
+<div class="dashboard-top-actions">
+<button class="dashboard-button" id="customiseDashboard" type="button" aria-expanded="false" aria-controls="widgetControls">⚙ Personalise</button>
+<a class="dashboard-button" href="settings.html">Account settings</a>
+</div>
+</div>
 <section class="dashboard-hero" aria-labelledby="dashboardTitle">
-<div class="dashboard-hero-copy">
-<p class="eyebrow">YOUR TECHNOVA WORKSPACE</p>
+<div>
+<div class="dashboard-kicker">YOUR TECHNOVA COMMAND CENTRE</div>
 <h1 id="dashboardTitle">Welcome back, <span id="accountName">member</span>.</h1>
-<p class="lead">Your personal space for everything happening across TechNova. Pick up where you left off, keep track of events and jump into your favourite tools.</p><div class="dashboard-date" id="dashboardDate">✦ Your TechNova overview</div>
-<div class="dashboard-identity">
-<div class="dashboard-avatar" id="dashboardAvatar" aria-hidden="true">T</div>
-<div><strong id="accountEmail">Loading your account…</strong><small id="accountStatus">Checking your sign-in status…</small></div>
-</div>
-<div class="dashboard-actions">
-<a class="btn primary" href="events.html">Explore events →</a>
-<a class="btn" href="settings.html">Account settings</a>
-<a class="btn dashboard-hidden" id="adminLink" href="admin.html">🛡 Admin dashboard</a>
+<p>Your space, your shortcuts, your TechNova. Pick up where you left off, explore what's new and keep everything you use close at hand.</p>
+<div class="dashboard-date" id="dashboardDate">✦ Your personal overview</div>
+<div class="dashboard-userline"><div class="dashboard-avatar" id="dashboardAvatar" aria-hidden="true">T</div><div><strong id="accountEmail">Loading your account…</strong><small id="accountStatus">Checking sign-in status…</small></div></div>
+<div class="dashboard-hero-foot">
+<a class="dashboard-button primary" href="events.html">Explore events <span aria-hidden="true">→</span></a>
+<a class="dashboard-button" href="ai-assistant.html">Open AI Assistant <span aria-hidden="true">✧</span></a>
+<a class="dashboard-button dashboard-hidden" id="adminLink" href="admin.html">🛡 Admin dashboard</a>
 </div>
 </div>
-<div class="dashboard-hero-art" aria-hidden="true">✦</div>
+<div class="dashboard-hero-art" aria-hidden="true"><div class="dashboard-orbit"><span>✦</span></div></div>
 </section>
-
-<section class="dashboard-section" aria-labelledby="overviewTitle">
-<div class="dashboard-section-head"><div><p class="eyebrow">AT A GLANCE</p><h2 id="overviewTitle">Your overview</h2></div></div>
+<div class="dashboard-grid">
+<div class="dashboard-main-column">
+<section class="dashboard-panel" aria-labelledby="overviewTitle" data-widget-section="overview">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">AT A GLANCE</div><h2 id="overviewTitle">Your overview</h2><p>A live snapshot of your TechNova activity.</p></div></div>
 <div class="dashboard-stats">
-<article class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">🎟️</div><div><span class="dashboard-stat-label">Event registrations</span><strong id="dashboardRegistrationCount">—</strong><small>Events you've signed up for</small></div></article>
-<article class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">☆</div><div><span class="dashboard-stat-label">Saved events</span><strong id="dashboardSavedCount">—</strong><small>Events you have bookmarked</small></div></article>
-<article class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">⏳</div><div><span class="dashboard-stat-label">Upcoming events</span><strong id="dashboardUpcomingCount">—</strong><small>Your next registered events</small></div></article>
+<div class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">🎟️</div><div><strong id="dashboardRegistrationCount">—</strong><small>Event registrations</small></div></div>
+<div class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">☆</div><div><strong id="dashboardSavedCount">—</strong><small>Saved events</small></div></div>
+<div class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">⏳</div><div><strong id="dashboardUpcomingCount">—</strong><small>Upcoming events</small></div></div>
 </div>
 <p id="dashboardStatus" class="dashboard-status" role="status" aria-live="polite">Loading your dashboard…</p>
 </section>
-
-<section class="dashboard-section" aria-labelledby="shortcutsTitle">
-<div class="dashboard-section-head"><div><p class="eyebrow">JUMP BACK IN</p><h2 id="shortcutsTitle">Quick access</h2><p>Go straight to the parts of TechNova you use most.</p></div></div>
-<div class="dashboard-links">
-<a class="dashboard-link" href="ai-assistant.html"><span class="dashboard-link-icon" aria-hidden="true">✧</span><span><strong>AI Assistant</strong><small>Explore the assistant and its browser-based tools.</small></span></a>
-<a class="dashboard-link" href="events.html"><span class="dashboard-link-icon" aria-hidden="true">📅</span><span><strong>Events</strong><small>Discover events and manage registrations.</small></span></a>
-<a class="dashboard-link" href="saved-events.html"><span class="dashboard-link-icon" aria-hidden="true">☆</span><span><strong>Saved events</strong><small>Return to events you've bookmarked.</small></span></a>
-<a class="dashboard-link" href="learning.html"><span class="dashboard-link-icon" aria-hidden="true">🎓</span><span><strong>Learning</strong><small>Continue exploring technology learning paths.</small></span></a>
-<a class="dashboard-link" href="resources.html"><span class="dashboard-link-icon" aria-hidden="true">📚</span><span><strong>Resources</strong><small>Find guides, references and useful material.</small></span></a>
-<a class="dashboard-link" href="storage-manager.html"><span class="dashboard-link-icon" aria-hidden="true">☁️</span><span><strong>Private cloud</strong><small>Open your TechNova file workspace.</small></span></a><a class="dashboard-link" href="community.html"><span class="dashboard-link-icon" aria-hidden="true">◎</span><span><strong>Community</strong><small>Explore TechNova topics and shared interests.</small></span></a><a class="dashboard-link" href="labs.html"><span class="dashboard-link-icon" aria-hidden="true">⌘</span><span><strong>Labs & experiments</strong><small>Explore practical technology experiments and projects.</small></span></a>
+<section class="dashboard-panel" aria-labelledby="appsTitle" data-widget-section="apps">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">THE WHOLE PLATFORM</div><h2 id="appsTitle">Explore TechNova</h2><p>Search the site, find a tool or jump into another area. Your existing pages are all still here.</p></div><a class="dashboard-section-link" href="sitemap.html">Full site map →</a></div>
+<div class="dashboard-widget-controls" id="widgetControls" aria-label="Dashboard widget visibility">
+<label><input type="checkbox" data-widget-toggle="overview" checked> Overview</label>
+<label><input type="checkbox" data-widget-toggle="apps" checked> Explore TechNova</label>
+<label><input type="checkbox" data-widget-toggle="events" checked> Events</label>
+<label><input type="checkbox" data-widget-toggle="notes" checked> Quick note</label>
+<label><input type="checkbox" data-widget-toggle="profile" checked> Profile</label>
 </div>
+<label class="dashboard-search" for="appSearch"><span aria-hidden="true">⌕</span><input id="appSearch" type="search" placeholder="Search pages, tools and features…" autocomplete="off"><span id="appSearchCount" aria-live="polite">All</span></label>
+<div class="dashboard-filter-row" role="group" aria-label="Filter TechNova pages">
+<button class="dashboard-filter" type="button" data-filter="all" aria-pressed="true">All areas</button>
+<button class="dashboard-filter" type="button" data-filter="discover" aria-pressed="false">Discover</button>
+<button class="dashboard-filter" type="button" data-filter="community" aria-pressed="false">Community</button>
+<button class="dashboard-filter" type="button" data-filter="learning" aria-pressed="false">Learning & tools</button>
+<button class="dashboard-filter" type="button" data-filter="account" aria-pressed="false">My account</button>
+<button class="dashboard-filter" type="button" data-filter="help" aria-pressed="false">Help & info</button>
+</div>
+<div id="pinnedAppsSection" class="dashboard-app-group"><h3>★ Your pinned shortcuts</h3><div id="pinnedApps" class="dashboard-pinned-list"><p class="dashboard-empty">Pin the pages you use most with the ☆ buttons below.</p></div></div>
+<div id="appDirectory">
+<div class="dashboard-app-group" data-app-group="discover"><h3>Discover & explore</h3><div class="dashboard-app-grid">
+<a class="dashboard-app" href="discover.html" data-app-link data-category="discover" data-title="Discover" data-keywords="explore featured"><span class="dashboard-app-icon">✧</span><span class="dashboard-app-copy"><strong>Discover</strong><small>Find what's happening across TechNova.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Discover" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="technology.html" data-app-link data-category="discover" data-title="Technology" data-keywords="tech topics"><span class="dashboard-app-icon">⌘</span><span class="dashboard-app-copy"><strong>Technology</strong><small>Explore technology topics and ideas.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Technology" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="innovation.html" data-app-link data-category="discover" data-title="Innovation" data-keywords="future ideas"><span class="dashboard-app-icon">◇</span><span class="dashboard-app-copy"><strong>Innovation</strong><small>Discover new thinking and innovation.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Innovation" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="news.html" data-app-link data-category="discover" data-title="News" data-keywords="articles updates"><span class="dashboard-app-icon">◉</span><span class="dashboard-app-copy"><strong>News</strong><small>Read the latest technology stories.</small></span><button class="dashboard-pin" type="button" aria-label="Pin News" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="projects.html" data-app-link data-category="discover" data-title="Projects" data-keywords="showcase builds"><span class="dashboard-app-icon">▣</span><span class="dashboard-app-copy"><strong>Projects</strong><small>Explore projects and creations.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Projects" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="showcase.html" data-app-link data-category="discover" data-title="Showcase" data-keywords="gallery work"><span class="dashboard-app-icon">▧</span><span class="dashboard-app-copy"><strong>Showcase</strong><small>See featured work and highlights.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Showcase" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="gallery.html" data-app-link data-category="discover" data-title="Gallery" data-keywords="images media"><span class="dashboard-app-icon">▤</span><span class="dashboard-app-copy"><strong>Gallery</strong><small>Browse the TechNova gallery.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Gallery" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="partners.html" data-app-link data-category="discover" data-title="Partners" data-keywords="organisations"><span class="dashboard-app-icon">◎</span><span class="dashboard-app-copy"><strong>Partners</strong><small>Meet TechNova partners.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Partners" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="directory.html" data-app-link data-category="discover" data-title="Directory" data-keywords="people community"><span class="dashboard-app-icon">▦</span><span class="dashboard-app-copy"><strong>Directory</strong><small>Browse the TechNova directory.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Directory" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="roadmap.html" data-app-link data-category="discover" data-title="Roadmap" data-keywords="plans future"><span class="dashboard-app-icon">➜</span><span class="dashboard-app-copy"><strong>Roadmap</strong><small>See what's planned for TechNova.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Roadmap" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="updates.html" data-app-link data-category="discover" data-title="Updates" data-keywords="announcements changelog"><span class="dashboard-app-icon">↗</span><span class="dashboard-app-copy"><strong>Updates</strong><small>Catch up on platform updates.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Updates" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="status.html" data-app-link data-category="discover" data-title="Status" data-keywords="service uptime"><span class="dashboard-app-icon">◌</span><span class="dashboard-app-copy"><strong>Service status</strong><small>Check TechNova service information.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Service status" aria-pressed="false">☆</button></a>
+</div></div>
+<div class="dashboard-app-group" data-app-group="community"><h3>Community & events</h3><div class="dashboard-app-grid">
+<a class="dashboard-app" href="events.html" data-app-link data-category="community" data-title="Events" data-keywords="calendar register tickets"><span class="dashboard-app-icon">📅</span><span class="dashboard-app-copy"><strong>Events</strong><small>Find events and manage registrations.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Events" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="calendar.html" data-app-link data-category="community" data-title="Calendar" data-keywords="dates schedule"><span class="dashboard-app-icon">▦</span><span class="dashboard-app-copy"><strong>Calendar</strong><small>View the TechNova calendar.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Calendar" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="community.html" data-app-link data-category="community" data-title="Community" data-keywords="connect discussions"><span class="dashboard-app-icon">◎</span><span class="dashboard-app-copy"><strong>Community</strong><small>Explore community spaces and topics.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Community" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="challenges.html" data-app-link data-category="community" data-title="Challenges" data-keywords="activities"><span class="dashboard-app-icon">⚑</span><span class="dashboard-app-copy"><strong>Challenges</strong><small>Explore TechNova challenges.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Challenges" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="achievements.html" data-app-link data-category="community" data-title="Achievements" data-keywords="badges milestones"><span class="dashboard-app-icon">🏆</span><span class="dashboard-app-copy"><strong>Achievements</strong><small>View your available achievements.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Achievements" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="leaderboard.html" data-app-link data-category="community" data-title="Leaderboard" data-keywords="rankings"><span class="dashboard-app-icon">↟</span><span class="dashboard-app-copy"><strong>Leaderboard</strong><small>See community rankings.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Leaderboard" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="saved-events.html" data-app-link data-category="community" data-title="Saved events" data-keywords="bookmarks favourites"><span class="dashboard-app-icon">☆</span><span class="dashboard-app-copy"><strong>Saved events</strong><small>Return to events you've bookmarked.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Saved events" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="notifications-center.html" data-app-link data-category="community" data-title="Notifications" data-keywords="alerts inbox"><span class="dashboard-app-icon">♢</span><span class="dashboard-app-copy"><strong>Notifications</strong><small>Open your notification centre.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Notifications" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="ideas.html" data-app-link data-category="community" data-title="Ideas" data-keywords="suggestions feedback"><span class="dashboard-app-icon">✎</span><span class="dashboard-app-copy"><strong>Ideas</strong><small>Explore and share ideas.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Ideas" aria-pressed="false">☆</button></a>
+</div></div>
+<div class="dashboard-app-group" data-app-group="learning"><h3>Learning, AI & tools</h3><div class="dashboard-app-grid">
+<a class="dashboard-app" href="ai-assistant.html" data-app-link data-category="learning" data-title="AI Assistant" data-keywords="writing quiz study assistant"><span class="dashboard-app-icon">✧</span><span class="dashboard-app-copy"><strong>AI Assistant</strong><small>Open the assistant and its study tools.</small></span><button class="dashboard-pin" type="button" aria-label="Pin AI Assistant" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="learning.html" data-app-link data-category="learning" data-title="Learning" data-keywords="courses study"><span class="dashboard-app-icon">🎓</span><span class="dashboard-app-copy"><strong>Learning</strong><small>Explore technology learning resources.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Learning" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="resources.html" data-app-link data-category="learning" data-title="Resources" data-keywords="guides references"><span class="dashboard-app-icon">📚</span><span class="dashboard-app-copy"><strong>Resources</strong><small>Find guides and useful material.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Resources" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="labs.html" data-app-link data-category="learning" data-title="Labs" data-keywords="experiments testing"><span class="dashboard-app-icon">⌘</span><span class="dashboard-app-copy"><strong>Labs</strong><small>Explore practical experiments.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Labs" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="tools.html" data-app-link data-category="learning" data-title="Developer tools" data-keywords="utilities converters code"><span class="dashboard-app-icon">⌘</span><span class="dashboard-app-copy"><strong>Tools directory</strong><small>Browse TechNova's browser tools.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Tools directory" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="tool-html-playground.html" data-app-link data-category="learning" data-title="HTML playground" data-keywords="code editor preview"><span class="dashboard-app-icon">〈/〉</span><span class="dashboard-app-copy"><strong>HTML Playground</strong><small>Experiment with HTML in the browser.</small></span><button class="dashboard-pin" type="button" aria-label="Pin HTML Playground" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="tool-json-formatter.html" data-app-link data-category="learning" data-title="JSON formatter" data-keywords="developer data"><span class="dashboard-app-icon">{ }</span><span class="dashboard-app-copy"><strong>JSON Formatter</strong><small>Format and inspect JSON data.</small></span><button class="dashboard-pin" type="button" aria-label="Pin JSON Formatter" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="tool-unit-converter.html" data-app-link data-category="learning" data-title="Unit converter" data-keywords="measurements calculator"><span class="dashboard-app-icon">⇄</span><span class="dashboard-app-copy"><strong>Unit Converter</strong><small>Convert common measurements.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Unit Converter" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="tool-qr-generator.html" data-app-link data-category="learning" data-title="QR generator" data-keywords="qr code"><span class="dashboard-app-icon">▦</span><span class="dashboard-app-copy"><strong>QR Generator</strong><small>Create QR codes.</small></span><button class="dashboard-pin" type="button" aria-label="Pin QR Generator" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="glossary.html" data-app-link data-category="learning" data-title="Glossary" data-keywords="definitions terms"><span class="dashboard-app-icon">Aa</span><span class="dashboard-app-copy"><strong>Glossary</strong><small>Look up technology terms.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Glossary" aria-pressed="false">☆</button></a>
+</div></div>
+<div class="dashboard-app-group" data-app-group="account"><h3>Your account & workspace</h3><div class="dashboard-app-grid">
+<a class="dashboard-app" href="account.html" data-app-link data-category="account" data-title="My account" data-keywords="profile membership"><span class="dashboard-app-icon">◉</span><span class="dashboard-app-copy"><strong>My account</strong><small>Manage your TechNova account.</small></span><button class="dashboard-pin" type="button" aria-label="Pin My account" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="settings.html" data-app-link data-category="account" data-title="Settings" data-keywords="preferences"><span class="dashboard-app-icon">⚙</span><span class="dashboard-app-copy"><strong>Settings</strong><small>Adjust your account preferences.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Settings" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="storage-manager.html" data-app-link data-category="account" data-title="Private cloud" data-keywords="files storage upload"><span class="dashboard-app-icon">☁</span><span class="dashboard-app-copy"><strong>Private cloud</strong><small>Manage your TechNova files.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Private cloud" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="google-drive.html" data-app-link data-category="account" data-title="Google Drive" data-keywords="cloud storage"><span class="dashboard-app-icon">▣</span><span class="dashboard-app-copy"><strong>Google Drive</strong><small>Open your connected Drive workspace.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Google Drive" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="developer-apps.html" data-app-link data-category="account" data-title="Developer console" data-keywords="oauth applications"><span class="dashboard-app-icon">⌘</span><span class="dashboard-app-copy"><strong>Developer console</strong><small>Manage your developer applications.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Developer console" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="authorized-apps.html" data-app-link data-category="account" data-title="Authorised apps" data-keywords="security oauth permissions"><span class="dashboard-app-icon">🔐</span><span class="dashboard-app-copy"><strong>Authorised apps</strong><small>Review connected third-party apps.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Authorised apps" aria-pressed="false">☆</button></a>
+</div></div>
+<div class="dashboard-app-group" data-app-group="help"><h3>Help, information & more</h3><div class="dashboard-app-grid">
+<a class="dashboard-app" href="about.html" data-app-link data-category="help" data-title="About TechNova" data-keywords="company mission"><span class="dashboard-app-icon">✦</span><span class="dashboard-app-copy"><strong>About TechNova</strong><small>Learn about the platform.</small></span><button class="dashboard-pin" type="button" aria-label="Pin About TechNova" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="faq.html" data-app-link data-category="help" data-title="FAQs" data-keywords="questions answers"><span class="dashboard-app-icon">?</span><span class="dashboard-app-copy"><strong>FAQs</strong><small>Find answers to common questions.</small></span><button class="dashboard-pin" type="button" aria-label="Pin FAQs" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="support.html" data-app-link data-category="help" data-title="Support" data-keywords="help assistance"><span class="dashboard-app-icon">♡</span><span class="dashboard-app-copy"><strong>Support</strong><small>Get help with TechNova.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Support" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="contact.html" data-app-link data-category="help" data-title="Contact" data-keywords="message email"><span class="dashboard-app-icon">✉</span><span class="dashboard-app-copy"><strong>Contact</strong><small>Contact the TechNova team.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Contact" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="accessibility.html" data-app-link data-category="help" data-title="Accessibility" data-keywords="accessibility settings"><span class="dashboard-app-icon">◎</span><span class="dashboard-app-copy"><strong>Accessibility</strong><small>Explore accessibility information.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Accessibility" aria-pressed="false">☆</button></a>
+<a class="dashboard-app" href="sitemap.html" data-app-link data-category="help" data-title="Site map" data-keywords="all pages navigation"><span class="dashboard-app-icon">☷</span><span class="dashboard-app-copy"><strong>Site map</strong><small>Browse the full site directory.</small></span><button class="dashboard-pin" type="button" aria-label="Pin Site map" aria-pressed="false">☆</button></a>
+</div></div>
+</div>
+<div id="noAppResults" class="dashboard-no-results" role="status">No pages match that search. Try another name or category.</div>
+<p class="dashboard-directory-note">This is a shortcut directory, not a replacement for the website. Your normal TechNova navigation and every existing page remain available.</p>
 </section>
-
-<section class="dashboard-section dashboard-columns" aria-label="Your activity and profile">
-<article class="dashboard-panel" aria-labelledby="registrationsTitle">
-<div class="dashboard-section-head"><div><p class="eyebrow">YOUR ACTIVITY</p><h3 id="registrationsTitle">Registered events</h3><p class="dashboard-panel-intro">Your upcoming and previous event registrations.</p></div><a class="btn" href="events.html">Find events</a></div>
-<div id="myEvents" class="dashboard-event-list"><p class="dashboard-empty">Loading your registered events…</p></div>
-</article>
-<article class="dashboard-panel" aria-labelledby="savedTitle">
-<div class="dashboard-section-head"><div><p class="eyebrow">BOOKMARKS</p><h3 id="savedTitle">Saved events</h3><p class="dashboard-panel-intro">A quick look at your saved events.</p></div><a class="btn" href="saved-events.html">View all</a></div>
-<div id="dashboardSavedEvents" class="dashboard-event-list"><p class="dashboard-empty">Loading your saved events…</p></div>
-</article>
+<section class="dashboard-panel" aria-labelledby="eventsTitle" data-widget-section="events">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">YOUR SCHEDULE</div><h2 id="eventsTitle">Your events</h2><p>Upcoming registrations and saved events in one place.</p></div><a class="dashboard-section-link" href="events.html">Browse events →</a></div>
+<div class="dashboard-event-list" id="myEvents"><p class="dashboard-empty">Loading your registered events…</p></div>
+<div class="dashboard-footer-actions"><a class="dashboard-button" href="saved-events.html">Saved events</a><a class="dashboard-button" href="calendar.html">Open calendar</a><a class="dashboard-button" href="tickets.html">My tickets</a></div>
 </section>
-
-<section class="dashboard-section dashboard-panel" aria-labelledby="activityTitle"><div class="dashboard-section-head"><div><p class="eyebrow">RECENT ACTIVITY</p><h3 id="activityTitle">Your activity</h3><p class="dashboard-panel-intro">A timeline of your latest event registrations.</p></div></div><div id="dashboardActivity" class="dashboard-activity-list"><p class="dashboard-empty">Loading your activity…</p></div></section>
-
-<section class="dashboard-section dashboard-panel" aria-labelledby="profileTitle">
-<div class="dashboard-section-head"><div><p class="eyebrow">YOUR ACCOUNT</p><h3 id="profileTitle">Profile snapshot</h3><p class="dashboard-panel-intro">A quick summary of your TechNova membership.</p></div><a class="btn" href="account.html">Full account →</a></div>
+<section class="dashboard-panel" aria-labelledby="activityTitle" data-widget-section="activity">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">RECENTLY</div><h2 id="activityTitle">Recent activity</h2><p>Recent event registrations and pages you've opened on this browser.</p></div></div>
+<div class="dashboard-activity-list" id="dashboardActivity"><p class="dashboard-empty">Your activity will appear here.</p></div>
+</section>
+</div>
+<aside class="dashboard-side-column">
+<section class="dashboard-panel" aria-labelledby="pinnedTitle">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">YOUR FAVOURITES</div><h3 id="pinnedTitle">Pinned shortcuts</h3><p>Keep your most-used pages close by.</p></div></div>
+<div id="pinnedAppsAside" class="dashboard-pinned-list"><p class="dashboard-empty">Pin a page from Explore TechNova.</p></div>
+</section>
+<section class="dashboard-panel" aria-labelledby="noteTitle" data-widget-section="notes">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">QUICK CAPTURE</div><h3 id="noteTitle">Your quick note</h3><p>A private scratchpad saved only in this browser.</p></div></div>
+<textarea id="dashboardNote" class="dashboard-note" maxlength="5000" placeholder="Jot down an idea, reminder or something to come back to…" aria-label="Your private dashboard note"></textarea>
+<div class="dashboard-note-meta"><span id="noteSaveStatus" role="status">Saved on this device</span><span id="noteCount">0 / 5000</span></div>
+</section>
+<section class="dashboard-panel" aria-labelledby="profileTitle" data-widget-section="profile">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">YOUR ACCOUNT</div><h3 id="profileTitle">Profile snapshot</h3><p>Your TechNova membership at a glance.</p></div><a class="dashboard-section-link" href="account.html">View →</a></div>
 <div class="dashboard-profile-row"><span>Display name</span><strong id="dashboardProfileName">Loading…</strong></div>
-<div class="dashboard-profile-row"><span>Bio</span><strong id="accountBio">No bio added yet.</strong></div>
 <div class="dashboard-profile-row"><span>Membership</span><strong id="dashboardMembership">Checking…</strong></div>
+<div class="dashboard-profile-row"><span>Account</span><strong id="dashboardAccountState">Signed in</strong></div>
 </section>
+<section class="dashboard-panel" aria-labelledby="recentTitle">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">PICK UP WHERE YOU LEFT OFF</div><h3 id="recentTitle">Recently opened</h3><p>Pages you've visited from this dashboard on this device.</p></div></div>
+<div id="recentApps" class="dashboard-pinned-list"><p class="dashboard-empty">Your recent pages will appear here.</p></div>
+</section>
+</aside>
+</div>
 <div id="accountMessage" class="dashboard-status error" role="alert"></div>
 </main>
 <footer>© 2026 TechNova · Technology for what's next.</footer>
@@ -157,7 +266,7 @@
 <script src="../js/supabase-config.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/saved-events.js"></script>
-<script src="../js/dashboard.js?v=2"></script>
+<script src="../js/dashboard.js?v=3"></script>
 <script src="../js/script.js"></script>
 </body>
 </html>
