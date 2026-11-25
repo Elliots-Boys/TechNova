@@ -289,6 +289,9 @@ This table records known PR history. Where a final state has not been verified, 
 | #31 | Remove experimental local model | Last recorded as open draft; current state must be checked |
 | #32 | Advanced assistant controls | Confirmed merged by user |
 | #33 | AI Writing Studio | Merged into `main` on 25 November 2026 (verified via GitHub PR state) |
+| #34 | Central TechNova master document | Merged into `main` on 25 November 2026 (verified before dashboard work) |
+| #35 | Browser-based Quiz Generator | Merged into `main` on 25 November 2026; deterministic note-based questions, scoring and explanations; no AI API or backend changes |
+| #36 | Personal dashboard refresh | Draft PR created; responsive member workspace, read-only user-scoped totals and saved-event previews; master document updated in the same PR |
 
 ### 10.1 PR #32 — Advanced assistant controls
 
@@ -391,7 +394,7 @@ These instructions reflect the user's explicit preferences.
 - [ ] Wait for the user to review and merge.
 - [ ] Update this master document in the same PR with the feature scope, files, decisions, testing and PR link/status; update the record again when merge/deployment is verified.
 
-## 12. SEO and public discovery
+## 13. SEO and public discovery
 
 Historical work included:
 - `robots.txt`
@@ -406,7 +409,7 @@ The sitemap lists the site's public pages.
 
 An earlier Search Console check had not yet returned performance data. Re-check Search Console for current indexing, clicks, impressions, coverage and sitemap status before drawing conclusions.
 
-## 13. Known gaps and items requiring verification
+## 14. Known gaps and items requiring verification
 
 This section intentionally records uncertainty so historical notes are not mistaken for current truth.
 
@@ -426,16 +429,17 @@ This section intentionally records uncertainty so historical notes are not mista
 | Search Console | Setup/checks were discussed | Current verification and performance data |
 | Browser storage | AI chat/document work used local browser processing | Current retention, clearing and export behaviour |
 
-## 14. Change log for this master document
+## 15. Change log for this master document
 
 | Date | Update |
 |---|---|
 | 25 Nov 2026 | Consolidated project identity, infrastructure, page map, historical architecture decisions, AI roadmap, PR history, development rules and verification gaps from available project context and repository inspection. |
+| 25 Nov 2026 | Verified PR #33 (AI Writing Studio), PR #34 (master document) and PR #35 (Quiz Generator) merged into `main`; documented the dashboard refresh decision and PR #36 personal-dashboard scope. |
 | 25 Nov 2026 | Verified PR #33 (AI Writing Studio), PR #34 (master document) and PR #35 (Quiz Generator) are merged into `main`; PR #35 merge verified via GitHub on 25 Nov. Recorded the user's decision to refresh both dashboards in separate PRs, personal dashboard first and admin dashboard later. |
 
 ---
 
-## 15. Instructions for future maintainers and AI assistants
+## 16. Instructions for future maintainers and AI assistants
 
 Before making a TechNova change:
 1. Read this document.
