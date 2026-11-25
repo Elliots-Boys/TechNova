@@ -11,6 +11,7 @@ const safeText=(v,max=200)=>String(v||'').trim().slice(0,max);
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const today=()=>iso(new Date());
 const apps=[
+  {id:'browser',name:'TechNova Browser',icon:'🌐',desc:'Browse websites in your desktop',group:'Internet'},
  {id:'code',name:'Developer Studio',icon:'⌘',desc:'Build multi-file websites',group:'Create'},
  {id:'projects',name:'Project Manager',icon:'▦',desc:'Projects, tasks and milestones',group:'Work'},
  {id:'calendar',name:'Calendar & Planner',icon:'▣',desc:'Events and deadlines',group:'Work'},
