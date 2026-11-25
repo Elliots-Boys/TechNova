@@ -2,52 +2,51 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const escapeText = value => String(value || '');
   const fixes = [
-    [/\\bteh\\b/gi, 'the'], [/\\brecieve\\b/gi, 'receive'],
-    [/\\bseperate\\b/gi, 'separate'], [/\\bdefinately\\b/gi, 'definitely'],
-    [/\\boccured\\b/gi, 'occurred'], [/\\buntill\\b/gi, 'until'],
-    [/\\bwich\\b/gi, 'which'], [/\\bthier\\b/gi, 'their'],
-    [/\\bdont\\b/gi, "don't"], [/\\bcant\\b/gi, "can't"],
-    [/\\bwont\\b/gi, "won't"], [/\\bdoesnt\\b/gi, "doesn't"],
-    [/\\bdidnt\\b/gi, "didn't"], [/\\bisnt\\b/gi, "isn't"],
-    [/\\bim\\b/g, "I'm"], [/\\b i \\b/g, ' I ']
+    [/\bteh\b/gi, 'the'], [/\brecieve\b/gi, 'receive'],
+    [/\bseperate\b/gi, 'separate'], [/\bdefinately\b/gi, 'definitely'],
+    [/\boccured\b/gi, 'occurred'], [/\buntill\b/gi, 'until'],
+    [/\bwich\b/gi, 'which'], [/\bthier\b/gi, 'their'],
+    [/\bdont\b/gi, "don't"], [/\bcant\b/gi, "can't"],
+    [/\bwont\b/gi, "won't"], [/\bdoesnt\b/gi, "doesn't"],
+    [/\bdidnt\b/gi, "didn't"], [/\bisnt\b/gi, "isn't"],
+    [/\bim\b/g, "I'm"], [/\b i \b/g, ' I ']
   ];
   function proofread(text) {
-    let out = text.replace(/\\r/g, '').replace(/[ \\t]+/g, ' ').replace(/ +([,.!?;:])/g, '$1').replace(/([,.!?])(?=\\S)/g, '$1 ');
+    let out = text.replace(/\r/g, '').replace(/[ \t]+/g, ' ').replace(/ +([,.!?;:])/g, '$1').replace(/([,.!?])(?=\S)/g, '$1 ');
     fixes.forEach(([pattern, replacement]) => { out = out.replace(pattern, replacement); });
-    out = out.replace(/\\b([a-z]+)\\s+\\1\\b/gi, '$1');
-    out = out.replace(/(^|[.!?]\\s+)([a-z])/g, (_, lead, letter) => lead + letter.toUpperCase());
-    out = out.replace(/\\bi\\b/g, 'I').replace(/\\s+([.!?])/g, '$1');
+    out = out.replace(/\b([a-z]+)\s+\1\b/gi, '$1');
+    out = out.replace(/(^|[.!?]\s+)([a-z])/g, (_, lead, letter) => lead + letter.toUpperCase());
+    out = out.replace(/\bi\b/g, 'I').replace(/\s+([.!?])/g, '$1');
     if (out && !/[.!?]$/.test(out.trim())) out = out.trim() + '.';
     return out;
   }
   const replacements = {
-    formal: [[/\\b lots of \\b/gi, 'many '], [/\\bkids\\b/gi, 'children'], [/\\bget\\b/gi, 'obtain'], [/\\b a bit \\b/gi, 'some '], [/\\bcan't\\b/gi, 'cannot'], [/\\bdon't\\b/gi, 'do not'], [/\\bwon't\\b/gi, 'will not'], [/\\bthing\\b/gi, 'matter']],
-    friendly: [[/\\btherefore\\b/gi, 'so'], [/\\bhowever\\b/gi, 'but'], [/\\bcommence\\b/gi, 'start'], [/\\bassistance\\b/gi, 'help']],
-    simple: [[/\\butilise\\b/gi, 'use'], [/\\butilize\\b/gi, 'use'], [/\\bdemonstrate\\b/gi, 'show'], [/\\bapproximately\\b/gi, 'about'], [/\\badditional\\b/gi, 'more'], [/\\bcommence\\b/gi, 'start'], [/\\bconsequently\\b/gi, 'so'], [/\\bpurchase\\b/gi, 'buy'], [/\\b require \\b/gi, ' need '], [/\\bassist\\b/gi, 'help']],
-    concise: [[/\\b in order to \\b/gi, ' to '], [/\\b due to the fact that \\b/gi, ' because '], [/\\b at this point in time \\b/gi, ' now '], [/\\b it is important to note that \\b/gi, ''], [/\\b very \\b/gi, ' '], [/\\b really \\b/gi, ' '], [/\\b basically \\b/gi, ' '], [/\\b actually \\b/gi, ' ']]
+    formal: [[/\b lots of \b/gi, 'many '], [/\bkids\b/gi, 'children'], [/\bget\b/gi, 'obtain'], [/\b a bit \b/gi, 'some '], [/\bcan't\b/gi, 'cannot'], [/\bdon't\b/gi, 'do not'], [/\bwon't\b/gi, 'will not'], [/\bthing\b/gi, 'matter']],
+    friendly: [[/\btherefore\b/gi, 'so'], [/\bhowever\b/gi, 'but'], [/\bcommence\b/gi, 'start'], [/\bassistance\b/gi, 'help']],
+    simple: [[/\butilise\b/gi, 'use'], [/\butilize\b/gi, 'use'], [/\bdemonstrate\b/gi, 'show'], [/\bapproximately\b/gi, 'about'], [/\badditional\b/gi, 'more'], [/\bcommence\b/gi, 'start'], [/\bconsequently\b/gi, 'so'], [/\bpurchase\b/gi, 'buy'], [/\b require \b/gi, ' need '], [/\bassist\b/gi, 'help']],
+    concise: [[/\b in order to \b/gi, ' to '], [/\b due to the fact that \b/gi, ' because '], [/\b at this point in time \b/gi, ' now '], [/\b it is important to note that \b/gi, ''], [/\b very \b/gi, ' '], [/\b really \b/gi, ' '], [/\b basically \b/gi, ' '], [/\b actually \b/gi, ' ']]
   };
   function transform(text, action) {
     if (action === 'proofread') return proofread(text);
     if (action === 'formal' || action === 'friendly' || action === 'simple' || action === 'concise') {
       let out = text;
       replacements[action].forEach(([pattern, value]) => { out = out.replace(pattern, value); });
-      if (action === 'formal') out = out.replace(/\\bI'm\\b/g, 'I am').replace(/\\bI've\\b/g, 'I have');
+      if (action === 'formal') out = out.replace(/\bI'm\b/g, 'I am').replace(/\bI've\b/g, 'I have');
       if (action === 'friendly' && out.trim()) out = out.trim();
-      return out.replace(/\\s{2,}/g, ' ').trim();
+      return out.replace(/\s{2,}/g, ' ').trim();
     }
     if (action === 'paraphrase') {
-      const swaps = [[/\\bimportant\\b/gi, 'significant'], [/\\bhelp\\b/gi, 'support'], [/\\buse\\b/gi, 'make use of'], [/\\bshow\\b/gi, 'demonstrate'], [/\\bstart\\b/gi, 'begin'], [/\\bend\\b/gi, 'finish'], [/\\bbecause\\b/gi, 'since'], [/\\babout\\b/gi, 'regarding']];
+      const swaps = [[/\bimportant\b/gi, 'significant'], [/\bhelp\b/gi, 'support'], [/\buse\b/gi, 'make use of'], [/\bshow\b/gi, 'demonstrate'], [/\bstart\b/gi, 'begin'], [/\bend\b/gi, 'finish'], [/\bbecause\b/gi, 'since'], [/\babout\b/gi, 'regarding']];
       let out = text;
       swaps.forEach(([pattern, value]) => { out = out.replace(pattern, value); });
       return out;
     }
     if (action === 'expand') {
-      const points = text.split(/(?<=[.!?])\\s+/).filter(Boolean);
-      return text.trim() + '\\n\\nIdeas to develop this draft (add only details you can verify):\\n' +
+      const points = text.split(/(?<=[.!?])\s+/).filter(Boolean);
+      return text.trim() + '\n\nIdeas to develop this draft (add only details you can verify):\n' +
         points.slice(0, 5).map((point, i) => (i + 1) + '. Explain why this point matters: ' + point.slice(0, 150) +
-          '\\n   Add an example, evidence or explanation that supports it.').join('\\n');
+          '\n   Add an example, evidence or explanation that supports it.').join('\n');
     }
     return text;
   }
