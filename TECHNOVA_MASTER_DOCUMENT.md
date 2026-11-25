@@ -305,7 +305,9 @@ This table records known PR history. Where a final state has not been verified, 
 | #46 | Phase 2 personal workspace expansion | Merged into `main` on 25 November 2026; recurring tasks, analytics, agenda, notes organisation and multi-file developer studio |
 | #47 | TechNova Desktop environment | Merged into `main` on 25 November 2026; authenticated desktop-style workspace and built-in apps |
 | #48 | TechNova Desktop boot-screen fix | Merged into `main` on 25 November 2026; corrected hidden boot overlay and refreshed desktop asset cache |
-| #49 | Advanced TechNova Browser inside Desktop | Draft PR; multi-tab browser-based web viewer, local bookmarks/history, search engines and iframe external fallback; not merged or deployed |
+| #49 | Advanced TechNova Browser inside Desktop | Merged into `main` on 25 November 2026; later retired from Desktop by PR #50 |
+| #50 | TechNova OS expansion | Merged into `main` on 25 November 2026; twelve requested application areas and optional sync through existing private Storage bucket; no schema/settings changes |
+| #52 | TechNova Desktop expansion follow-up fixes | Open draft PR; fixes expansion styling, search, Whiteboard export, spreadsheet results and local storage handling; adds optional Gmail OAuth; not merged or deployed |
 
 ### 10.1 PR #32 — Advanced assistant controls
 
@@ -484,7 +486,8 @@ This section intentionally records uncertainty so historical notes are not mista
 | 25 Nov 2026 | Verified PRs #40–#43 merged into `main`; PR #43 adds a browser-local focus planner to the personal dashboard. |
 | 25 Nov 2026 | PR #44 merged with calendar, habit, notes, insights, project, developer, study and community workspace widgets; no Cloudflare deployment. |
 | 25 Nov 2026 | PRs #45–#48 verified merged; TechNova OS, Phase 2 workspace, Desktop environment and Desktop boot-screen fix are recorded as merged. |
-| 25 Nov 2026 | PR #49 adds the advanced browser-based TechNova Browser app to Desktop; browser-local tabs, bookmarks and history; iframe restrictions and privacy limitations documented; PR remains draft/unmerged and no deployment is performed. |
+| 25 Nov 2026 | PR #49 merged with the advanced browser-based TechNova Browser; its iframe limitations led to its later removal from Desktop in PR #50. |
+| 25 Nov 2026 | PR #50 merged with the unified TechNova Desktop application suite; follow-up fixes and Gmail OAuth integration are tracked separately in PR #52. |
 
 ---
 
@@ -787,7 +790,7 @@ Pull request: [#49 — Add the advanced TechNova Browser to Desktop](https://git
 
 ## 28. TechNova OS Expansion — unified desktop application suite
 
-**Status:** Proposed implementation in PR #50; open draft, unmerged and not deployed. The Browser application is intentionally removed from the Desktop interface by this PR because the user decided to scrap it in favour of a wider OS expansion. Historical PR #49 remains in GitHub history and its merge is not reversed.
+**Status:** Merged into `main` by PR #50 on 25 November 2026; no Cloudflare deployment was performed.
 
 ### Scope
 
@@ -803,7 +806,7 @@ One integrated PR adds the following built-in Desktop applications and system fe
 8. **Control Centre:** appearance settings, reduced motion, local backup/restore, clear expansion data and optional cloud sync controls.
 9. **Media Centre:** local audio/video library stored in IndexedDB and playback through browser-supported media elements.
 10. **Website Designer:** editable page sections, sandboxed preview and standalone HTML download; no hosting/deployment.
-11. **Mail Centre:** local draft manager and mailto handoff only. No mailbox OAuth, inbox access or server-side email sending is included.
+11. **Mail Centre:** local draft manager plus optional Gmail inbox reading and plain-text sending through Google Identity Services. A Google OAuth Web Client ID is entered by the user and stored locally; access tokens remain in memory and are not synced to Supabase. No client secret is embedded. Gmail attachments are not supported.
 12. **Storage Manager 2.0:** local IndexedDB file library plus list/upload/download/delete in the existing private `user-files` Supabase Storage bucket, using the existing user-folder ownership policies.
 
 ### Shared desktop architecture
@@ -830,7 +833,7 @@ One integrated PR adds the following built-in Desktop applications and system fe
 - API Studio can be blocked by browser CORS and should not store secrets in collections.
 - Media playback depends on browser codec support and does not bypass DRM.
 - Website Designer creates static files; it does not publish websites.
-- Gmail access requires the owner to enable the Gmail API, configure the Google OAuth consent screen and add the required Gmail scopes and authorised JavaScript origin. The app cannot connect until a valid Web Client ID and those Google Cloud settings are supplied. Gmail API access may require Google verification for public production use; testing can be limited to configured test users. Tokens expire and the user must reconnect.
+- Mail Centre supports local drafts and optional Gmail inbox reading/plain-text sending through Google Identity Services. Google Cloud OAuth configuration is required; attachments are not supported.
 - Supabase cloud sync uses the existing private Storage bucket and must be tested with two separate signed-in accounts to confirm isolation. No live database schema or settings are changed by this PR.
 - Follow-up fixes add the missing expansion-app styling, correct desktop search launcher behaviour, include sticky notes in Whiteboard PNG exports, expose spreadsheet formula results, harden IndexedDB transaction completion, and persist virtual-desktop assignments in cloud sync/backup.
 - Manual signed-in browser, responsive, accessibility, Gmail OAuth, two-account Storage isolation and cloud sync tests remain required; see `docs/technova-os-expansion-pr50-qa.md`.
@@ -847,4 +850,38 @@ One integrated PR adds the following built-in Desktop applications and system fe
 
 ### Pull request
 
-[PR #50 — Expand TechNova Desktop into a full operating environment](https://github.com/Elliots-Boys/TechNova/pull/50). Status: open draft, not merged, not deployed. Cloud sync uses the existing private Storage bucket; no Supabase schema or settings changes are included. The Mail Centre includes an optional Gmail API connection that requires owner-provided Google Cloud OAuth configuration; see `docs/technova-gmail-oauth-setup.md`. No Google client secret is committed. No Cloudflare deployment is performed.
+[PR #50 — Expand TechNova Desktop into a full operating environment](https://github.com/Elliots-Boys/TechNova/pull/50). Status: merged into `main` on 25 November 2026 (merge commit `cdd3afeb9db477552798de949b98c8d644515656`).
+
+
+---
+
+## 29. TechNova Desktop expansion follow-up fixes (PR #52)
+
+**Status:** Open draft PR #52, based on the merged PR #50 baseline. Not merged and not deployed.
+
+### Fixes and additions
+
+- Adds responsive styling for all twelve expansion applications, including Whiteboard, Document Studio, Spreadsheet Studio, API Studio, widgets, Media Centre, Website Designer, Mail Centre and Storage Manager 2.0.
+- Fixes desktop search so the launcher stays open while typing.
+- Includes sticky-note content in Whiteboard PNG exports.
+- Displays calculated spreadsheet formula results, normalises cell references and rejects oversized formula ranges.
+- Waits for IndexedDB transactions to complete, improves local media import/clear handling and clears the stored Gmail client ID and widget quick note when expansion data is cleared.
+- Includes virtual desktop assignments and quick-note content in optional cloud sync and manual workspace backups.
+- Adds optional Gmail inbox reading and plain-text sending through Google Identity Services. The user enters a public Google OAuth Web Client ID in Mail Centre; access tokens stay in memory and are not stored in TechNova or Supabase. Attachments are not supported.
+- Adds `docs/technova-gmail-oauth-setup.md` with Google Cloud setup instructions.
+
+### Owner setup required for Gmail
+
+- Enable Gmail API in Google Cloud, configure the OAuth consent screen, add `gmail.readonly` and `gmail.send`, create a Web application OAuth client, and authorise the exact TechNova JavaScript origin.
+- Enter only the OAuth Client ID in Mail Centre. Never enter or commit a Google client secret.
+- Google may require OAuth verification for public production access because Gmail scopes include restricted/sensitive access. Until the owner configures Google Cloud, local drafts remain available and the other Desktop apps continue to work.
+
+### Scope and verification
+
+- No Supabase schema, Storage bucket, Storage policy, Auth setting, project setting, Edge Function or production record is changed.
+- No Cloudflare deployment is performed. The user retains review and merge control.
+- JavaScript syntax checks, static ID checks, app registry checks, Browser-removal checks and CSS brace checks passed. Real browser interaction, Gmail OAuth, mobile/accessibility and two-account Storage isolation tests remain outstanding.
+
+### Pull request
+
+[PR #52 — Fix and complete TechNova Desktop expansion](https://github.com/Elliots-Boys/TechNova/pull/52). Status: open draft, not merged and not deployed. Gmail requires the owner to complete Google Cloud OAuth setup using `docs/technova-gmail-oauth-setup.md`.
