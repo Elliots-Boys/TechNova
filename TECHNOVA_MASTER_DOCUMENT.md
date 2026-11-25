@@ -292,7 +292,9 @@ This table records known PR history. Where a final state has not been verified, 
 | #34 | Central TechNova master document | Merged into `main` on 25 November 2026 (verified before dashboard work) |
 | #35 | Browser-based Quiz Generator | Merged into `main` on 25 November 2026; deterministic note-based questions, scoring and explanations; no AI API or backend changes |
 | #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; responsive member workspace, read-only user-scoped totals and saved-event previews; merge verified via GitHub |
-| #37 | Admin dashboard refinement and dashboard-first login redirects | Draft PR created; admin workspace styling, manual refresh, tab accessibility and default post-login destination; master document updated in the same PR |
+| #39 | Personal dashboard workspace refinement | Open draft PR; expands the personal workspace, adds upcoming registrations and recent activity, and fixes the registered-events panel that previously remained in its loading state |
+| #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser/provider QA remains outstanding |
+| #38 | Refresh cached authentication script for dashboard redirects | Open draft PR; updates the login and signup script cache version; no auth logic or backend changes |
 
 ### 10.1 PR #32 — Advanced assistant controls
 
@@ -446,8 +448,10 @@ This section intentionally records uncertainty so historical notes are not mista
 | PR #24 | Knowledge-bank expansion was proposed | Current PR/commit and merge status |
 | PR #31 | Model removal PR was previously open/draft | Current PR status and whether removal is in main |
 | PR #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; browser/device QA outstanding |
-| PR #37 | Admin dashboard refinement and dashboard-first login redirects | Draft PR; review/merge and browser QA outstanding |
-| Admin dashboard | Existing `pages/admin.html` includes overview, user, event, registration, article, quiz, website and activity sections; PR #37 refines its workspace UI and refresh flow | Browser QA, review and merge status |
+| PR #39 | Personal dashboard workspace refinement | Open draft PR; expands personal workspace and populates registration/activity panels; preview QA required |
+| PR #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser QA outstanding |
+| PR #39 | Personal dashboard workspace refinement | Open draft PR; browser QA outstanding; no backend changes |
+| Admin dashboard | Existing `pages/admin.html` includes overview, user, event, registration, article, quiz, website and activity sections; PR #37 refines its workspace UI and refresh flow | Browser QA outstanding |
 | Login destination | PR #37 changes the default post-login destination to `pages/dashboard.html`; explicit same-origin OAuth redirects and supported `next` destinations remain | Test email and each configured OAuth provider on preview/live domains |
 | Community | Earlier review found no complete post/reply forum | Current implementation |
 | OAuth providers | Roblox/Telegram and other providers were discussed | Actual Supabase provider configuration and live flows |
@@ -464,7 +468,7 @@ This section intentionally records uncertainty so historical notes are not mista
 | Date | Update |
 |---|---|
 | 25 Nov 2026 | Consolidated project identity, infrastructure, page map, historical architecture decisions, AI roadmap, PR history, development rules and verification gaps from available project context and repository inspection. |
-| 25 Nov 2026 | Verified PRs #33–#36 merged into `main`; PR #36 personal dashboard is merged. Recorded PR #37 admin dashboard refinement and default dashboard-after-login routing. |
+| 25 Nov 2026 | Verified PRs #33–#37 merged into `main`; PR #36 personal dashboard and PR #37 admin dashboard/auth routing are merged. |
 
 ---
 

@@ -18,6 +18,19 @@
 .dashboard-identity small{display:block;color:#91a0b7;overflow-wrap:anywhere}
 .dashboard-hero-art{width:112px;height:112px;border:1px solid #3b7097;border-radius:30px;background:linear-gradient(145deg,#123e61,#101b35);display:grid;place-items:center;font-size:52px;box-shadow:0 0 70px #32d6ff20;flex:none}
 .dashboard-section{margin-top:26px}
+.dashboard-date{display:block;color:#b8c9dd;font-size:13px;font-weight:700;margin-top:8px}
+.dashboard-hero{min-height:270px}
+.dashboard-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.dashboard-stat{min-height:112px}
+.dashboard-link{min-height:105px;align-items:center}
+.dashboard-event-date{display:inline-flex;padding:5px 8px;border-radius:8px;background:#102844;color:#8edfff;font-size:11px;font-weight:800;margin-top:6px}
+.dashboard-activity-list{display:grid;gap:10px;margin-top:16px}
+.dashboard-activity-item{display:flex;gap:11px;align-items:flex-start;padding:12px;border:1px solid #20324b;border-radius:12px;background:#08111e}
+.dashboard-activity-dot{width:10px;height:10px;border-radius:50%;background:#32d6ff;margin:5px 0 0 3px;flex:none}
+.dashboard-activity-item strong{display:block}
+.dashboard-activity-item small{display:block;color:#91a0b7;margin-top:3px}
+@media(max-width:760px){.dashboard-stats{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.dashboard-stats{grid-template-columns:1fr}.dashboard-hero{min-height:0}}
 .dashboard-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:14px}
 .dashboard-section-head h2{margin:2px 0 0;font-size:25px}
 .dashboard-section-head p{margin:3px 0 0;color:#91a0b7}
@@ -82,7 +95,7 @@
 <div class="dashboard-hero-copy">
 <p class="eyebrow">YOUR TECHNOVA WORKSPACE</p>
 <h1 id="dashboardTitle">Welcome back, <span id="accountName">member</span>.</h1>
-<p class="lead">Your events, saved discoveries and learning links — together in one place.</p>
+<p class="lead">Your personal space for everything happening across TechNova. Pick up where you left off, keep track of events and jump into your favourite tools.</p><div class="dashboard-date" id="dashboardDate">✦ Your TechNova overview</div>
 <div class="dashboard-identity">
 <div class="dashboard-avatar" id="dashboardAvatar" aria-hidden="true">T</div>
 <div><strong id="accountEmail">Loading your account…</strong><small id="accountStatus">Checking your sign-in status…</small></div>
@@ -100,7 +113,8 @@
 <div class="dashboard-section-head"><div><p class="eyebrow">AT A GLANCE</p><h2 id="overviewTitle">Your overview</h2></div></div>
 <div class="dashboard-stats">
 <article class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">🎟️</div><div><span class="dashboard-stat-label">Event registrations</span><strong id="dashboardRegistrationCount">—</strong><small>Events you've signed up for</small></div></article>
-<article class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">☆</div><div><span class="dashboard-stat-label">Saved events</span><strong id="dashboardSavedCount">—</strong><small>Events you've bookmarked</small></div></article>
+<article class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">☆</div><div><span class="dashboard-stat-label">Saved events</span><strong id="dashboardSavedCount">—</strong><small>Events you have bookmarked</small></div></article>
+<article class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">⏳</div><div><span class="dashboard-stat-label">Upcoming events</span><strong id="dashboardUpcomingCount">—</strong><small>Your next registered events</small></div></article>
 </div>
 <p id="dashboardStatus" class="dashboard-status" role="status" aria-live="polite">Loading your dashboard…</p>
 </section>
@@ -113,7 +127,7 @@
 <a class="dashboard-link" href="saved-events.html"><span class="dashboard-link-icon" aria-hidden="true">☆</span><span><strong>Saved events</strong><small>Return to events you've bookmarked.</small></span></a>
 <a class="dashboard-link" href="learning.html"><span class="dashboard-link-icon" aria-hidden="true">🎓</span><span><strong>Learning</strong><small>Continue exploring technology learning paths.</small></span></a>
 <a class="dashboard-link" href="resources.html"><span class="dashboard-link-icon" aria-hidden="true">📚</span><span><strong>Resources</strong><small>Find guides, references and useful material.</small></span></a>
-<a class="dashboard-link" href="storage-manager.html"><span class="dashboard-link-icon" aria-hidden="true">☁️</span><span><strong>Private cloud</strong><small>Open your TechNova file workspace.</small></span></a>
+<a class="dashboard-link" href="storage-manager.html"><span class="dashboard-link-icon" aria-hidden="true">☁️</span><span><strong>Private cloud</strong><small>Open your TechNova file workspace.</small></span></a><a class="dashboard-link" href="community.html"><span class="dashboard-link-icon" aria-hidden="true">◎</span><span><strong>Community</strong><small>Explore TechNova topics and shared interests.</small></span></a><a class="dashboard-link" href="labs.html"><span class="dashboard-link-icon" aria-hidden="true">⌘</span><span><strong>Labs & experiments</strong><small>Explore practical technology experiments and projects.</small></span></a>
 </div>
 </section>
 
@@ -128,6 +142,8 @@
 </article>
 </section>
 
+<section class="dashboard-section dashboard-panel" aria-labelledby="activityTitle"><div class="dashboard-section-head"><div><p class="eyebrow">RECENT ACTIVITY</p><h3 id="activityTitle">Your activity</h3><p class="dashboard-panel-intro">A timeline of your latest event registrations.</p></div></div><div id="dashboardActivity" class="dashboard-activity-list"><p class="dashboard-empty">Loading your activity…</p></div></section>
+
 <section class="dashboard-section dashboard-panel" aria-labelledby="profileTitle">
 <div class="dashboard-section-head"><div><p class="eyebrow">YOUR ACCOUNT</p><h3 id="profileTitle">Profile snapshot</h3><p class="dashboard-panel-intro">A quick summary of your TechNova membership.</p></div><a class="btn" href="account.html">Full account →</a></div>
 <div class="dashboard-profile-row"><span>Display name</span><strong id="dashboardProfileName">Loading…</strong></div>
@@ -141,7 +157,7 @@
 <script src="../js/supabase-config.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/saved-events.js"></script>
-<script src="../js/dashboard.js?v=1"></script>
+<script src="../js/dashboard.js?v=2"></script>
 <script src="../js/script.js"></script>
 </body>
 </html>
