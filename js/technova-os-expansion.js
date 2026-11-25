@@ -13,7 +13,8 @@ const STORE={
  website:PREFIX+'website-projects.v1',
  mail:PREFIX+'mail-drafts.v1',
  media:PREFIX+'media-library.v1',
- cloud:PREFIX+'cloud-sync-enabled.v1'
+ cloud:PREFIX+'cloud-sync-enabled.v1',
+ assignments:PREFIX+'window-assignments.v1'
 };
 const read=(key,fallback)=>{try{const value=localStorage.getItem(key);return value===null?fallback:JSON.parse(value)}catch{return fallback}};
 const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));return true}catch{return false}};
@@ -40,11 +41,11 @@ function appWindow(id,title,body,tag){
  const section=document.createElement('section');
  section.className='tn-window tn-os-window is-floating';
  section.dataset.window=id;
- section.dataset.workspace=currentWorkspace;
+ section.dataset.workspace=read(STORE.assignments,{})[id]||currentWorkspace;
  section.hidden=true;
  section.innerHTML='<div class="tn-window-bar"><div><span class="tn-window-dot"></span><strong>'+title+'</strong><small>'+tag+'</small></div><div class="tn-window-controls"><button data-minimize="'+id+'" aria-label="Minimise">−</button><button data-maximize="'+id+'" aria-label="Maximise">□</button><button data-move-window="'+id+'" aria-label="Move to another desktop" title="Move to another desktop">⇄</button><button data-close="'+id+'" aria-label="Close">×</button></div></div><div class="tn-window-content tn-os-content">'+body+'</div>';
  $('desktopWindows').append(section);windows[id]=section;
- const move=section.querySelector('[data-move-window]');move.addEventListener('click',()=>{const list=getWorkspaces(),choices=list.map((w,i)=>(i+1)+'. '+w.name).join('\n');const answer=prompt('Move this window to which desktop? Enter its number:\n'+choices);const target=list[Number(answer)-1];if(!target)return;section.dataset.workspace=target.id;section.hidden=target.id!==currentWorkspace;setStatus('wsStatus','Window moved to '+target.name+'.');renderWorkspaces()});
+ const move=section.querySelector('[data-move-window]');move.addEventListener('click',()=>{const list=getWorkspaces(),choices=list.map((w,i)=>(i+1)+'. '+w.name).join('\n');const answer=prompt('Move this window to which desktop? Enter its number:\n'+choices);const target=list[Number(answer)-1];if(!target)return;section.dataset.workspace=target.id;const assignments=read(STORE.assignments,{});assignments[id]=target.id;write(STORE.assignments,assignments);section.hidden=target.id!==currentWorkspace;setStatus('wsStatus','Window moved to '+target.name+'.');renderWorkspaces()});
  const bar=section.querySelector('.tn-window-bar');let sx=0,sy=0,ox=0,oy=0,drag=false;bar.addEventListener('pointerdown',e=>{if(e.target.closest('button')||section.classList.contains('is-maximized')||innerWidth<650)return;drag=true;sx=e.clientX;sy=e.clientY;ox=section.offsetLeft;oy=section.offsetTop;bar.setPointerCapture(e.pointerId)});bar.addEventListener('pointermove',e=>{if(!drag)return;section.style.left=Math.max(0,Math.min(innerWidth-240,ox+e.clientX-sx))+'px';section.style.top=Math.max(0,Math.min(innerHeight-170,oy+e.clientY-sy))+'px'});bar.addEventListener('pointerup',()=>drag=false);bar.addEventListener('pointercancel',()=>drag=false);
 }
 function intro(eyebrow,title,desc,extra=''){return '<div class="tn-app-intro"><div><span class="tn-eyebrow">'+eyebrow+'</span><h2>'+title+'</h2><p>'+desc+'</p></div>'+extra+'</div>'}
@@ -99,14 +100,14 @@ async function cloudTransfer(mode){
 }
 function renderAll(){renderWorkspaces();renderWhiteboard();renderDocuments();renderSheet();renderApiSaved();renderWidgets();renderMedia();renderMail();renderStorageLocal();refreshStorageCloud()}
 function onOpen(id){
- const win=windows[id];if(win){win.dataset.workspace=currentWorkspace;win.hidden=false;win.style.left=(18+(apps.findIndex(a=>a[0]===id)%6)*24)+'px';win.style.top=(12+(apps.findIndex(a=>a[0]===id)%5)*18)+'px'}
+ const win=windows[id];if(win){win.dataset.workspace=currentWorkspace;const assignments=read(STORE.assignments,{});assignments[id]=currentWorkspace;write(STORE.assignments,assignments);win.hidden=false;win.style.left=(18+(apps.findIndex(a=>a[0]===id)%6)*24)+'px';win.style.top=(12+(apps.findIndex(a=>a[0]===id)%5)*18)+'px'}
  const render={workspaces:renderWorkspaces,whiteboard:renderWhiteboard,documents:renderDocuments,spreadsheets:renderSheet,api:renderApiSaved,widgets:renderWidgets,control:loadControl,media:renderMedia,website:renderWebsite,mail:renderMail,storage2:renderStorageLocal};
  if(render[id])render[id]();
 }
 function getWorkspaces(){let a=appState(STORE.workspaces,null);if(!Array.isArray(a)||!a.length){a=[{id:'main',name:'Main',created:Date.now()}];write(STORE.workspaces,a)}return a}
 function renderWorkspaces(){
  const box=$('wsList');if(!box)return;box.replaceChildren();
- getWorkspaces().forEach(w=>{const card=document.createElement('article');card.className='tn-card tn-workspace-card';const h=document.createElement('h3');h.textContent=w.name;const p=document.createElement('p');p.textContent=(w.id===currentWorkspace?'Current workspace':'Workspace')+' · '+[...document.querySelectorAll('.tn-window:not([data-window="home"])')].filter(x=>!x.hidden&&x.dataset.workspace===w.id).length+' open windows';const row=document.createElement('div');row.className='tn-os-toolbar';const use=document.createElement('button');use.className='tn-button tn-primary';use.textContent=w.id===currentWorkspace?'Current':'Switch to';use.disabled=w.id===currentWorkspace;use.onclick=()=>switchWorkspace(w.id);const rename=document.createElement('button');rename.className='tn-button';rename.textContent='Rename';rename.onclick=()=>{const value=prompt('Workspace name',w.name);if(value&&text(value,40)){const list=getWorkspaces(),target=list.find(x=>x.id===w.id);if(target)target.name=text(value,40);saveState(STORE.workspaces,list,'workspaces');renderWorkspaces()}};row.append(use,rename);if(w.id!=='main'){const del=document.createElement('button');del.className='tn-button tn-danger';del.textContent='Delete';del.onclick=()=>{if(!confirm('Delete this workspace? Its windows will move to Main.'))return;document.querySelectorAll('.tn-window[data-workspace="'+w.id+'"]').forEach(x=>x.dataset.workspace='main');saveState(STORE.workspaces,getWorkspaces().filter(x=>x.id!==w.id),'workspaces');if(currentWorkspace===w.id)switchWorkspace('main');renderWorkspaces()};row.append(del)}card.append(h,p,row);box.append(card)});
+ getWorkspaces().forEach(w=>{const card=document.createElement('article');card.className='tn-card tn-workspace-card';const h=document.createElement('h3');h.textContent=w.name;const p=document.createElement('p');p.textContent=(w.id===currentWorkspace?'Current workspace':'Workspace')+' · '+[...document.querySelectorAll('.tn-window:not([data-window="home"])')].filter(x=>!x.hidden&&x.dataset.workspace===w.id).length+' open windows';const row=document.createElement('div');row.className='tn-os-toolbar';const use=document.createElement('button');use.className='tn-button tn-primary';use.textContent=w.id===currentWorkspace?'Current':'Switch to';use.disabled=w.id===currentWorkspace;use.onclick=()=>switchWorkspace(w.id);const rename=document.createElement('button');rename.className='tn-button';rename.textContent='Rename';rename.onclick=()=>{const value=prompt('Workspace name',w.name);if(value&&text(value,40)){const list=getWorkspaces(),target=list.find(x=>x.id===w.id);if(target)target.name=text(value,40);saveState(STORE.workspaces,list,'workspaces');renderWorkspaces()}};row.append(use,rename);if(w.id!=='main'){const del=document.createElement('button');del.className='tn-button tn-danger';del.textContent='Delete';del.onclick=()=>{if(!confirm('Delete this workspace? Its windows will move to Main.'))return;document.querySelectorAll('.tn-window[data-workspace="'+w.id+'"]').forEach(x=>{x.dataset.workspace='main';const assignments=read(STORE.assignments,{});assignments[x.dataset.window]='main';write(STORE.assignments,assignments)});saveState(STORE.workspaces,getWorkspaces().filter(x=>x.id!==w.id),'workspaces');if(currentWorkspace===w.id)switchWorkspace('main');renderWorkspaces()};row.append(del)}card.append(h,p,row);box.append(card)});
 }
 function switchWorkspace(next){
  if(!getWorkspaces().some(w=>w.id===next))return;currentWorkspace=next;
@@ -259,8 +260,8 @@ function setupStorage(){
  $('storageRefresh').onclick=refreshStorageCloud;$('storageSearch').oninput=()=>{const q=$('storageSearch').value.toLowerCase();document.querySelectorAll('#storageLocal .tn-os-list-item,#storageCloud .tn-os-list-item').forEach(n=>n.hidden=!n.textContent.toLowerCase().includes(q))};
 }
 function init(){
+ currentWorkspace=getWorkspaces()[0]?.id||'main';
  initWindows();setupWorkspaces();setupWhiteboard();setupDocuments();setupSheet();setupApi();setupWidgets();setupControl();setupMedia();setupWebsite();setupMail();setupStorage();
- const main=getWorkspaces();currentWorkspace=read(STORE.workspaces,main)[0]?.id||'main';
  renderAll();
 }
 window.TNExpansion={init,onOpen,switchWorkspace};
