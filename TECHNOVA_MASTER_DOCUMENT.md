@@ -294,6 +294,7 @@ This table records known PR history. Where a final state has not been verified, 
 | #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; responsive member workspace, read-only user-scoped totals and saved-event previews; merge verified via GitHub |
 | #39 | Personal dashboard workspace refinement | Open draft PR; expands the personal workspace, adds upcoming registrations and recent activity, and fixes the registered-events panel that previously remained in its loading state |
 | #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser/provider QA remains outstanding |
+| #38 | Refresh cached authentication script for dashboard redirects | Open draft PR; updates the login and signup script cache version; no auth logic or backend changes |
 
 ### 10.1 PR #32 — Advanced assistant controls
 
