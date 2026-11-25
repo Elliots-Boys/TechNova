@@ -1,1 +1,147 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard · TechNova</title><link rel="stylesheet" href="../css/style.css"></head><body><header><a class="brand" href="../index.html">✦ TECHNOVA</a><button id="menu">☰</button><nav><a href="../index.html">Home</a><a href="discover.html">Discover</a><a href="account.html">My account</a></nav></header><main class="page"><p class="eyebrow">YOUR WORKSPACE</p><h1>Your <span>dashboard.</span></h1><p class="lead">A central place for events, saved ideas and recent activity.</p><section class="cards"><article><h2>Upcoming events</h2><p>Jump back into the events you've registered for.</p><a href="events.html">View events →</a></article><article><h2>Saved</h2><p>Keep useful technology ideas close at hand.</p><a href="saved.html">Open saved →</a></article><article><h2>Learning</h2><p>Continue a practical technology path.</p><a href="learning.html">Continue learning →</a></article></section></main><footer>© 2026 TechNova</footer><script src="../js/script.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Your personal TechNova workspace for events, saved items and learning.">
+<title>My Dashboard · TechNova</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.dashboard-page{max-width:1200px;margin:0 auto;padding:42px 22px 80px}
+.dashboard-hero{position:relative;display:flex;justify-content:space-between;align-items:center;gap:24px;overflow:hidden;padding:clamp(24px,5vw,42px);border:1px solid #28466b;border-radius:24px;background:radial-gradient(circle at 90% 10%,#1c5480aa,transparent 38%),linear-gradient(135deg,#102844,#0a1422 75%);box-shadow:0 20px 60px #0004}
+.dashboard-hero-copy{min-width:0;position:relative;z-index:1}
+.dashboard-hero h1{font-size:clamp(38px,6vw,64px);line-height:1.04;margin:8px 0}
+.dashboard-hero h1 span{background:linear-gradient(90deg,#32d6ff,#9b6cff);color:transparent;background-clip:text}
+.dashboard-hero .lead{margin:10px 0 0}
+.dashboard-identity{display:flex;align-items:center;gap:13px;margin-top:22px;flex-wrap:wrap}
+.dashboard-avatar{width:54px;height:54px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(145deg,#32d6ff,#9b6cff);color:#06101d;font-weight:950;font-size:20px;flex:none}
+.dashboard-identity small{display:block;color:#91a0b7;overflow-wrap:anywhere}
+.dashboard-hero-art{width:112px;height:112px;border:1px solid #3b7097;border-radius:30px;background:linear-gradient(145deg,#123e61,#101b35);display:grid;place-items:center;font-size:52px;box-shadow:0 0 70px #32d6ff20;flex:none}
+.dashboard-section{margin-top:26px}
+.dashboard-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.dashboard-section-head h2{margin:2px 0 0;font-size:25px}
+.dashboard-section-head p{margin:3px 0 0;color:#91a0b7}
+.dashboard-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.dashboard-stat,.dashboard-panel{background:linear-gradient(180deg,#0d1728,#09111e);border:1px solid #20324b;border-radius:17px;padding:20px}
+.dashboard-stat{display:flex;align-items:center;gap:15px}
+.dashboard-stat-icon{width:46px;height:46px;border-radius:13px;background:#102b46;display:grid;place-items:center;font-size:22px;flex:none}
+.dashboard-stat-label{color:#91a0b7;font-size:13px;font-weight:700}
+.dashboard-stat strong{display:block;font-size:30px;line-height:1.2;color:#32d6ff;margin-top:2px}
+.dashboard-stat small{display:block;color:#91a0b7;margin-top:2px}
+.dashboard-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.dashboard-link{display:flex;gap:13px;align-items:flex-start;padding:18px;border:1px solid #20324b;border-radius:15px;background:linear-gradient(180deg,#0d1728,#09111e);transition:transform .18s ease,border-color .18s ease}
+.dashboard-link:hover{transform:translateY(-2px);border-color:#32d6ff}
+.dashboard-link-icon{font-size:24px;line-height:1.2}
+.dashboard-link strong{display:block}
+.dashboard-link small{display:block;color:#91a0b7;margin-top:4px;line-height:1.45}
+.dashboard-columns{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}
+.dashboard-panel h3{margin:0;font-size:20px}
+.dashboard-panel-intro{color:#91a0b7;margin:4px 0 0}
+.dashboard-event-list{display:grid;gap:10px;margin-top:16px}
+#myEvents .event-item{display:flex;align-items:flex-start;gap:12px;padding:13px;border:1px solid #20324b;border-radius:12px;background:#08111e}
+#myEvents .event-icon{width:40px;height:40px;display:grid;place-items:center;background:#102844;border-radius:11px;flex:none}
+#myEvents .event-title{font-weight:800;overflow-wrap:anywhere}
+#myEvents .event-meta{color:#91a0b7;font-size:13px;margin-top:3px}
+#myEvents .event-actions{margin-left:auto}
+#myEvents .cancel-event{background:#20131a;border:1px solid #59303c;color:#ffb7c5;cursor:pointer;padding:8px 11px;border-radius:9px}
+#myEvents .cancel-event:disabled{opacity:.55;cursor:wait}
+.dashboard-event{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid #20324b;border-radius:12px;background:#08111e}
+.dashboard-event-icon{width:40px;height:40px;display:grid;place-items:center;background:#102844;border-radius:11px;flex:none}
+.dashboard-event-copy{min-width:0;flex:1}
+.dashboard-event-copy strong{display:block;overflow-wrap:anywhere}
+.dashboard-event-copy small{display:block;color:#91a0b7;margin-top:2px}
+.dashboard-event a{color:#32d6ff;font-weight:750;white-space:nowrap}
+.dashboard-empty{color:#91a0b7;padding:16px;border:1px dashed #29415e;border-radius:12px;margin-top:15px}
+.dashboard-profile-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #20324b}
+.dashboard-profile-row:last-child{border-bottom:0}
+.dashboard-profile-row span{color:#91a0b7}
+.dashboard-profile-row strong{text-align:right;overflow-wrap:anywhere}
+.dashboard-status{margin-top:12px;color:#91a0b7;font-size:13px}
+.dashboard-status.error{color:#ffb4c0}
+.dashboard-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.dashboard-hidden{display:none!important}
+@media(max-width:850px){.dashboard-links{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-columns{grid-template-columns:1fr}}
+@media(max-width:560px){.dashboard-page{padding:25px 14px 55px}.dashboard-hero{align-items:flex-start}.dashboard-hero-art{width:65px;height:65px;border-radius:19px;font-size:30px}.dashboard-stats,.dashboard-links{grid-template-columns:1fr}.dashboard-stat{padding:16px}.dashboard-event{align-items:flex-start;flex-wrap:wrap}.dashboard-event a{margin-left:52px}}
+@media(prefers-reduced-motion:reduce){.dashboard-link{transition:none}.dashboard-link:hover{transform:none}}
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="../index.html">✦ TECHNOVA</a>
+<button id="menu" type="button" aria-label="Toggle main navigation" aria-expanded="false">☰</button>
+<nav aria-label="Main navigation">
+<a href="../index.html">Home</a>
+<a href="events.html">Events</a>
+<a href="discover.html">Discover</a>
+<a href="account.html">My account</a>
+</nav>
+<button id="logoutBtn" class="btn" type="button">Log out</button>
+</header>
+<main class="dashboard-page" id="main-content" tabindex="-1">
+<section class="dashboard-hero" aria-labelledby="dashboardTitle">
+<div class="dashboard-hero-copy">
+<p class="eyebrow">YOUR TECHNOVA WORKSPACE</p>
+<h1 id="dashboardTitle">Welcome back, <span id="accountName">member</span>.</h1>
+<p class="lead">Your events, saved discoveries and learning links — together in one place.</p>
+<div class="dashboard-identity">
+<div class="dashboard-avatar" id="dashboardAvatar" aria-hidden="true">T</div>
+<div><strong id="accountEmail">Loading your account…</strong><small id="accountStatus">Checking your sign-in status…</small></div>
+</div>
+<div class="dashboard-actions">
+<a class="btn primary" href="events.html">Explore events →</a>
+<a class="btn" href="settings.html">Account settings</a>
+<a class="btn dashboard-hidden" id="adminLink" href="admin.html">🛡 Admin dashboard</a>
+</div>
+</div>
+<div class="dashboard-hero-art" aria-hidden="true">✦</div>
+</section>
+
+<section class="dashboard-section" aria-labelledby="overviewTitle">
+<div class="dashboard-section-head"><div><p class="eyebrow">AT A GLANCE</p><h2 id="overviewTitle">Your overview</h2></div></div>
+<div class="dashboard-stats">
+<article class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">🎟️</div><div><span class="dashboard-stat-label">Event registrations</span><strong id="dashboardRegistrationCount">—</strong><small>Events you've signed up for</small></div></article>
+<article class="dashboard-stat"><div class="dashboard-stat-icon" aria-hidden="true">☆</div><div><span class="dashboard-stat-label">Saved events</span><strong id="dashboardSavedCount">—</strong><small>Events you've bookmarked</small></div></article>
+</div>
+<p id="dashboardStatus" class="dashboard-status" role="status" aria-live="polite">Loading your dashboard…</p>
+</section>
+
+<section class="dashboard-section" aria-labelledby="shortcutsTitle">
+<div class="dashboard-section-head"><div><p class="eyebrow">JUMP BACK IN</p><h2 id="shortcutsTitle">Quick access</h2><p>Go straight to the parts of TechNova you use most.</p></div></div>
+<div class="dashboard-links">
+<a class="dashboard-link" href="ai-assistant.html"><span class="dashboard-link-icon" aria-hidden="true">✧</span><span><strong>AI Assistant</strong><small>Explore the assistant and its browser-based tools.</small></span></a>
+<a class="dashboard-link" href="events.html"><span class="dashboard-link-icon" aria-hidden="true">📅</span><span><strong>Events</strong><small>Discover events and manage registrations.</small></span></a>
+<a class="dashboard-link" href="saved-events.html"><span class="dashboard-link-icon" aria-hidden="true">☆</span><span><strong>Saved events</strong><small>Return to events you've bookmarked.</small></span></a>
+<a class="dashboard-link" href="learning.html"><span class="dashboard-link-icon" aria-hidden="true">🎓</span><span><strong>Learning</strong><small>Continue exploring technology learning paths.</small></span></a>
+<a class="dashboard-link" href="resources.html"><span class="dashboard-link-icon" aria-hidden="true">📚</span><span><strong>Resources</strong><small>Find guides, references and useful material.</small></span></a>
+<a class="dashboard-link" href="storage-manager.html"><span class="dashboard-link-icon" aria-hidden="true">☁️</span><span><strong>Private cloud</strong><small>Open your TechNova file workspace.</small></span></a>
+</div>
+</section>
+
+<section class="dashboard-section dashboard-columns" aria-label="Your activity and profile">
+<article class="dashboard-panel" aria-labelledby="registrationsTitle">
+<div class="dashboard-section-head"><div><p class="eyebrow">YOUR ACTIVITY</p><h3 id="registrationsTitle">Registered events</h3><p class="dashboard-panel-intro">Your upcoming and previous event registrations.</p></div><a class="btn" href="events.html">Find events</a></div>
+<div id="myEvents" class="dashboard-event-list"><p class="dashboard-empty">Loading your registered events…</p></div>
+</article>
+<article class="dashboard-panel" aria-labelledby="savedTitle">
+<div class="dashboard-section-head"><div><p class="eyebrow">BOOKMARKS</p><h3 id="savedTitle">Saved events</h3><p class="dashboard-panel-intro">A quick look at your saved events.</p></div><a class="btn" href="saved-events.html">View all</a></div>
+<div id="dashboardSavedEvents" class="dashboard-event-list"><p class="dashboard-empty">Loading your saved events…</p></div>
+</article>
+</section>
+
+<section class="dashboard-section dashboard-panel" aria-labelledby="profileTitle">
+<div class="dashboard-section-head"><div><p class="eyebrow">YOUR ACCOUNT</p><h3 id="profileTitle">Profile snapshot</h3><p class="dashboard-panel-intro">A quick summary of your TechNova membership.</p></div><a class="btn" href="account.html">Full account →</a></div>
+<div class="dashboard-profile-row"><span>Display name</span><strong id="dashboardProfileName">Loading…</strong></div>
+<div class="dashboard-profile-row"><span>Bio</span><strong id="accountBio">No bio added yet.</strong></div>
+<div class="dashboard-profile-row"><span>Membership</span><strong id="dashboardMembership">Checking…</strong></div>
+</section>
+<div id="accountMessage" class="dashboard-status error" role="alert"></div>
+</main>
+<footer>© 2026 TechNova · Technology for what's next.</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/saved-events.js"></script>
+<script src="../js/dashboard.js?v=1"></script>
+<script src="../js/script.js"></script>
+</body>
+</html>
