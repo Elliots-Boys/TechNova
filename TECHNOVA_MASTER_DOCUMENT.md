@@ -293,6 +293,7 @@ This table records known PR history. Where a final state has not been verified, 
 | #35 | Browser-based Quiz Generator | Merged into `main` on 25 November 2026; deterministic note-based questions, scoring and explanations; no AI API or backend changes |
 | #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; responsive member workspace, read-only user-scoped totals and saved-event previews; merge verified via GitHub |
 | #39 | Personal dashboard workspace refinement | Merged into `main` on 25 November 2026; adds upcoming registrations and recent activity and fixes the registered-events panel |
+| #40 | Personal dashboard command-centre enhancement | Open draft PR: [#40](https://github.com/Elliots-Boys/TechNova/pull/40); searchable directory, local pins/recent pages/notes/widget preferences and preserved event/profile data |
 | #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser/provider QA remains outstanding |
 | #38 | Refresh cached authentication script for dashboard redirects | Open draft PR; updates the login and signup script cache version; no auth logic or backend changes |
 
@@ -449,6 +450,7 @@ This section intentionally records uncertainty so historical notes are not mista
 | PR #31 | Model removal PR was previously open/draft | Current PR status and whether removal is in main |
 | PR #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; browser/device QA outstanding |
 | PR #39 | Personal dashboard workspace refinement | Merged into `main` on 25 November 2026; browser/device QA remains outstanding |
+| PR #40 | Personal dashboard command-centre enhancement | Open draft PR; browser/device and signed-in account QA outstanding; no backend or deployment changes |
 | PR #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser QA outstanding |
 | PR #39 | Personal dashboard workspace refinement | Open draft PR; browser QA outstanding; no backend changes |
 | Admin dashboard | Existing `pages/admin.html` includes overview, user, event, registration, article, quiz, website and activity sections; PR #37 refines its workspace UI and refresh flow | Browser QA outstanding |
@@ -503,4 +505,4 @@ Privacy/technical boundaries:
 - No new backend writes, schema/RLS changes, settings changes, Edge Functions, credentials, or external services.
 - No production deployment. Browser/device QA remains required.
 
-The PR number and URL will be recorded here once the pull request has been opened. Update this section when review, merge or deployment status changes.
+Pull request: [#40 — Turn the personal dashboard into a TechNova command centre](https://github.com/Elliots-Boys/TechNova/pull/40). It is an open draft PR, not merged or deployed. Update this section when review, merge or deployment status changes.
