@@ -192,6 +192,72 @@
 @media(max-width:700px){.dashboard-hero{grid-template-columns:1fr}.dashboard-hero-art{display:none}.dashboard-stats{grid-template-columns:1fr}.dashboard-side-column{grid-template-columns:1fr}.dashboard-side-column [data-widget-section=profile]{grid-column:auto}}
 @media(max-width:520px){.dashboard-shell{padding:18px 12px 52px}.dashboard-panel{padding:16px}.dashboard-app-grid{grid-template-columns:1fr}.dashboard-hero{padding:23px 19px}.dashboard-hero h1{font-size:39px}.dashboard-topline{align-items:flex-start}}
 @media(prefers-reduced-motion:reduce){.dashboard-app{transition:none}.dashboard-app:hover{transform:none}}
+
+/* Expanded personal workspace */
+.dashboard-workspace-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;margin:18px 0;align-items:start}
+.workspace-panel{min-width:0;grid-column:span 6}
+.workspace-panel.wide{grid-column:span 7}
+.workspace-panel.narrow{grid-column:span 5}
+.workspace-panel.full{grid-column:1/-1}
+.workspace-panel .dashboard-panel-head{margin-bottom:12px}
+.workspace-panel input,.workspace-panel textarea,.workspace-panel select{box-sizing:border-box;max-width:100%;font:inherit}
+.workspace-panel input[type=text],.workspace-panel input[type=date],.workspace-panel input[type=search],.workspace-panel textarea,.workspace-panel select{width:100%;min-width:0;padding:10px 11px;border:1px solid #294660;border-radius:10px;background:#071321;color:#e5f3ff;font-size:13px}
+.workspace-panel textarea{min-height:100px;resize:vertical;line-height:1.5}
+.workspace-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.workspace-form>*{flex:1 1 130px}
+.workspace-action{border:1px solid #315777;border-radius:10px;padding:9px 12px;background:#12304a;color:#e4f5ff;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.workspace-action.primary{background:linear-gradient(110deg,#42d7ff,#9b83ff);border:0;color:#06111e}
+.workspace-action:disabled{opacity:.45;cursor:not-allowed}
+.workspace-status{min-height:16px;color:#8fa7bc;font-size:11px;margin:8px 0 0}
+.workspace-calendar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.workspace-calendar-head strong{font-size:14px;color:#e9f6ff}
+.workspace-calendar-nav{display:flex;gap:5px}
+.workspace-calendar-nav button,.workspace-icon-button{border:1px solid #294660;border-radius:8px;padding:6px 9px;background:#10243a;color:#cce7f8;cursor:pointer}
+.workspace-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.workspace-weekday{text-align:center;color:#829bb2;font-size:10px;font-weight:800;padding:5px 0}
+.workspace-calendar-blank{min-height:36px}
+.workspace-day{position:relative;min-height:36px;border:1px solid transparent;border-radius:9px;background:#0a1929;color:#dcecff;font-size:12px;cursor:pointer}
+.workspace-day:hover{border-color:#42d7ff}
+.workspace-day.is-today{border-color:#8c7cff}
+.workspace-day.is-selected{background:#17415d;color:#fff;border-color:#42d7ff}
+.workspace-day-dot{position:absolute;left:50%;bottom:4px;width:4px;height:4px;border-radius:50%;background:#6de4ff;transform:translateX(-50%)}
+.workspace-calendar-list,.workspace-habit-list,.workspace-notes-list,.workspace-project-list{display:grid;gap:7px;margin-top:12px}
+.workspace-list-item,.workspace-habit-row{display:flex;align-items:center;gap:9px;padding:10px;border:1px solid #203b57;border-radius:11px;background:#091827;min-width:0}
+.workspace-list-copy{min-width:0;flex:1}
+.workspace-list-copy strong,.workspace-list-copy small{display:block;overflow-wrap:anywhere}
+.workspace-list-copy strong{font-size:12px;color:#e5f3ff}
+.workspace-list-copy small{font-size:10px;color:#91a9bf;margin-top:3px}
+.workspace-habit-row input{width:17px;height:17px;accent-color:#42d7ff;flex:none}
+.workspace-notes-layout{display:grid;grid-template-columns:minmax(120px,.7fr) minmax(0,1.3fr);gap:10px}
+.workspace-note-item{display:block;width:100%;padding:9px 10px;border:1px solid #203b57;border-radius:9px;background:#091827;color:#dcecff;text-align:left;font:inherit;font-size:12px;cursor:pointer;overflow-wrap:anywhere}
+.workspace-note-item small{display:block;color:#8fa7bc;font-size:10px;margin-top:4px}
+.workspace-note-item.is-active{border-color:#42d7ff;background:#12304a}
+.workspace-note-editor{display:grid;gap:8px;min-width:0}
+.workspace-note-actions{display:flex;gap:6px;flex-wrap:wrap}
+.workspace-insights{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.workspace-insight{padding:12px;border:1px solid #203b57;border-radius:12px;background:linear-gradient(145deg,#112842,#0a1727)}
+.workspace-insight strong{display:block;color:#74e2ff;font-size:21px;line-height:1.2}
+.workspace-insight small{display:block;color:#9bb1c7;font-size:10px;margin-top:5px}
+.workspace-project-card{display:grid;grid-template-columns:minmax(0,1fr) 130px;gap:8px;align-items:center;padding:11px;border:1px solid #203b57;border-radius:12px;background:#091827}
+.workspace-project-head{display:flex;align-items:center;gap:8px;min-width:0}
+.workspace-project-head strong{font-size:12px;overflow-wrap:anywhere;flex:1}
+.workspace-project-meter{grid-column:1/-1;height:6px;border-radius:99px;background:#1a3046;overflow:hidden}
+.workspace-project-meter span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#42d7ff,#9b83ff)}
+.workspace-dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.workspace-dev-grid label{display:block;color:#a9bfd3;font-size:11px;font-weight:800;margin-bottom:6px}
+.workspace-colour-row{display:flex;align-items:center;gap:9px}
+.workspace-colour-row input[type=color]{width:48px;height:38px;padding:2px;border:1px solid #294660;border-radius:8px;background:#071321}
+.workspace-colour-swatch{width:42px;height:32px;border:1px solid #ffffff44;border-radius:8px;background:#42d7ff}
+.workspace-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.workspace-shortcut{display:flex;align-items:center;gap:9px;padding:11px;border:1px solid #203b57;border-radius:11px;background:#0a1929;color:#e3f2ff;text-decoration:none;font-size:12px;font-weight:750}
+.workspace-shortcut:hover{border-color:#42d7ff}
+.workspace-shortcut span{font-size:18px}
+.workspace-privacy{color:#8fa7bc;font-size:10px;line-height:1.5;margin:10px 0 0}
+.workspace-admin-links{display:flex;gap:8px;flex-wrap:wrap}
+.workspace-admin-links a{color:#a9eaff;text-decoration:none;border:1px solid #315777;border-radius:9px;padding:9px 11px;background:#10243a;font-size:12px;font-weight:750}
+@media(max-width:850px){.workspace-panel,.workspace-panel.wide,.workspace-panel.narrow{grid-column:span 6}}
+@media(max-width:620px){.dashboard-workspace-grid{grid-template-columns:1fr}.workspace-panel,.workspace-panel.wide,.workspace-panel.narrow,.workspace-panel.full{grid-column:1}.workspace-notes-layout{grid-template-columns:1fr}.workspace-notes-list{grid-template-columns:repeat(2,minmax(0,1fr));max-height:180px;overflow:auto}.workspace-dev-grid{grid-template-columns:1fr}.workspace-project-card{grid-template-columns:1fr}.workspace-project-meter{grid-column:1}.workspace-insights{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
 </head>
 <body>
@@ -247,6 +313,15 @@
 <label><input type="checkbox" data-widget-toggle="saved" checked> Saved events</label>
 <label><input type="checkbox" data-widget-toggle="notes" checked> Quick note</label>
 <label><input type="checkbox" data-widget-toggle="profile" checked> Profile</label>
+<label><input type="checkbox" data-widget-toggle="calendar" checked> Calendar</label>
+<label><input type="checkbox" data-widget-toggle="habits" checked> Habits</label>
+<label><input type="checkbox" data-widget-toggle="notes-studio" checked> Notes studio</label>
+<label><input type="checkbox" data-widget-toggle="insights" checked> Insights</label>
+<label><input type="checkbox" data-widget-toggle="projects" checked> Projects</label>
+<label><input type="checkbox" data-widget-toggle="developer" checked> Developer toolkit</label>
+<label><input type="checkbox" data-widget-toggle="study" checked> Study hub</label>
+<label><input type="checkbox" data-widget-toggle="community-hub" checked> Community hub</label>
+<label><input type="checkbox" data-widget-toggle="admin-tools" checked> Admin tools (admins)</label>
 </div>
 <section class="dashboard-panel dashboard-ai-panel ai-card" aria-labelledby="dashboardAiTitle" data-widget-section="assistant">
 <div class="dashboard-ai-heading">
@@ -287,6 +362,83 @@
 <p id="focusProgressLabel">Add a task to set your priorities for today.</p>
 </div>
 </div>
+</section>
+
+<section class="dashboard-workspace-grid" aria-label="Personal workspace tools">
+<section class="dashboard-panel workspace-panel wide" data-widget-section="calendar" aria-labelledby="workspaceCalendarTitle">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">PLAN YOUR TIME</div><h2 id="workspaceCalendarTitle">Calendar & reminders</h2><p>A private calendar for personal reminders and focus-task due dates.</p></div><a class="dashboard-section-link" href="calendar.html">Full calendar →</a></div>
+<div class="workspace-calendar-head"><div class="workspace-calendar-nav"><button id="workspaceCalendarPrev" type="button" aria-label="Previous month">←</button><button id="workspaceCalendarToday" type="button">Today</button><button id="workspaceCalendarNext" type="button" aria-label="Next month">→</button></div><strong id="workspaceCalendarHeading">Month</strong></div>
+<div class="workspace-calendar-grid" id="workspaceCalendarGrid" aria-label="Calendar dates"></div>
+<form class="workspace-form" id="workspaceReminderForm" style="margin-top:12px">
+<input id="workspaceReminderTitle" type="text" maxlength="100" placeholder="Add a reminder…" aria-label="Reminder title" required>
+<input id="workspaceReminderDate" type="date" aria-label="Reminder date" required>
+<button class="workspace-action primary" type="submit">＋ Add</button>
+</form>
+<div class="workspace-calendar-list" id="workspaceCalendarList" aria-live="polite"></div>
+<p class="workspace-status" id="workspaceCalendarStatus" role="status">Reminders are stored only in this browser.</p>
+</section>
+<section class="dashboard-panel workspace-panel narrow" data-widget-section="habits" aria-labelledby="workspaceHabitsTitle">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">SMALL STEPS, CONSISTENTLY</div><h2 id="workspaceHabitsTitle">Habit tracker</h2><p>Check off routines and see your current streaks.</p></div></div>
+<form class="workspace-form" id="workspaceHabitForm"><input id="workspaceHabitName" type="text" maxlength="48" placeholder="New habit…" aria-label="New habit name" required><button class="workspace-action primary" type="submit">＋ Add</button></form>
+<p class="workspace-status" id="workspaceHabitSummary">Create a habit to start your routine tracker.</p>
+<div class="workspace-habit-list" id="workspaceHabitList" aria-live="polite"></div>
+<p class="workspace-status" id="workspaceHabitStatus" role="status">Up to 12 habits · stored on this device.</p>
+</section>
+<section class="dashboard-panel workspace-panel wide" data-widget-section="notes-studio" aria-labelledby="workspaceNotesTitle">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">THINK, CAPTURE, ORGANISE</div><h2 id="workspaceNotesTitle">Notes workspace</h2><p>Create separate notes, search them and export individual notes as text files.</p></div><div class="workspace-note-actions"><button class="workspace-action primary" id="workspaceAddNote" type="button">＋ New note</button><button class="workspace-action" id="workspaceExportNote" type="button" disabled>Export</button><button class="workspace-action" id="workspaceDeleteNote" type="button" disabled>Delete</button></div></div>
+<div class="workspace-notes-layout">
+<div><input id="workspaceNotesSearch" type="search" placeholder="Search notes…" aria-label="Search notes"><div class="workspace-notes-list" id="workspaceNotesList"></div></div>
+<div class="workspace-note-editor"><input id="workspaceNoteTitle" type="text" maxlength="80" placeholder="Note title" aria-label="Note title"><textarea id="workspaceNoteBody" maxlength="10000" placeholder="Write your note here…" aria-label="Note contents"></textarea><p class="workspace-status" id="workspaceNotesStatus" role="status">Notes are saved only in this browser.</p></div>
+</div>
+<p class="workspace-privacy">Private browser storage · Up to 40 notes · 10,000 characters per note. Notes are not uploaded or synced.</p>
+</section>
+<section class="dashboard-panel workspace-panel narrow" data-widget-section="insights" aria-labelledby="workspaceInsightsTitle">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">YOUR PROGRESS</div><h2 id="workspaceInsightsTitle">Personal insights</h2><p>Statistics calculated from your local workspace and existing account totals.</p></div><a class="dashboard-section-link" href="analytics.html">Analytics →</a></div>
+<div class="workspace-insights" id="workspaceInsights"></div>
+<p class="workspace-status" id="workspaceTaskProgress">No focus tasks yet</p>
+<p class="workspace-privacy" id="workspaceAccountInsight">Account activity will appear when your dashboard data loads.</p>
+</section>
+<section class="dashboard-panel workspace-panel wide" data-widget-section="projects" aria-labelledby="workspaceProjectsTitle">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">BUILD SOMETHING</div><h2 id="workspaceProjectsTitle">Project workspace</h2><p>Keep a lightweight list of personal projects and their current stage.</p></div><a class="dashboard-section-link" href="projects.html">TechNova projects →</a></div>
+<form class="workspace-form" id="workspaceProjectForm"><input id="workspaceProjectName" type="text" maxlength="70" placeholder="Name a project…" aria-label="New project name" required><button class="workspace-action primary" type="submit">＋ Create project</button></form>
+<div class="workspace-project-list" id="workspaceProjectList" aria-live="polite"></div>
+<p class="workspace-status" id="workspaceProjectStatus" role="status">Up to 20 projects · stored on this device.</p>
+</section>
+<section class="dashboard-panel workspace-panel narrow" data-widget-section="developer" aria-labelledby="workspaceDeveloperTitle">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">BUILT FOR MAKING</div><h2 id="workspaceDeveloperTitle">Developer toolkit</h2><p>Handy utilities that run locally in your browser.</p></div></div>
+<div class="workspace-dev-grid">
+<div><label for="workspaceJsonInput">JSON input</label><textarea id="workspaceJsonInput" placeholder='{"hello":"TechNova"}' spellcheck="false"></textarea><div class="workspace-note-actions"><button class="workspace-action primary" id="workspaceJsonFormat" type="button">Format</button><button class="workspace-action" id="workspaceJsonMinify" type="button">Minify</button></div></div>
+<div><label for="workspaceJsonOutput">Output</label><textarea id="workspaceJsonOutput" readonly placeholder="Formatted JSON appears here…" spellcheck="false"></textarea><div class="workspace-note-actions"><button class="workspace-action" id="workspaceJsonCopy" type="button">Copy</button><button class="workspace-action" id="workspaceJsonClear" type="button">Clear</button></div></div>
+<div><label for="workspaceColour">Colour studio</label><div class="workspace-colour-row"><input id="workspaceColour" type="color" value="#42d7ff"><span class="workspace-colour-swatch" id="workspaceColourSwatch" aria-hidden="true"></span></div><strong id="workspaceColourHex">#42D7FF</strong><button class="workspace-action" id="workspaceCopyColour" type="button">Copy HEX</button><p class="workspace-status" id="workspaceColourStatus" role="status"></p></div>
+<div><label>More developer tools</label><div class="workspace-shortcuts"><a class="workspace-shortcut" href="tool-html-playground.html">〈/〉 HTML editor</a><a class="workspace-shortcut" href="tool-json-formatter.html">{ } JSON tool</a><a class="workspace-shortcut" href="tool-unit-converter.html">⇄ Converter</a><a class="workspace-shortcut" href="tool-colour-palette.html">◉ Palette</a><a class="workspace-shortcut" href="tool-text-utilities.html">Aa Text tools</a><a class="workspace-shortcut" href="tools.html">＋ All tools</a></div></div>
+</div>
+<p class="workspace-status" id="workspaceJsonStatus" role="status">JSON is parsed locally. No code is executed.</p>
+</section>
+<section class="dashboard-panel workspace-panel" data-widget-section="study" aria-labelledby="workspaceStudyTitle">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">LEARN & REVISE</div><h2 id="workspaceStudyTitle">Study hub</h2><p>Launch revision prompts in the existing TechNova Assistant.</p></div><a class="dashboard-section-link" href="learning.html">Academy →</a></div>
+<div class="workspace-shortcuts">
+<button class="workspace-shortcut" type="button" data-study-prompt="Make flashcards from my uploaded documents">🗂 Flashcards prompt</button>
+<button class="workspace-shortcut" type="button" data-study-prompt="Create a revision quiz from my uploaded documents">🧠 Quiz prompt</button>
+<button class="workspace-shortcut" type="button" data-study-prompt="Summarise my uploaded documents">📚 Summarise notes</button>
+<button class="workspace-shortcut" type="button" data-study-prompt="Help me create a realistic study plan for my deadlines">📅 Study plan prompt</button>
+</div>
+<p class="workspace-status" id="workspaceStudyStatus" role="status">Upload notes in Ask TechNova first, then choose a prompt.</p>
+<p class="workspace-privacy">These buttons prefill the existing free assistant. They do not add a generative AI model or upload your files.</p>
+</section>
+<section class="dashboard-panel workspace-panel" data-widget-section="community-hub" aria-labelledby="workspaceCommunityTitle">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">CONNECT & DISCOVER</div><h2 id="workspaceCommunityTitle">Community & spaces</h2><p>Jump into existing TechNova community, learning and cloud areas.</p></div></div>
+<div class="workspace-shortcuts">
+<a class="workspace-shortcut" href="community.html">👥 Community</a><a class="workspace-shortcut" href="ideas.html">💡 Share an idea</a>
+<a class="workspace-shortcut" href="leaderboard.html">↟ Leaderboard</a><a class="workspace-shortcut" href="showcase.html">✨ Project showcase</a>
+<a class="workspace-shortcut" href="directory.html">⌕ Member directory</a><a class="workspace-shortcut" href="learning.html">🎓 Academy</a>
+<a class="workspace-shortcut" href="storage-manager.html">☁ Private cloud</a><a class="workspace-shortcut" href="google-drive.html">▣ Google Drive</a>
+</div>
+<p class="workspace-privacy">These are links to existing TechNova areas. This dashboard update does not create new messaging, forum, or cloud-sync backend services.</p>
+</section>
+<section class="dashboard-panel workspace-panel full" id="workspaceAdminPanel" data-widget-section="admin-tools" aria-labelledby="workspaceAdminTitle" hidden>
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">ADMINISTRATOR WORKSPACE</div><h2 id="workspaceAdminTitle">Admin quick access</h2><p>Administrator destinations are shown only after the existing role check succeeds.</p></div><span class="dashboard-ai-badge">ROLE VERIFIED</span></div>
+<div class="workspace-admin-links"><a href="admin.html">Admin dashboard</a><a href="admin-cms.html">Content management</a><a href="admin-reports.html">Reports</a><a href="admin-tools.html">Admin tools</a><a href="admin-tool-management.html">Tool management</a></div>
+</section>
 </section>
 <div class="dashboard-grid">
 <div class="dashboard-main-column">
@@ -414,6 +566,7 @@
 <script src="../js/auth.js"></script>
 <script src="../js/saved-events.js"></script>
 <script src="../js/dashboard.js?v=6"></script>
+<script src="../js/dashboard-workspace.js?v=1"></script>
 <script src="../js/script.js"></script>
 <script src="https://unpkg.com/mammoth@1.9.0/mammoth.browser.min.js" defer></script>
 <script src="../js/ai-assistant.js?v=11"></script>
