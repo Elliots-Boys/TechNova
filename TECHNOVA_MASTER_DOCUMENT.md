@@ -779,7 +779,7 @@ Validation:
 - JavaScript syntax parsing and static markup/ID checks are performed before PR creation.
 - Manual signed-in browser testing, cross-origin embedding checks, tab/history/bookmark behaviour, private-session behaviour, download fallback, responsive layout, keyboard navigation and screen-reader QA remain required.
 
-Pull request: [#49 — Add the advanced TechNova Browser to Desktop](https://github.com/Elliots-Boys/TechNova/pull/49). Created as a draft; not merged or deployed.
+Pull request: [#49 — Add the advanced TechNova Browser to Desktop](https://github.com/Elliots-Boys/TechNova/pull/49). Merged into `main` on 25 November 2026 (merge commit `72217023cbfa3b4e934b1b55439468e72b2b96ee`). The Browser UI and runtime are subsequently removed from the Desktop by the unified OS expansion in PR #50.
 
 
 
