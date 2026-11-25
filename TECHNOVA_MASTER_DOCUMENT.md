@@ -364,6 +364,22 @@ Dashboard work must preserve existing account/authentication behaviour, avoid fa
 
 ## 12. Admin dashboard and authentication routing
 
+The admin dashboard remains in `pages/admin.html` and retains its existing feature areas: overview metrics, event management, user/profile management, registrations, articles, quiz management, website content and administrator activity.
+
+PR #37 refines the existing administrator workspace with:
+- A control-centre introduction and a link back to the personal dashboard.
+- A manual refresh button that calls the existing data-loading flow and prevents overlapping refreshes.
+- A visible last-refreshed status.
+- Sticky, horizontally scrollable section tabs on smaller screens, with an accessible current-tab indicator.
+- Improved spacing, card hierarchy, keyboard focus, hover and reduced-motion behaviour.
+
+The existing `checkAdmin()` check remains responsible for requiring an authenticated user and a `user_roles.role` value of `admin` before administrator data is loaded. The refresh action does not add database writes or replace the existing permission checks.
+
+PR #37 also changes the default return destination in `js/auth.js` to `/pages/dashboard.html` for email and OAuth sign-in when no explicit destination is supplied. An already signed-in visitor opening the login form is sent to the same default destination. Explicit same-origin OAuth `redirect` requests and the existing `next=events.html` / `next=google-drive.html` flows are retained. Password-reset URLs are exempt from the automatic login-page redirect.
+
+No Supabase schema, RLS policy, settings, Edge Function, production data or deployment changes are included. Provider OAuth and browser-session behaviour require manual preview testing.
+
+
 These instructions reflect the user's explicit preferences.
 
 1. **Inspect first.** Check the current repository, target files, current branch/base and related features before editing.
