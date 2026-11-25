@@ -9,6 +9,7 @@ This change upgrades only the signed-in personal dashboard at `pages/dashboard.h
 - [x] Dashboard element IDs checked for duplicates.
 - [x] Existing user-scoped read-only event-registration and saved-event count queries retained.
 - [x] Existing admin-role lookup retained; admin shortcut remains hidden unless `user_roles.role` is `admin`.
+- [x] Existing saved-event preview is retained through the current browser-side saved-events helper.
 - [x] Browser-only preferences use local storage; no new backend writes or external services added.
 
 ## Manual browser checks required
