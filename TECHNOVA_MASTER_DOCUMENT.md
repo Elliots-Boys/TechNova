@@ -291,7 +291,8 @@ This table records known PR history. Where a final state has not been verified, 
 | #33 | AI Writing Studio | Merged into `main` on 25 November 2026 (verified via GitHub PR state) |
 | #34 | Central TechNova master document | Merged into `main` on 25 November 2026 (verified before dashboard work) |
 | #35 | Browser-based Quiz Generator | Merged into `main` on 25 November 2026; deterministic note-based questions, scoring and explanations; no AI API or backend changes |
-| #36 | Personal dashboard refresh | Draft PR created; responsive member workspace, read-only user-scoped totals and saved-event previews; master document updated in the same PR |
+| #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; responsive member workspace, read-only user-scoped totals and saved-event previews; merge verified via GitHub |
+| #37 | Admin dashboard refinement and dashboard-first login redirects | Draft PR created; admin workspace styling, manual refresh, tab accessibility and default post-login destination; master document updated in the same PR |
 
 ### 10.1 PR #32 — Advanced assistant controls
 
@@ -354,13 +355,14 @@ The generator creates multiple-choice, true/false or mixed revision questions fr
 
 ## 11. Dashboard refresh — approved direction
 
-On 25 November 2026, the user approved improving both dashboards in separate stages:
-1. **Personal dashboard first** — refresh `pages/dashboard.html` as a responsive member workspace, showing account identity/profile, read-only counts for the signed-in user's event registrations and saved events, registered-event activity, saved-event previews and shortcuts to existing TechNova areas.
-2. **Admin dashboard separately afterwards** — review and improve `pages/admin.html` only in a later, separate PR after the personal dashboard PR has been reviewed/merged.
+On 25 November 2026, the user approved improving both dashboards in separate PRs, with the personal dashboard first.
 
-The dashboard work must preserve existing account/authentication behaviour, avoid fake activity or fabricated statistics, keep user-scoped data protected by existing RLS, and avoid backend changes unless the user separately approves them. The personal dashboard PR updates this master document in the same PR. Future feature PRs must also include their corresponding master-document update in the same PR.
+- **Personal dashboard:** PR #36 (`feature/technova-personal-dashboard-36`) was merged into `main` on 25 November 2026 (verified via GitHub). It refreshes `pages/dashboard.html` as a responsive member workspace with account identity/profile, user-scoped read-only registration and saved-event totals, registered-event activity, saved-event previews and links to existing TechNova areas. Browser/device QA remains a manual check.
+- **Admin dashboard:** PR #37 is the separate follow-up for `pages/admin.html`. It refines the existing administrator workspace rather than replacing its existing event, user, registration, article, quiz, website-content and audit-log tools. The existing `checkAdmin()` role verification remains in place.
 
-## 12. Non-negotiable development workflow
+Dashboard work must preserve existing account/authentication behaviour, avoid fake activity or fabricated statistics, keep user-scoped data protected by existing RLS, and avoid backend changes unless the user separately approves them. Every feature PR must update this master document in that same PR.
+
+## 12. Admin dashboard and authentication routing
 
 These instructions reflect the user's explicit preferences.
 
@@ -394,7 +396,17 @@ These instructions reflect the user's explicit preferences.
 - [ ] Wait for the user to review and merge.
 - [ ] Update this master document in the same PR with the feature scope, files, decisions, testing and PR link/status; update the record again when merge/deployment is verified.
 
-## 13. SEO and public discovery
+## 13. Non-negotiable development workflow
+
+1. Use a separate feature branch and pull request for each independently reviewable change.
+2. Preserve existing working features and keep changes within the approved scope.
+3. Do not merge PRs or deploy to production unless the user explicitly asks.
+4. Do not change Supabase schema, policies, settings, Edge Functions or production data without separate explicit approval.
+5. Include a QA checklist and state honestly which checks were performed versus which require browser/manual testing.
+6. Update `TECHNOVA_MASTER_DOCUMENT.md` inside every PR, including its scope, files, decisions, validation, PR link and accurate open/merged/deployed status.
+7. When merge or deployment status changes, update the master document in the next relevant PR.
+
+## 14. SEO and public discovery
 
 Historical work included:
 - `robots.txt`
@@ -409,7 +421,7 @@ The sitemap lists the site's public pages.
 
 An earlier Search Console check had not yet returned performance data. Re-check Search Console for current indexing, clicks, impressions, coverage and sitemap status before drawing conclusions.
 
-## 14. Known gaps and items requiring verification
+## 15. Known gaps and items requiring verification
 
 This section intentionally records uncertainty so historical notes are not mistaken for current truth.
 
@@ -417,8 +429,10 @@ This section intentionally records uncertainty so historical notes are not mista
 |---|---|---|
 | PR #24 | Knowledge-bank expansion was proposed | Current PR/commit and merge status |
 | PR #31 | Model removal PR was previously open/draft | Current PR status and whether removal is in main |
-| PR #36 | Personal dashboard refresh PR is newly created | Review/merge and preview status; browser QA outstanding |
-| Admin dashboard | Existing `pages/admin.html` includes overview, user, event, registration, article, quiz, website and activity sections | Review after personal dashboard PR is merged; changes must be separate |
+| PR #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; browser/device QA outstanding |
+| PR #37 | Admin dashboard refinement and dashboard-first login redirects | Draft PR; review/merge and browser QA outstanding |
+| Admin dashboard | Existing `pages/admin.html` includes overview, user, event, registration, article, quiz, website and activity sections; PR #37 refines its workspace UI and refresh flow | Browser QA, review and merge status |
+| Login destination | PR #37 changes the default post-login destination to `pages/dashboard.html`; explicit same-origin OAuth redirects and supported `next` destinations remain | Test email and each configured OAuth provider on preview/live domains |
 | Community | Earlier review found no complete post/reply forum | Current implementation |
 | OAuth providers | Roblox/Telegram and other providers were discussed | Actual Supabase provider configuration and live flows |
 | OAuth app authorisation | Consent, authorised-app and developer pages exist | Full OAuth protocol, callback, scopes and security validation |
@@ -429,23 +443,23 @@ This section intentionally records uncertainty so historical notes are not mista
 | Search Console | Setup/checks were discussed | Current verification and performance data |
 | Browser storage | AI chat/document work used local browser processing | Current retention, clearing and export behaviour |
 
-## 15. Change log for this master document
+## 16. Change log for this master document
 
 | Date | Update |
 |---|---|
 | 25 Nov 2026 | Consolidated project identity, infrastructure, page map, historical architecture decisions, AI roadmap, PR history, development rules and verification gaps from available project context and repository inspection. |
-| 25 Nov 2026 | Verified PR #33 (AI Writing Studio), PR #34 (master document) and PR #35 (Quiz Generator) merged into `main`; documented the dashboard refresh decision and PR #36 personal-dashboard scope. |
+| 25 Nov 2026 | Verified PRs #33–#36 merged into `main`; PR #36 personal dashboard is merged. Recorded PR #37 admin dashboard refinement and default dashboard-after-login routing. |
 
 ---
 
-## 16. Instructions for future maintainers and AI assistants
+## 17. Instructions for future maintainers and AI assistants
 
 Before making a TechNova change:
 1. Read this document.
 2. Check the live repository and current PR state; this document is a project memory, not a substitute for current GitHub state.
 3. Confirm the requested scope with the user's existing decisions.
 4. Do not infer that a planned or historical feature is live.
-5. Follow the development workflow in Section 12.
+5. Follow the development workflow in Section 13.
 6. Update this document when a meaningful decision or project state changes.
 
 **When uncertain, preserve the existing implementation and ask before changing infrastructure, Supabase, authentication, the dashboard, or production.**
