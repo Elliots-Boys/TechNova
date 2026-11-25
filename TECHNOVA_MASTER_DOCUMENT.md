@@ -781,3 +781,70 @@ Validation:
 
 Pull request: [#49 — Add the advanced TechNova Browser to Desktop](https://github.com/Elliots-Boys/TechNova/pull/49). Created as a draft; not merged or deployed.
 
+
+
+---
+
+## 28. TechNova OS Expansion — unified desktop application suite
+
+**Status:** Proposed implementation in PR #50; open draft, unmerged and not deployed. The Browser application is intentionally removed from the Desktop interface by this PR because the user decided to scrap it in favour of a wider OS expansion. Historical PR #49 remains in GitHub history and its merge is not reversed.
+
+### Scope
+
+One integrated PR adds the following built-in Desktop applications and system features:
+
+1. **TechNova App Store:** curated built-in application catalogue with enable/disable controls. It does not execute arbitrary third-party extensions.
+2. **Virtual Desktops:** separate workspaces, create/rename/delete, window assignment and Ctrl+Alt+Arrow navigation.
+3. **Whiteboard Studio:** pointer/touch drawing, sticky notes, local persistence and PNG export.
+4. **Document Studio:** lightweight rich-text editor, saved documents, HTML/TXT export and print-to-PDF.
+5. **Spreadsheet Studio:** editable grid, cell references, basic arithmetic, SUM/AVERAGE/MIN/MAX ranges, row/column expansion and CSV export.
+6. **API Studio:** browser-origin HTTP requests, JSON headers/body, response inspection and saved request collections; CORS restrictions apply.
+7. **Desktop Widgets:** local clock/calendar/task/quick-note widgets, hide/show and drag-to-reorder.
+8. **Control Centre:** appearance settings, reduced motion, local backup/restore, clear expansion data and optional cloud sync controls.
+9. **Media Centre:** local audio/video library stored in IndexedDB and playback through browser-supported media elements.
+10. **Website Designer:** editable page sections, sandboxed preview and standalone HTML download; no hosting/deployment.
+11. **Mail Centre:** local draft manager and mailto handoff only. No mailbox OAuth, inbox access or server-side email sending is included.
+12. **Storage Manager 2.0:** local IndexedDB file library plus list/upload/download/delete in the existing private `user-files` Supabase Storage bucket, using the existing user-folder ownership policies.
+
+### Shared desktop architecture
+
+- Extends the existing application registry and window manager; multiple windows can remain open and be moved/minimised/maximised.
+- Workspace assignment is stored locally and windows are shown only in the active virtual desktop.
+- All expansion applications are loaded from a single `js/technova-os-expansion.js` module after the existing Desktop shell.
+- The former Browser window markup and Browser script include are removed from `pages/desktop.html`; the obsolete Browser application is removed from the launcher registry. The historical Browser source/PR remains part of Git history.
+- Existing Desktop apps and sign-in guard are retained.
+
+### Optional Supabase sync
+
+- Uses the existing Supabase project and existing `user-files` private Storage bucket.
+- Adds a migration for `public.desktop_sync_records`, storing structured app payloads keyed by authenticated user, app and record key.
+- RLS is enabled and every SELECT/INSERT/UPDATE/DELETE policy checks `auth.uid() = user_id`; anonymous access is revoked and authenticated CRUD grants are explicit.
+- Structured sync is opt-in and disabled by default. Local-first features continue to work if the migration has not been applied or cloud requests fail.
+- The migration is included in the PR only. It is not applied to the hosted database by this PR. No Supabase project settings, authentication settings, Edge Functions, production records or bucket policies are changed.
+- File blobs are stored separately in the existing private bucket under the authenticated user's own `<user-id>/desktop/` prefix. The existing bucket policy is reused; no new bucket or storage policy is introduced.
+- No service-role key, secret key, provider password or API credential is embedded in frontend code.
+
+### Limitations and verification
+
+- Document Studio is not a full Microsoft Word replacement; DOCX export is not included.
+- Spreadsheet formulas are intentionally limited; not Excel-compatible.
+- API Studio can be blocked by browser CORS and should not store secrets in collections.
+- Media playback depends on browser codec support and does not bypass DRM.
+- Website Designer creates static files; it does not publish websites.
+- Mail Centre is a draft organiser only; a real inbox requires a separate provider OAuth integration.
+- Supabase cloud sync requires applying the included migration after PR review/merge. It has not been tested against the live Data API in this PR.
+- Manual signed-in browser, responsive, accessibility, two-account RLS and cloud Storage tests remain required; see `docs/technova-os-expansion-pr50-qa.md`.
+
+### Files
+
+- `pages/desktop.html`
+- `js/technova-desktop.js`
+- `js/technova-os-expansion.js`
+- `css/technova-desktop.css`
+- `supabase/migrations/20261125141500_add_technova_desktop_cloud_sync.sql`
+- `docs/technova-os-expansion-pr50-qa.md`
+- `TECHNOVA_MASTER_DOCUMENT.md`
+
+### Pull request
+
+[PR #50 — Expand TechNova Desktop into a full operating environment](https://github.com/Elliots-Boys/TechNova/pull/50). Status: open draft, not merged, not deployed. The Supabase migration is committed but not applied to the hosted project. No Cloudflare deployment is performed.
