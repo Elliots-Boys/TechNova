@@ -292,7 +292,8 @@ This table records known PR history. Where a final state has not been verified, 
 | #34 | Central TechNova master document | Merged into `main` on 25 November 2026 (verified before dashboard work) |
 | #35 | Browser-based Quiz Generator | Merged into `main` on 25 November 2026; deterministic note-based questions, scoring and explanations; no AI API or backend changes |
 | #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; responsive member workspace, read-only user-scoped totals and saved-event previews; merge verified via GitHub |
-| #39 | Personal dashboard workspace refinement | Open draft PR; expands the personal workspace, adds upcoming registrations and recent activity, and fixes the registered-events panel that previously remained in its loading state |
+| #39 | Personal dashboard workspace refinement | Merged into `main` on 25 November 2026; adds upcoming registrations and recent activity and fixes the registered-events panel |
+| #40 | Personal dashboard command-centre enhancement | Open draft PR: [#40](https://github.com/Elliots-Boys/TechNova/pull/40); searchable directory, local pins/recent pages/notes/widget preferences and preserved event/profile data |
 | #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser/provider QA remains outstanding |
 | #38 | Refresh cached authentication script for dashboard redirects | Open draft PR; updates the login and signup script cache version; no auth logic or backend changes |
 
@@ -448,7 +449,8 @@ This section intentionally records uncertainty so historical notes are not mista
 | PR #24 | Knowledge-bank expansion was proposed | Current PR/commit and merge status |
 | PR #31 | Model removal PR was previously open/draft | Current PR status and whether removal is in main |
 | PR #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; browser/device QA outstanding |
-| PR #39 | Personal dashboard workspace refinement | Open draft PR; expands personal workspace and populates registration/activity panels; preview QA required |
+| PR #39 | Personal dashboard workspace refinement | Merged into `main` on 25 November 2026; browser/device QA remains outstanding |
+| PR #40 | Personal dashboard command-centre enhancement | Open draft PR; browser/device and signed-in account QA outstanding; no backend or deployment changes |
 | PR #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser QA outstanding |
 | PR #39 | Personal dashboard workspace refinement | Open draft PR; browser QA outstanding; no backend changes |
 | Admin dashboard | Existing `pages/admin.html` includes overview, user, event, registration, article, quiz, website and activity sections; PR #37 refines its workspace UI and refresh flow | Browser QA outstanding |
@@ -483,3 +485,24 @@ Before making a TechNova change:
 6. Update this document when a meaningful decision or project state changes.
 
 **When uncertain, preserve the existing implementation and ask before changing infrastructure, Supabase, authentication, the dashboard, or production.**
+
+
+## 18. Personal dashboard command-centre enhancement (PR #40)
+
+The user clarified that the dashboard is the signed-in landing page for TechNova, not a replacement for the rest of the website. All existing public/member pages and the normal site navigation must remain available. The personal dashboard is being expanded as a command centre while the separate administrator dashboard remains separate.
+
+Planned/implemented scope on branch `feature/technova-personal-dashboard-command-centre-40`:
+- Rework the personal dashboard visual hierarchy into a responsive command-centre layout while retaining the existing TechNova header, logout control, footer and account sign-in guard.
+- Add a searchable, category-filtered directory of existing TechNova pages and tools, with a link to the full site map.
+- Add locally saved pinned shortcuts and a recently opened list.
+- Add a browser-local quick note and controls to show/hide supported dashboard widgets.
+- Retain a preview of the user's saved events using the existing saved-events helper.
+- Retain read-only, authenticated-user-scoped registration and saved-event counts, event previews and the existing admin role lookup.
+- Keep the normal website pages, their routes, and the admin dashboard implementation unchanged.
+
+Privacy/technical boundaries:
+- Pins, recent dashboard links, widget visibility and the quick note are stored in the current browser only; they are not synced to Supabase or another device.
+- No new backend writes, schema/RLS changes, settings changes, Edge Functions, credentials, or external services.
+- No production deployment. Browser/device QA remains required.
+
+Pull request: [#40 — Turn the personal dashboard into a TechNova command centre](https://github.com/Elliots-Boys/TechNova/pull/40). It is an open draft PR, not merged or deployed. Update this section when review, merge or deployment status changes.
