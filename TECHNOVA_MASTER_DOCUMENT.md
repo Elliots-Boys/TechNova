@@ -305,6 +305,7 @@ This table records known PR history. Where a final state has not been verified, 
 | #46 | Phase 2 personal workspace expansion | Merged into `main` on 25 November 2026; recurring tasks, analytics, agenda, notes organisation and multi-file developer studio |
 | #47 | TechNova Desktop environment | Merged into `main` on 25 November 2026; authenticated desktop-style workspace and built-in apps |
 | #48 | TechNova Desktop boot-screen fix | Merged into `main` on 25 November 2026; corrected hidden boot overlay and refreshed desktop asset cache |
+| #49 | Advanced TechNova Browser inside Desktop | Draft PR; multi-tab browser-based web viewer, local bookmarks/history, search engines and iframe external fallback; not merged or deployed |
 
 ### 10.1 PR #32 — Advanced assistant controls
 
@@ -483,6 +484,7 @@ This section intentionally records uncertainty so historical notes are not mista
 | 25 Nov 2026 | Verified PRs #40–#43 merged into `main`; PR #43 adds a browser-local focus planner to the personal dashboard. |
 | 25 Nov 2026 | PR #44 merged with calendar, habit, notes, insights, project, developer, study and community workspace widgets; no Cloudflare deployment. |
 | 25 Nov 2026 | PRs #45–#48 verified merged; TechNova OS, Phase 2 workspace, Desktop environment and Desktop boot-screen fix are recorded as merged. |
+| 25 Nov 2026 | PR #49 adds the advanced browser-based TechNova Browser app to Desktop; browser-local tabs, bookmarks and history; iframe restrictions and privacy limitations documented; PR remains draft/unmerged and no deployment is performed. |
 
 ---
 
@@ -779,4 +781,3 @@ Validation:
 
 Pull request: [#49 — Add the advanced TechNova Browser to Desktop](https://github.com/Elliots-Boys/TechNova/pull/49). Created as a draft; not merged or deployed.
 
-| 25 Nov 2026 | PR #49 adds the advanced browser-based TechNova Browser app to Desktop; browser-local tabs, bookmarks and history; iframe restrictions and privacy limitations documented; PR remains draft/unmerged and no deployment is performed. |
