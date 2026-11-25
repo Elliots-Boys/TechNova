@@ -56,15 +56,15 @@ function renderLinkList(container,items,emptyText,removable=false){
 }
 function renderPins(){
  const pins=getPins();
- const items=pins.map(href=>{const link=appLinks().find(item=>item.getAttribute('href')===href);return link?{href,title:linkLabel(link)}:null;}).filter(Boolean);
+ const items=pins.map(href=>{const link=appLinks().find(item=>item.dataset.href===href);return link?{href,title:linkLabel(link)}:null;}).filter(Boolean);
  renderLinkList($('pinnedApps'),items,'Pin the pages you use most with the ☆ buttons below.',true);
  renderLinkList($('pinnedAppsAside'),items,'Pin a page from Explore TechNova.',true);
- appLinks().forEach(link=>{const button=link.querySelector('.dashboard-pin');if(!button)return;const active=pins.includes(link.getAttribute('href'));button.setAttribute('aria-pressed',String(active));button.textContent=active?'★':'☆';button.setAttribute('aria-label',(active?'Unpin ':'Pin ')+linkLabel(link));});
+ appLinks().forEach(link=>{const button=link.querySelector('.dashboard-pin');if(!button)return;const active=pins.includes(link.dataset.href);button.setAttribute('aria-pressed',String(active));button.textContent=active?'★':'☆';button.setAttribute('aria-label',(active?'Unpin ':'Pin ')+linkLabel(link));});
  const section=$('pinnedAppsSection');if(section)section.hidden=false;
 }
 function togglePin(href){const pins=getPins();const next=pins.includes(href)?pins.filter(item=>item!==href):[...pins,href];safeWrite(STORAGE.pins,next);renderPins();}
 function recordRecent(link){
- const href=link.getAttribute('href');const item={href,title:linkLabel(link),time:Date.now()};
+ const href=link.dataset.href;const item={href,title:linkLabel(link),time:Date.now()};
  const next=[item,...getRecent().filter(entry=>entry.href!==href)].slice(0,6);
  safeWrite(STORAGE.recent,next);renderRecent();
 }
@@ -96,7 +96,7 @@ function setupDirectory(){
    if(event.target.closest('.dashboard-pin'))return;
    recordRecent(link);
   });
-  link.querySelector('.dashboard-pin')?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();togglePin(link.getAttribute('href'));});
+  link.querySelector('.dashboard-pin')?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();togglePin(link.dataset.href);});
  });
  apply();renderPins();renderRecent();
 }
