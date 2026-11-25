@@ -12,7 +12,7 @@
 2. Confirm unauthenticated visitors are redirected to login.
 3. Confirm the greeting, email, profile bio and membership status load from the signed-in account.
 4. Confirm registration and saved-event totals reflect the current user's records only.
-5. Confirm registered events render using the existing account.js loader and that the existing remove-registration action still works.
+5. Confirm registered events render using the existing `js/auth.js` account loader and that the existing remove-registration action still works.
 6. Confirm saved event previews and View links work; confirm the empty state when there are no saved events.
 7. Confirm the admin shortcut appears only when the existing `user_roles.role` lookup returns `admin`; the admin page must still enforce its own access check.
 8. Confirm quick links open AI Assistant, events, saved events, learning, resources, private cloud and account settings.
