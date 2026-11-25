@@ -725,3 +725,14 @@ Validation:
 - Signed-in browser testing, file import/download checks, ZIP extraction, responsive layout, keyboard navigation and screen-reader QA remain to be completed manually.
 
 Pull request: [#47 — Build TechNova Desktop with integrated workspace apps](https://github.com/Elliots-Boys/TechNova/pull/47). Created as a draft; not merged or deployed at the time of this document update.
+
+
+## 26. TechNova Desktop boot-screen fix (PR #48)
+
+The initial Desktop release had a CSS visibility bug: the boot screen used `.tn-boot { display: grid; }`, which overrode the browser's default hidden-element styling. JavaScript set the boot screen's `hidden` property after startup, but the CSS rule kept the startup overlay visible, making the desktop appear not to open.
+
+PR #48 adds an explicit `.tn-boot[hidden] { display: none !important; }` rule so the startup overlay is removed when authentication and initialisation complete. It also bumps the desktop stylesheet and script cache versions to avoid stale cached assets.
+
+Scope is limited to the desktop startup display and asset cache versions. No authentication logic, application data, Supabase configuration, Cloudflare deployment or other pages are changed. Validation includes a static check that the hidden-state override exists and that both asset versions are bumped; signed-in browser verification remains required.
+
+Pull request: [#48 — Fix TechNova Desktop startup overlay](https://github.com/Elliots-Boys/TechNova/pull/48). Created as a draft; merge and deployment status must be updated after verification.
