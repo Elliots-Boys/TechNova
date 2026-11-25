@@ -724,4 +724,4 @@ Validation:
 - JavaScript syntax parsing, static HTML ID checks and module-link checks are performed before PR creation.
 - Signed-in browser testing, file import/download checks, ZIP extraction, responsive layout, keyboard navigation and screen-reader QA remain to be completed manually.
 
-Pull request: [#47 — Build TechNova Desktop with integrated workspace apps](https://github.com/Elliots-Boys/TechNova/pull/47). Created as a draft; merge and deployment status must be updated after verification.
+Pull request: [#47 — Build TechNova Desktop with integrated workspace apps](https://github.com/Elliots-Boys/TechNova/pull/47). Created as a draft; not merged or deployed at the time of this document update.
