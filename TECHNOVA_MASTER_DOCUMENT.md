@@ -435,7 +435,6 @@ This section intentionally records uncertainty so historical notes are not mista
 |---|---|
 | 25 Nov 2026 | Consolidated project identity, infrastructure, page map, historical architecture decisions, AI roadmap, PR history, development rules and verification gaps from available project context and repository inspection. |
 | 25 Nov 2026 | Verified PR #33 (AI Writing Studio), PR #34 (master document) and PR #35 (Quiz Generator) merged into `main`; documented the dashboard refresh decision and PR #36 personal-dashboard scope. |
-| 25 Nov 2026 | Verified PR #33 (AI Writing Studio), PR #34 (master document) and PR #35 (Quiz Generator) are merged into `main`; PR #35 merge verified via GitHub on 25 Nov. Recorded the user's decision to refresh both dashboards in separate PRs, personal dashboard first and admin dashboard later. |
 
 ---
 
@@ -446,7 +445,7 @@ Before making a TechNova change:
 2. Check the live repository and current PR state; this document is a project memory, not a substitute for current GitHub state.
 3. Confirm the requested scope with the user's existing decisions.
 4. Do not infer that a planned or historical feature is live.
-5. Follow the development workflow in Section 11.
+5. Follow the development workflow in Section 12.
 6. Update this document when a meaningful decision or project state changes.
 
 **When uncertain, preserve the existing implementation and ask before changing infrastructure, Supabase, authentication, the dashboard, or production.**
