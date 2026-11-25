@@ -307,7 +307,7 @@ This table records known PR history. Where a final state has not been verified, 
 | #48 | TechNova Desktop boot-screen fix | Merged into `main` on 25 November 2026; corrected hidden boot overlay and refreshed desktop asset cache |
 | #49 | Advanced TechNova Browser inside Desktop | Merged into `main` on 25 November 2026; later retired from Desktop by PR #50 |
 | #50 | TechNova OS expansion | Merged into `main` on 25 November 2026; twelve requested application areas and optional sync through existing private Storage bucket; no schema/settings changes |
-| #52 | TechNova Desktop expansion follow-up fixes | Open draft PR; fixes expansion styling, search, Whiteboard export, spreadsheet results and local storage handling; adds optional Gmail OAuth; not merged or deployed |
+| #51 | TechNova Desktop expansion follow-up fixes | Draft PR; fixes expansion styling, search, Whiteboard export, spreadsheet results and local storage handling; adds optional Gmail OAuth; no deployment |
 
 ### 10.1 PR #32 — Advanced assistant controls
 
@@ -487,7 +487,6 @@ This section intentionally records uncertainty so historical notes are not mista
 | 25 Nov 2026 | PR #44 merged with calendar, habit, notes, insights, project, developer, study and community workspace widgets; no Cloudflare deployment. |
 | 25 Nov 2026 | PRs #45–#48 verified merged; TechNova OS, Phase 2 workspace, Desktop environment and Desktop boot-screen fix are recorded as merged. |
 | 25 Nov 2026 | PR #49 merged with the advanced browser-based TechNova Browser; its iframe limitations led to its later removal from Desktop in PR #50. |
-| 25 Nov 2026 | PR #50 merged with the unified TechNova Desktop application suite; follow-up fixes and Gmail OAuth integration are tracked separately in PR #52. |
 
 ---
 
@@ -855,9 +854,9 @@ One integrated PR adds the following built-in Desktop applications and system fe
 
 ---
 
-## 29. TechNova Desktop expansion follow-up fixes (PR #52)
+## 29. TechNova Desktop expansion follow-up fixes (PR #51)
 
-**Status:** Open draft PR #52, based on the merged PR #50 baseline. Not merged and not deployed.
+**Status:** Draft follow-up PR prepared from the merged PR #50 baseline. Not merged and not deployed.
 
 ### Fixes and additions
 
@@ -884,4 +883,4 @@ One integrated PR adds the following built-in Desktop applications and system fe
 
 ### Pull request
 
-[PR #52 — Fix and complete TechNova Desktop expansion](https://github.com/Elliots-Boys/TechNova/pull/52). Status: open draft, not merged and not deployed. Gmail requires the owner to complete Google Cloud OAuth setup using `docs/technova-gmail-oauth-setup.md`.
+The follow-up PR is being prepared from the merged PR #50 baseline. Its final GitHub URL and state will be recorded here when created.
