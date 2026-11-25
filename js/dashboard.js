@@ -100,6 +100,66 @@ function setupDirectory(){
  });
  apply();renderPins();renderRecent();
 }
+function setupCommandPalette(){
+ const dialog=$('dashboardCommandDialog'),trigger=$('openCommandPalette'),input=$('dashboardCommandSearch'),results=$('dashboardCommandResults'),close=$('closeCommandPalette');
+ if(!dialog||!trigger||!input||!results||!close||typeof dialog.showModal!=='function')return;
+ const entries=appLinks().map(link=>({
+  link,
+  title:linkLabel(link),
+  category:link.dataset.category||'TechNova',
+  keywords:link.dataset.keywords||'',
+  href:link.querySelector('a')?.href||link.href
+ }));
+ let activeIndex=0,visible=[];
+ const render=()=>{
+  const query=input.value.trim().toLowerCase();
+  visible=entries.filter(item=>[item.title,item.category,item.keywords].join(' ').toLowerCase().includes(query)).slice(0,12);
+  results.replaceChildren();
+  input.removeAttribute('aria-activedescendant');
+  if(!visible.length){const empty=document.createElement('div');empty.className='dashboard-command-empty';empty.textContent='No matching TechNova pages. Try another search.';results.append(empty);activeIndex=0;return;}
+  activeIndex=Math.min(activeIndex,visible.length-1);
+  visible.forEach((item,index)=>{
+   const button=document.createElement('button');button.type='button';button.id='dashboardCommandOption-'+index;button.className='dashboard-command-result';button.setAttribute('role','option');button.setAttribute('aria-selected',String(index===activeIndex));
+   const copy=document.createElement('span');const title=document.createElement('strong');title.textContent=item.title;const meta=document.createElement('small');meta.textContent=item.category+' · '+item.keywords.split(' ').slice(0,4).join(' ');copy.append(title,meta);
+   const key=document.createElement('kbd');key.textContent=index===0?'↵':'Open';button.append(copy,key);
+   button.addEventListener('mouseenter',()=>{activeIndex=index;syncActive();});
+   button.addEventListener('click',()=>openEntry(item));
+   results.append(button);
+  });
+ };
+ const syncActive=()=>{
+  input.setAttribute('aria-activedescendant','dashboardCommandOption-'+activeIndex);
+  Array.from(results.querySelectorAll('[role="option"]')).forEach((item,index)=>item.setAttribute('aria-selected',String(index===activeIndex)));
+  results.querySelector('[aria-selected="true"]')?.scrollIntoView({block:'nearest'});
+ };
+ const openEntry=item=>{
+  if(!item)return;
+  recordRecent(item.link);
+  window.location.assign(item.href);
+ };
+ const open=()=>{
+  if(dialog.open)return;
+  input.value='';activeIndex=0;render();dialog.showModal();input.focus();
+ };
+ trigger.addEventListener('click',open);
+ close.addEventListener('click',()=>dialog.close());
+ dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+ dialog.addEventListener('close',()=>trigger.focus());
+ input.addEventListener('input',()=>{activeIndex=0;render();});
+ input.addEventListener('keydown',event=>{
+  if(event.key==='ArrowDown'||event.key==='ArrowUp'){
+   if(!visible.length)return;
+   event.preventDefault();activeIndex=(activeIndex+(event.key==='ArrowDown'?1:-1)+visible.length)%visible.length;syncActive();
+  }else if(event.key==='Enter'){
+   event.preventDefault();openEntry(visible[activeIndex]);
+  }
+ });
+ document.addEventListener('keydown',event=>{
+  if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){
+   event.preventDefault();open();
+  }
+ });
+}
 function setupWidgets(){
  const button=$('customiseDashboard'),controls=$('widgetControls'),stored=safeRead(STORAGE.widgets,[]);
  const hidden=Array.isArray(stored)?stored:[];
@@ -193,7 +253,7 @@ function syncProfile(user){
  const title=$('dashboardTitle');if(title)title.firstChild.textContent=greeting+', ';
 }
 document.addEventListener('DOMContentLoaded',async()=>{
- setupDirectory();setupWidgets();setupNote();
+ setupDirectory();setupCommandPalette();setupWidgets();setupNote();
  try{
   const {data:{user},error}=await client().auth.getUser();if(error)throw error;
   if(!user){location.href='login.html';return;}

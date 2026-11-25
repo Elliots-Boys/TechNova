@@ -294,8 +294,9 @@ This table records known PR history. Where a final state has not been verified, 
 | #36 | Personal dashboard refresh | Merged into `main` on 25 November 2026; responsive member workspace, read-only user-scoped totals and saved-event previews; merge verified via GitHub |
 | #39 | Personal dashboard workspace refinement | Merged into `main` on 25 November 2026; adds upcoming registrations and recent activity and fixes the registered-events panel |
 | #40 | Personal dashboard command-centre enhancement | Merged into `main` on 25 November 2026; searchable directory, local pins/recent pages/notes/widget preferences |
-| #41 | Dashboard AI workspace integration | Open draft PR: [#41](https://github.com/Elliots-Boys/TechNova/pull/41); embeds the existing free assistant and tools in the personal dashboard while retaining the dedicated AI page |
-| #40 | Personal dashboard command-centre enhancement | Open draft PR: [#40](https://github.com/Elliots-Boys/TechNova/pull/40); searchable directory, local pins/recent pages/notes/widget preferences and preserved event/profile data |
+| #41 | Dashboard AI workspace integration | Merged into `main` on 25 November 2026 (verified via GitHub); embeds the existing free assistant and tools in the personal dashboard while retaining the dedicated AI page |
+| #42 | Personal dashboard command palette | Open draft PR: [#42](https://github.com/Elliots-Boys/TechNova/pull/42); local searchable Quick open dialog with Ctrl/Cmd+K and keyboard navigation; not merged or deployed |
+
 | #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser/provider QA remains outstanding |
 | #38 | Refresh cached authentication script for dashboard redirects | Open draft PR; updates the login and signup script cache version; no auth logic or backend changes |
 
@@ -472,7 +473,7 @@ This section intentionally records uncertainty so historical notes are not mista
 | Date | Update |
 |---|---|
 | 25 Nov 2026 | Consolidated project identity, infrastructure, page map, historical architecture decisions, AI roadmap, PR history, development rules and verification gaps from available project context and repository inspection. |
-| 25 Nov 2026 | Verified PRs #33–#37 merged into `main`; PR #36 personal dashboard and PR #37 admin dashboard/auth routing are merged. |
+| 25 Nov 2026 | Verified PRs #33–#37 merged into `main`; PR #36 personal dashboard and PR #37 admin dashboard/auth routing are merged. |\n| 25 Nov 2026 | Verified PRs #40 and #41 merged into `main`; PR #42 adds a browser-local keyboard command palette to the personal dashboard. |
 
 ---
 
@@ -507,7 +508,7 @@ Privacy/technical boundaries:
 - No new backend writes, schema/RLS changes, settings changes, Edge Functions, credentials, or external services.
 - No production deployment. Browser/device QA remains required.
 
-Pull request: [#40 — Turn the personal dashboard into a TechNova command centre](https://github.com/Elliots-Boys/TechNova/pull/40). It is an open draft PR, not merged or deployed. Update this section when review, merge or deployment status changes.
+Pull request: [#40 — Turn the personal dashboard into a TechNova command centre](https://github.com/Elliots-Boys/TechNova/pull/40). It was merged into `main` on 25 November 2026 (verified via GitHub). Browser/device and signed-in account QA remain outstanding; no production deployment was performed.
 
 
 ## 19. Dashboard AI workspace integration (PR #41)
@@ -528,4 +529,23 @@ Important limitations and privacy:
 - No Supabase schema, RLS, settings, Edge Functions, credentials, production data, other pages or admin dashboard changes.
 - No Cloudflare deployment. Signed-in browser and device QA is required.
 
-Pull request: [#41 — Embed the TechNova AI assistant in the personal dashboard](https://github.com/Elliots-Boys/TechNova/pull/41). It is an open draft PR, not merged or deployed. Update this section when review, merge or deployment status changes.
+Pull request: [#41 — Embed the TechNova AI assistant in the personal dashboard](https://github.com/Elliots-Boys/TechNova/pull/41). It was merged into `main` on 25 November 2026 (verified via GitHub). Browser/device and signed-in account QA remain outstanding; no production deployment was performed.
+
+## 20. Personal dashboard command palette (PR #42)
+
+PR #41 was verified merged into `main` before this follow-up. PR #42 adds a fast launcher to the personal dashboard without replacing the existing Explore TechNova directory or site navigation.
+
+Scope:
+- Add a Quick open button and a keyboard shortcut (Ctrl+K on Windows/Linux; Cmd+K on macOS).
+- Provide a native accessible dialog with live search over the existing dashboard page directory.
+- Support keyboard selection with Arrow Up/Down, Enter to open and Escape to close.
+- Record destinations opened through the palette in the existing browser-local Recently opened list.
+- Retain all existing page routes, pins, filters, dashboard widgets, assistant, events and account controls.
+
+Privacy and technical boundaries:
+- Search is performed locally against existing `data-app-link` elements. No search terms or usage data are sent to a server.
+- Reuses existing browser-local recent-page storage; no new persistence or external library.
+- No Supabase schema, RLS, settings, Edge Functions, credentials, production data, admin dashboard or other site page changes.
+- No Cloudflare deployment. Keyboard, screen-reader, responsive and signed-in browser QA remain required.
+
+Pull request: [#42 — Add a keyboard-accessible dashboard command palette](https://github.com/Elliots-Boys/TechNova/pull/42). Created as a draft for user review; not merged or deployed.
