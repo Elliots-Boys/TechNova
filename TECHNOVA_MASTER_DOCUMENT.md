@@ -1,0 +1,423 @@
+# TechNova — Master Project Document
+
+> **Purpose:** This is the central project memory for TechNova. Update it whenever a significant architectural decision, feature, deployment, bug, pull request, or roadmap decision changes.
+>
+> **Last consolidated:** 25 November 2026  
+> **Repository:** [Elliots-Boys/TechNova](https://github.com/Elliots-Boys/TechNova)  
+> **Live website:** [https://technova-bmm.pages.dev](https://technova-bmm.pages.dev/)
+
+---
+
+## 1. Project overview
+
+**TechNova** is a technology-focused website and community platform. Its branding currently uses the tagline **“Technology for what's next.”**
+
+The project's direction is to bring technology information, news, events, learning resources, community features, account functionality, developer-facing services, and browser-based productivity tools together.
+
+TechNova has grown beyond a simple informational website. The longer-term ambition is an all-in-one technology platform, while preserving the existing website and its working features.
+
+This document distinguishes between:
+- **Confirmed/current:** visible in the repository or confirmed in project decisions.
+- **Historical:** recorded from earlier development conversations; may need checking against the current deployment.
+- **Planned:** agreed future work, not a claim that the feature already exists.
+- **Unverified:** needs a fresh repository, Supabase, Cloudflare, or browser check.
+
+## 2. Core project details
+
+| Item | Value |
+|---|---|
+| GitHub repository | `Elliots-Boys/TechNova` |
+| Default branch | `main` |
+| Website | `https://technova-bmm.pages.dev` |
+| Hosting platform | Cloudflare Pages |
+| Pages project name | `technova` |
+| Supabase project reference | `maxlbgiomkdfynnjoghs` |
+| Supabase project URL | `https://maxlbgiomkdfynnjoghs.supabase.co` |
+| Frontend | HTML, CSS and JavaScript |
+| Database/backend services | Supabase |
+| Source control and reviews | GitHub branches and pull requests |
+
+**Security note:** Never place passwords, private API keys, service-role keys, access tokens, OAuth client secrets, or other credentials in this document. Public project identifiers and URLs are not substitutes for credentials. Check the actual environment and Supabase settings before changing backend configuration.
+
+### 2.1 Technology stack
+
+- **HTML:** page structure and content.
+- **CSS:** shared visual styling and responsive layouts.
+- **JavaScript:** navigation, page interactions, assistant tools and browser-side functionality.
+- **Supabase:** PostgreSQL database and authentication/backend services.
+- **Cloudflare Pages:** website hosting.
+- **GitHub:** source code, history, branches, pull requests and review workflow.
+
+Historical project work also discussed a Cloudflare Worker. Its current deployment and purpose must be verified before relying on it.
+
+## 3. Design and navigation conventions
+
+The site uses a dark technology-oriented visual style, with navy/dark surfaces and bright cyan/blue/purple accents.
+
+The homepage title in the repository is **“TechNova — Technology for what's next.”**
+
+Important recorded navigation preference:
+- The **Tools** navbar link should appear on `index.html` only, not automatically on every page.
+
+Do not redesign the homepage, dashboard, shared navigation, or unrelated site areas while implementing a scoped feature unless the user explicitly requests it.
+
+## 4. Website pages and areas
+
+The current sitemap and repository inspection show these page areas. A page existing in the repository does not prove every proposed capability is complete or currently working.
+
+| Area | Known page/path | Notes |
+|---|---|---|
+| Homepage | `index.html` | Main landing page and site navigation |
+| Events | `pages/events.html` | Event listings and event-related flows |
+| Technology | `pages/technology.html` | Technology content |
+| Innovation | `pages/innovation.html` | Innovation-related content |
+| News | `pages/news.html` | News/articles |
+| About | `pages/about.html` | About TechNova |
+| Contact | `pages/contact.html` | Contact page |
+| Login | `pages/login.html` | Authentication entry |
+| Signup | `pages/signup.html` | Account registration |
+| Account | `pages/account.html` | Account area |
+| Settings | `pages/settings.html` | User settings |
+| Discover | `pages/discover.html` | Discovery content |
+| Community | `pages/community.html` | Community area |
+| Resources | `pages/resources.html` | Learning/resources |
+| FAQ | `pages/faq.html` | Frequently asked questions |
+| Support | `pages/support.html` | Support information |
+| AI Assistant | `pages/ai-assistant.html` | Assistant and browser-based tools |
+| OAuth consent | `pages/oauth-consent.html` | Application authorisation/consent UI |
+| Authorised apps | `pages/authorized-apps.html` | User's authorised applications UI |
+| OAuth developer information | `pages/oauth-developers.html` | Developer-facing sign-in information |
+
+Other features discussed or present during earlier development include projects, updates, experiments, status, idea submissions, notifications, dashboard, challenges, directory, calendar, bookmarks, metrics and feedback. Their exact current implementation and status should be checked in the repository before changing or documenting them as complete.
+
+### 4.1 Community status — historical finding
+
+On 23 November 2026, the Community page was reviewed and found to have topic categories and guidelines, but not a complete forum experience. The missing capabilities identified at that time included creating posts/topics and replying to posts. Article and event comments were separate from a full discussion forum.
+
+**Action:** Re-check the current Community page and code before treating this historical finding as current.
+
+## 5. Infrastructure and backend
+
+### 5.1 Cloudflare
+
+- The public Pages site is `https://technova-bmm.pages.dev`.
+- The Cloudflare Pages project is named `technova`.
+- Preview deployments may be available for branches/PRs, but never assume a preview URL exists or is healthy without checking the actual deployment or PR checks/comments.
+- Production deployments must not be triggered without the user's explicit permission.
+
+A historical conversation recorded a Cloudflare Worker deployment and issues with Pages Git integration. This is historical context only; verify current Cloudflare configuration before making changes.
+
+### 5.2 Supabase
+
+The known project reference is `maxlbgiomkdfynnjoghs`, with project URL:
+
+`https://maxlbgiomkdfynnjoghs.supabase.co`
+
+The repository contains a shared Supabase client configuration in `js/supabase-config.js`. The client is initialised when the Supabase browser library is available. The repository file has historically used a publishable/anonymous browser key; do not copy keys into documentation, commits, chat, or public issue descriptions.
+
+Supabase is used for authentication and application data. Historical work has involved event registrations and the AI knowledge bank.
+
+**Backend change policy:** Do not change Supabase settings, database schema/data, Row Level Security policies, authentication providers, secrets, or Edge Functions unless the user separately and explicitly approves that specific backend work.
+
+### 5.3 Historical database notes
+
+Earlier database work recorded:
+- A duplicate index on `event_registrations` was removed.
+- An index on `event_registrations.user_id` was added.
+- A database health review identified a `SECURITY DEFINER` function named `register_for_event()`.
+- Leaked-password protection was reported disabled at that time.
+
+These are historical notes, not a statement of current database health. Re-run an authorised, read-only review before making any claim about present status or proposing a change.
+
+## 6. Authentication and TechNova sign-in / OAuth
+
+An important direction discussed for TechNova is acting as an identity provider, allowing third-party applications to offer a **Continue with TechNova** sign-in experience.
+
+The Supabase Auth issuer URL discussed was:
+
+`https://maxlbgiomkdfynnjoghs.supabase.co/auth/v1`
+
+The repository contains:
+- `pages/oauth-consent.html`
+- `pages/authorized-apps.html`
+- `pages/oauth-developers.html`
+
+These pages establish that an OAuth/developer-facing experience exists in the codebase. They do not, by themselves, prove that every OAuth flow, callback, provider, scope, consent validation, token exchange, or production setting is configured correctly.
+
+### 6.1 Identity provider discussions
+
+The historical provider discussion included Roblox, Telegram, Google, Microsoft, Discord, GitHub, Twitch, Spotify and email.
+
+The recorded decision was that Roblox already existed and Telegram was accepted as the next custom provider to investigate/add. Google, Microsoft, Discord, GitHub, Twitch, Spotify and email were discussed as possibilities.
+
+**Important:** A provider being discussed or accepted as a future task is not proof that it is configured or live. Check Supabase Auth provider settings and the corresponding application code before describing provider availability.
+
+Supabase plan limitations for custom providers were discussed. Verify current plan capabilities and provider requirements before implementation.
+
+## 7. AI Assistant — current architecture and principles
+
+### 7.1 Main files
+
+- `pages/ai-assistant.html`
+- `js/ai-assistant.js`
+- `js/ai-enhancements.js`
+
+Additional AI features are loaded as separate scripts where appropriate, for example:
+- `js/ai-writing-studio.js` (introduced in PR #33)
+
+### 7.2 What the existing assistant is
+
+The original TechNova assistant uses a curated/local knowledge bank and deterministic browser-side functionality. It must not be described as a fully generative AI model unless a real generative provider/model is actually integrated and verified.
+
+The assistant can provide information from its knowledge bank and has had event-related integration work. A server-side AI function was found during earlier investigation but was not connected to the assistant at that time.
+
+### 7.3 AI knowledge bank — historical investigation
+
+On 23 November 2026, an investigation recorded:
+- 19 local knowledge-bank entries in `js/ai-assistant.js`.
+- Zero entries in the Supabase `ai_wordbank` table at the time checked.
+- A server-side AI function existed but was disconnected from the assistant.
+
+PR #24 was proposed to increase the local knowledge bank from 19 to 95 entries by adding 76 entries across more technology topics. Its final merge status is not established in this master record and must be checked in GitHub.
+
+### 7.4 AI development decisions
+
+The user explicitly decided:
+1. Keep the existing AI provider/functionality and free functionality; build tools around it.
+2. Keep personal data in the browser wherever possible.
+3. Build the agreed roadmap in order, one feature/PR at a time.
+4. Keep the platform completely free; do not introduce paid external AI APIs.
+5. Do not reintroduce the experimental local AI model.
+6. Do not change the dashboard as part of the AI roadmap.
+7. Preserve existing features and create separate PRs for review/merge by the user.
+8. Do not deploy production without permission.
+9. Leave Supabase untouched unless separately approved.
+
+**Capability wording:** Deterministic tools, templates, curated knowledge-bank answers, text substitutions, local calculations and external public-data lookups are not the same thing as generative AI. Describe each feature honestly.
+
+### 7.5 AI features introduced in earlier work
+
+PR #26 was recorded as merged by the user. Its features included:
+- Browser-local chat history.
+- New chat and history selection.
+- Clear history.
+- Helpful/not helpful feedback.
+- Browser-side document extraction.
+- Local document search.
+- Extractive summaries.
+- Document comparison.
+- Flashcard/revision prompts.
+- Calculator.
+- Unit conversion.
+- Word count.
+- Optional Wikipedia search.
+- Open-Meteo weather lookup using location permission.
+- Frankfurter currency lookup.
+
+Document formats recorded as supported included PDF, DOCX, PPTX, XLSX, TXT, Markdown, CSV, JSON and HTML.
+
+Known limitations recorded:
+- Scanned PDFs require OCR; OCR was not implemented.
+- PPTX and XLSX extraction is text-oriented.
+- Uploaded document contents were held in memory for processing and were not sent to an AI provider.
+- Public-data features depend on their external services being available.
+
+Re-test current behaviour before claiming every item remains fully operational.
+
+## 8. AI experiment history
+
+The experimental local WebAssembly model was tested and produced poor/repetitive responses. The user decided to remove it completely.
+
+Historical PRs:
+- **PR #28:** local model WASM fallback.
+- **PR #29:** local model output-quality adjustments.
+- **PR #30:** short repetitive-output guard; closed and superseded by PR #31.
+- **PR #31:** removal of the experimental local model.
+
+The recorded PR #31 branch was `remove/technova-local-ai-model`, and its intended changes were to remove `js/ai-local-model.js`, remove obsolete QA material, remove local-model routing/UI from `js/ai-enhancements.js`, and remove its script from `pages/ai-assistant.html`.
+
+The last known historical status was that PR #31 was open/draft and had not been merged at that point. **Its current status must be checked in GitHub.** Do not reintroduce the experimental model unless the user explicitly changes this decision.
+
+## 9. AI roadmap
+
+The agreed roadmap is to extend the existing assistant with useful free tools. The roadmap below is **feature order**, not a promise that a GitHub PR with the same number has already been created. GitHub assigns PR numbers automatically.
+
+| Order | Feature | Scope |
+|---:|---|---|
+| 1 | Advanced assistant controls | Answer formatting, copy/download controls and saved preferences |
+| 2 | AI Writing Studio | Basic proofreading, tone/wording tools, shorten/expand prompts, paraphrase and simplify |
+| 3 | Quiz generator | Multiple choice, true/false, difficulty, scoring and explanations |
+| 4 | Flashcards | Document-based cards, flip, mastered/practice status and shuffle |
+| 5 | Study planner | Assignments, deadlines, revision schedules, tasks and progress; browser storage |
+| 6 | Online code editor | HTML/CSS/JS editor, live preview, download and examples |
+| 7 | Developer toolkit | Formatting, JSON validation, HTML/CSS utilities, regex tester, colour picker and code explanations/examples |
+| 8 | Website builder | Template/instruction-based site creation, editable HTML/CSS/JS, preview and ZIP export |
+| 9 | Document studio | Supported PDF/document utilities, merge/split where libraries permit, conversions, notes and summaries |
+| 10 | Notes and productivity | Local notes, organisation, search/export, to-do lists and checklists |
+| 11 | Presentation/report creator | Outlines, slide/report content, templates and supported exports |
+| 12 | Research assistant | Free search services, sourced summaries, links and clear distinction between sourced facts and explanations |
+| 13 | Language toolkit | Optional free translation service, language identification, simplification and vocabulary practice |
+| 14 | Image studio | Browser-side resize, crop, format conversion and filters |
+| 15 | Creative studio | Posters, social graphics, templates and downloads |
+| 16 | Export tools | Conversation TXT/PDF/DOCX export and import/export utilities |
+| 17 | Privacy and performance | Browser-storage review, error handling, speed, accessibility and privacy/security review |
+
+### 9.1 Technical principles for roadmap work
+
+- Use existing project architecture and browser JavaScript where practical.
+- Prefer local processing and IndexedDB/local storage for user-owned content.
+- Use open-source browser libraries where appropriate and compatible.
+- Public/free APIs may be used only where they are genuinely free and their privacy/availability implications are made clear.
+- No paid AI APIs, paid model inference, or experimental local AI model.
+- Do not promise generative capabilities from deterministic templates or substitutions.
+- Preserve existing assistant, uploads, chat history and quick tools.
+- No dashboard changes.
+- No Supabase changes without separate approval.
+
+## 10. Pull request and development history
+
+This table records known PR history. Where a final state has not been verified, it is explicitly marked unknown.
+
+| PR | Work | Recorded status / notes |
+|---:|---|---|
+| #24 | Expand local AI knowledge bank from 19 to 95 entries | Proposed; final merge status unknown |
+| #26 | Browser-side AI enhancements, history, document tools and utilities | Recorded as merged by user |
+| #28 | Local model WASM fallback | Historical experiment; later superseded |
+| #29 | Local model output quality adjustments | Recorded as merged by user; still poor output |
+| #30 | Short repetitive-output guard | Closed, not merged; superseded by #31 |
+| #31 | Remove experimental local model | Last recorded as open draft; current state must be checked |
+| #32 | Advanced assistant controls | Confirmed merged by user |
+| #33 | AI Writing Studio | Created 25 November 2026 as an open draft; not merged at creation |
+
+### 10.1 PR #32 — Advanced assistant controls
+
+Recorded branch: `feature/technova-ai-assistant-controls-32`
+
+Changes:
+- Answer format selector for paragraphs, bullet points and numbered lines.
+- Save selected format in local storage.
+- Copy latest assistant answer.
+- Download latest assistant answer as TXT.
+- Response formatting before rendering.
+- QA checklist.
+
+The JavaScript syntax check was recorded as passing. Full browser end-to-end testing was not performed by the assistant. The user subsequently confirmed that PR #32 was merged.
+
+### 10.2 PR #33 — AI Writing Studio
+
+PR: [https://github.com/Elliots-Boys/TechNova/pull/33](https://github.com/Elliots-Boys/TechNova/pull/33)
+
+Branch: `feature/technova-ai-writing-studio-33`
+
+Created: 25 November 2026.
+
+Files:
+- `js/ai-writing-studio.js`
+- `pages/ai-assistant.html`
+- `docs/technova-ai-pr33-qa.md`
+
+Features:
+- Basic rule-based spelling and punctuation cleanup.
+- Formal/friendly wording substitutions.
+- Simplification and concise wording substitutions.
+- Lightweight paraphrasing.
+- Expansion prompts that ask the writer to add their own evidence/examples rather than inventing facts.
+- Copy result, download TXT, use result as input, clear and character counter.
+- Local browser processing; no AI API or upload.
+
+Limitations:
+- It is not a generative AI model or a full grammar checker.
+- It may miss errors or change nuance.
+- Users must review the output.
+- Manual browser/device testing remains necessary.
+
+At creation, PR #33 was open, draft and unmerged. Do not assume it has since been merged; check GitHub before starting the next sequential AI feature.
+
+## 11. Non-negotiable development workflow
+
+These instructions reflect the user's explicit preferences.
+
+1. **Inspect first.** Check the current repository, target files, current branch/base and related features before editing.
+2. **One feature at a time.** Finish the current PR review/merge cycle before starting the next roadmap feature, unless the user explicitly approves a different approach.
+3. **Separate branches and PRs.** Keep each feature isolated and reviewable.
+4. **User controls merging.** Create the PR; the user reviews and merges it.
+5. **No production deployment without explicit permission.**
+6. **No Supabase/backend changes without separate explicit approval.**
+7. **No dashboard changes** during the agreed AI roadmap.
+8. **No unrelated refactoring.** Change only files required for the approved scope.
+9. **Preserve existing functionality.** Consider chat, history, uploads, assistant tools, navigation and other site features when regression testing.
+10. **Be honest about testing.** Distinguish syntax checks, static inspection, automated tests, manual browser tests and production verification. Never claim a test passed if it was not run.
+11. **Verify previews.** Do not invent or assume Cloudflare preview URLs. Confirm a preview deployment exists and is accessible before sharing it as verified.
+12. **Explain trade-offs.** Clearly identify local processing, external services, data retention and feature limitations.
+
+### 11.1 Suggested PR checklist
+
+- [ ] Confirm the current PR/feature has been approved to proceed.
+- [ ] Inspect latest `main` and relevant source files.
+- [ ] Create a feature-specific branch from the correct base.
+- [ ] Implement only the agreed scope.
+- [ ] Review the diff for accidental/unrelated changes.
+- [ ] Run relevant syntax, build and automated checks where available.
+- [ ] Perform browser tests where possible; otherwise provide honest manual QA steps.
+- [ ] Check responsive layout and keyboard/accessibility basics.
+- [ ] Check for secrets, unnecessary external requests and privacy concerns.
+- [ ] Add/update QA documentation.
+- [ ] Open a draft PR with scope, limitations and test evidence.
+- [ ] Verify any Cloudflare preview before sharing it.
+- [ ] Wait for the user to review and merge.
+- [ ] Update this master document after merge and record the merge commit/deployment separately.
+
+## 12. SEO and public discovery
+
+Historical work included:
+- `robots.txt`
+- `sitemap.xml`
+- Google Search Console setup and checks.
+
+The repository's `robots.txt` points to:
+
+`https://technova-bmm.pages.dev/sitemap.xml`
+
+The sitemap lists the site's public pages.
+
+An earlier Search Console check had not yet returned performance data. Re-check Search Console for current indexing, clicks, impressions, coverage and sitemap status before drawing conclusions.
+
+## 13. Known gaps and items requiring verification
+
+This section intentionally records uncertainty so historical notes are not mistaken for current truth.
+
+| Item | What is known | What to verify |
+|---|---|---|
+| PR #24 | Knowledge-bank expansion was proposed | Current PR/commit and merge status |
+| PR #31 | Model removal PR was previously open/draft | Current PR status and whether removal is in main |
+| PR #33 | Writing Studio PR was created open/draft | Current review, merge and preview status |
+| Community | Earlier review found no complete post/reply forum | Current implementation |
+| OAuth providers | Roblox/Telegram and other providers were discussed | Actual Supabase provider configuration and live flows |
+| OAuth app authorisation | Consent, authorised-app and developer pages exist | Full OAuth protocol, callback, scopes and security validation |
+| AI knowledge bank | 19 local entries and empty Supabase table were recorded on 23 Nov | Current local entries and current table contents |
+| Server-side AI function | Function existed but was disconnected at the time | Current function deployment and integration |
+| Database warnings | Historical warnings were noted | Current database advisor/security state |
+| Cloudflare Worker | Historical deployment was discussed | Current Worker name, code, bindings and status |
+| Search Console | Setup/checks were discussed | Current verification and performance data |
+| Browser storage | AI chat/document work used local browser processing | Current retention, clearing and export behaviour |
+
+## 14. Change log for this master document
+
+| Date | Update |
+|---|---|
+| 25 Nov 2026 | Consolidated project identity, infrastructure, page map, historical architecture decisions, AI roadmap, PR history, development rules and verification gaps from available project context and repository inspection. |
+| Future updates | Add dated entries for important decisions, merged PRs, backend changes approved by the user, deployments and verified feature status. |
+
+---
+
+## 15. Instructions for future maintainers and AI assistants
+
+Before making a TechNova change:
+1. Read this document.
+2. Check the live repository and current PR state; this document is a project memory, not a substitute for current GitHub state.
+3. Confirm the requested scope with the user's existing decisions.
+4. Do not infer that a planned or historical feature is live.
+5. Follow the development workflow in Section 11.
+6. Update this document when a meaningful decision or project state changes.
+
+**When uncertain, preserve the existing implementation and ask before changing infrastructure, Supabase, authentication, the dashboard, or production.**
