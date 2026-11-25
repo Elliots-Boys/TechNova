@@ -817,8 +817,8 @@ One integrated PR adds the following built-in Desktop applications and system fe
 ### Optional Supabase sync
 
 - Uses the existing Supabase project and existing `user-files` private Storage bucket.
-- Structured app records are stored as JSON objects in the existing private `user-files` Storage bucket under the authenticated user's ` <user-id>/desktop-sync/ ` prefix.
-- Cloud sync is opt-in and disabled by default. The existing bucket's authenticated user-folder Storage policies provide ownership isolation; no service-role key or secret is exposed to the browser.
+- Structured app records are stored as JSON objects in the existing private `user-files` Storage bucket under the authenticated user's `<user-id>/desktop-sync/` prefix. API request collections remain local-only so credentials are not automatically synchronised.
+- Cloud sync is opt-in and disabled by default. The existing bucket's authenticated user-folder Storage policies provide ownership isolation; no service-role key or secret is exposed to the browser. API request headers with credential-like names are excluded from saved collections.
 - The existing bucket's private setting, file-size limit and allowed MIME types are reused. No new bucket, Storage policy, database table, RLS policy, Edge Function or project setting is introduced.
 - File blobs uploaded through Storage Manager 2.0 are stored separately under the authenticated user's `<user-id>/desktop/` prefix. Local-first features continue to work if cloud requests fail.
 - No service-role key, secret key, provider password or API credential is embedded in frontend code.
