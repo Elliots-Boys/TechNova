@@ -477,7 +477,7 @@ This section intentionally records uncertainty so historical notes are not mista
 | 25 Nov 2026 | Consolidated project identity, infrastructure, page map, historical architecture decisions, AI roadmap, PR history, development rules and verification gaps from available project context and repository inspection. |
 | 25 Nov 2026 | Verified PRs #33–#37 merged into `main`; PR #36 personal dashboard and PR #37 admin dashboard/auth routing are merged. |
 | 25 Nov 2026 | Verified PRs #40–#43 merged into `main`; PR #43 adds a browser-local focus planner to the personal dashboard. |
-| 25 Nov 2026 | PR #44 opened as a draft with calendar, habit, notes, insights, project, developer, study and community workspace widgets; master document and QA checklist included in the PR. |
+| 25 Nov 2026 | PR #44 merged with calendar, habit, notes, insights, project, developer, study and community workspace widgets; no Cloudflare deployment. |
 
 ---
 
@@ -606,4 +606,43 @@ Privacy, architecture and limitations:
 - No Supabase schema, RLS, settings, Edge Functions, credentials, production data, other page implementations, or Cloudflare deployment changes. The existing registrations query remains read-only and user-scoped.
 - JavaScript syntax and static markup checks passed before PR creation. Real signed-in browser, responsive, keyboard and screen-reader testing remains a manual QA requirement.
 
-Pull request: [#44 — Expand the TechNova personal dashboard into a complete workspace](https://github.com/Elliots-Boys/TechNova/pull/44). GitHub confirms it is open as a draft and not merged. No Cloudflare deployment was performed or authorised.
+Pull request: [#44 — Expand the TechNova personal dashboard into a complete workspace](https://github.com/Elliots-Boys/TechNova/pull/44). GitHub confirms it was merged into `main` on 25 November 2026 (merge commit `28768a5314549178bf51423c64540750d06ad6cd`). No Cloudflare deployment was performed or authorised.
+
+
+## 23. TechNova OS dashboard workspace (PR #45)
+
+PR #44 was verified merged into `main` on 25 November 2026 before this follow-up. PR #45 adds a cohesive personal productivity, study, developer and creative workspace to the existing signed-in dashboard.
+
+Scope:
+- Add a Kanban task manager that reuses `technova.dashboard.tasks.v1`, preserving the existing Focus planner's tasks and completion state while adding To do / In progress / Done lanes, priorities, due dates and drag/drop.
+- Add a 25-minute focus timer with pause/resume/reset.
+- Add a browser-local weekly study timetable.
+- Add browser-local flashcards and manually entered grade records.
+- Add a notification centre derived from due tasks and existing calendar reminders; notifications can be dismissed locally.
+- Add global local search across existing dashboard page links and local task/note/project/habit/calendar records, plus Ctrl+/ focus shortcut.
+- Add draggable dashboard OS widget layout with locally persisted order and reset.
+- Add JSON backup export and validated restore for an explicit allow-list of dashboard-local storage keys.
+- Add a developer studio with HTML/CSS/JavaScript editors, sandboxed iframe preview and HTML download.
+- Add a creative poster generator with PNG export.
+- Add a QA checklist.
+
+Files:
+- `pages/dashboard.html`
+- `js/dashboard-os.js`
+- `docs/technova-os-workspace-pr45-qa.md`
+- `TECHNOVA_MASTER_DOCUMENT.md`
+
+Privacy, architecture and limitations:
+- All new records remain in browser local storage; no new Supabase tables, writes, RLS or settings are introduced.
+- Backup exports can contain personal workspace information; users should store the downloaded file carefully. Restore validates the backup format, version, file size and storage-key allow-list before writing.
+- Notifications are generated from local tasks and reminders; they are not remote push notifications.
+- The focus timer requires the dashboard tab to remain open.
+- Grade records are manually entered and are not official academic records.
+- The developer preview uses a sandboxed iframe without same-origin permission; the preview remains an isolated coding aid, not a hosted deployment service.
+- Existing account data, admin role checks, AI assistant and other dashboard widgets are retained.
+- No Cloudflare deployment.
+
+Validation:
+- JavaScript syntax parsing and static ID/reference checks performed before PR creation; manual browser, keyboard, responsive, signed-in account and screen-reader QA remain outstanding.
+
+Pull request: [#45 — Build TechNova OS into the personal dashboard](https://github.com/Elliots-Boys/TechNova/pull/45). Created as a draft, not merged or deployed.
