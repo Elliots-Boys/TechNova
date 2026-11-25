@@ -235,6 +235,7 @@ async function loadRegistrations(user){
  const {data,error}=await client().from('event_registrations').select('event_id,created_at,events(id,title,event_date,event_time,location)').eq('user_id',user.id).order('created_at',{ascending:false});
  if(error)throw error;
  const rows=(data||[]).map(row=>({row,event:Array.isArray(row.events)?row.events[0]:row.events})).filter(item=>item.event);
+ window.dispatchEvent(new CustomEvent('technova:dashboard-events-loaded',{detail:rows.map(({event})=>({id:event.id,title:event.title,event_date:event.event_date,event_time:event.event_time,location:event.location}))}));
  const now=new Date();const upcoming=rows.filter(item=>{const date=eventDate(item.event);return date&&date>=now;}).sort((a,b)=>eventDate(a.event)-eventDate(b.event));
  setCount('dashboardUpcomingCount',upcoming.length);
  if(container){container.replaceChildren();const display=upcoming.length?upcoming:rows;if(!display.length)emptyMessage(container,'No registrations yet. Explore events and find something you would like to attend.');else display.slice(0,5).forEach(item=>container.append(makeEventItem(item.event,'registered')));}
