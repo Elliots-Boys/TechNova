@@ -295,7 +295,7 @@ This table records known PR history. Where a final state has not been verified, 
 | #39 | Personal dashboard workspace refinement | Merged into `main` on 25 November 2026; adds upcoming registrations and recent activity and fixes the registered-events panel |
 | #40 | Personal dashboard command-centre enhancement | Merged into `main` on 25 November 2026; searchable directory, local pins/recent pages/notes/widget preferences |
 | #41 | Dashboard AI workspace integration | Merged into `main` on 25 November 2026 (verified via GitHub); embeds the existing free assistant and tools in the personal dashboard while retaining the dedicated AI page |
-| #42 | Personal dashboard command palette | Open draft PR: [#42](https://github.com/Elliots-Boys/TechNova/pull/42); local searchable Quick open dialog with Ctrl/Cmd+K and keyboard navigation; not merged or deployed |
+| #42 | Personal dashboard command palette | Merged into `main` on 25 November 2026; local searchable Quick open dialog with Ctrl/Cmd+K and keyboard navigation |\n| #43 | Personal dashboard focus workspace | Open draft PR: [#43](https://github.com/Elliots-Boys/TechNova/pull/43); private browser-local task planner and visual refinements; not merged or deployed |
 
 | #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser/provider QA remains outstanding |
 | #38 | Refresh cached authentication script for dashboard redirects | Open draft PR; updates the login and signup script cache version; no auth logic or backend changes |
