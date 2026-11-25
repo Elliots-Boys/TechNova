@@ -34,16 +34,19 @@ function setupCalendar(){
  if(!Array.isArray(reminders))reminders=[];reminders=reminders.filter(x=>x&&typeof x.id==='string'&&typeof x.title==='string'&&typeof x.date==='string');
  let view=new Date();view.setDate(1);
  let selected=today();
+ let registeredEvents=[];
  const taskItems=()=>{const tasks=read('technova.dashboard.tasks.v1',[]);return Array.isArray(tasks)?tasks.filter(t=>t&&t.dueDate&&!t.done):[];};
  const renderList=()=>{
   list.replaceChildren();
   const items=reminders.filter(x=>x.date===selected).map(x=>({kind:'Reminder',title:x.title,id:x.id}));
   taskItems().filter(x=>x.dueDate===selected).forEach(x=>items.push({kind:'Focus task',title:x.title}));
+  registeredEvents.filter(x=>x.event_date===selected).forEach(x=>items.push({kind:'TechNova event',title:x.title||'TechNova event',href:x.id?'event.html?id='+encodeURIComponent(x.id):''}));
   if(!items.length){empty(list,'Nothing planned for this date yet. Add a reminder above.');return;}
   items.forEach(item=>{
    const row=el('div','workspace-list-item');
    const copy=el('div','workspace-list-copy');copy.append(el('strong','',item.title),el('small','',item.kind));row.append(copy);
    if(item.id)row.append(button('×','workspace-icon-button',()=>{reminders=reminders.filter(x=>x.id!==item.id);write(KEYS.calendar,reminders,status);render();},'Delete reminder: '+item.title));
+   if(item.href){const link=el('a','dashboard-section-link','View');link.href=item.href;row.append(link);}
    list.append(row);
   });
  };
@@ -56,7 +59,7 @@ function setupCalendar(){
   const due=taskItems();
   for(let day=1;day<=days;day++){
    const date=localISO(new Date(view.getFullYear(),view.getMonth(),day));
-   const marked=reminders.some(x=>x.date===date)||due.some(x=>x.dueDate===date);
+   const marked=reminders.some(x=>x.date===date)||due.some(x=>x.dueDate===date)||registeredEvents.some(x=>x.event_date===date);
    const cell=button(String(day),'workspace-day'+(date===selected?' is-selected':'')+(date===today()?' is-today':''),()=>{selected=date;dateInput.value=date;render();},'Select '+date);
    if(marked)cell.append(el('span','workspace-day-dot',''));
    grid.append(cell);
@@ -68,6 +71,7 @@ function setupCalendar(){
  $('workspaceCalendarNext')?.addEventListener('click',()=>{view.setMonth(view.getMonth()+1);render();});
  $('workspaceCalendarToday')?.addEventListener('click',()=>{selected=today();view=new Date();view.setDate(1);render();});
  dateInput.addEventListener('change',()=>{if(dateInput.value){selected=dateInput.value;view=new Date(selected+'T12:00:00');view.setDate(1);render();}});
+ window.addEventListener('technova:dashboard-events-loaded',event=>{registeredEvents=Array.isArray(event.detail)?event.detail.filter(item=>item&&typeof item.event_date==='string'):[];render();});
  form.addEventListener('submit',event=>{
   event.preventDefault();const value=title.value.trim();if(!value)return;
   if(reminders.length>=150){setStatus('workspaceCalendarStatus','You have reached the 150-reminder limit.');return;}
