@@ -264,6 +264,42 @@
 @media(max-width:760px){.os-layout{grid-template-columns:1fr}.os-span-2{grid-column:1}.os-task-form{grid-template-columns:1fr 1fr}.os-task-form input:first-child{grid-column:span 2}.os-grade-form{grid-template-columns:1fr 1fr}.os-kanban{grid-template-columns:1fr}.os-lane-list{min-height:35px}}
 @media(prefers-reduced-motion:reduce){.os-card{scroll-behavior:auto}}
 
+
+/* TechNova Phase 2 workspace */
+.phase2-shell{margin-top:20px;border-color:#356080;background:radial-gradient(ellipse at 100% 0%,#235b7b30,transparent 40%),linear-gradient(160deg,#0e2033,#091522)}
+.phase2-local{color:#91e8c2;font-size:11px;font-weight:800;white-space:nowrap}
+.phase2-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.phase2-card{min-width:0;padding:16px;border:1px solid #25435f;border-radius:15px;background:#091827}
+.phase2-card h3{margin:0 0 5px;font-size:17px}.phase2-card>p{margin:0 0 12px;color:#93a9bf;font-size:12px;line-height:1.5}
+.phase2-span{grid-column:span 2}
+.phase2-row{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}
+.phase2-row input,.phase2-row select,.phase2-form input,.phase2-form select,.phase2-label select{min-width:0;flex:1;padding:9px 10px;border:1px solid #294966;border-radius:9px;background:#071321;color:#eaf5ff;font:inherit;font-size:12px}
+.phase2-button{border:1px solid #31516d;border-radius:9px;padding:8px 11px;background:#10243a;color:#dcecff;font:inherit;font-size:11px;font-weight:800;cursor:pointer}
+.phase2-button.primary{background:linear-gradient(110deg,#42d7ff,#9b83ff);border:0;color:#06111e}
+.phase2-list{display:grid;gap:7px;max-height:260px;overflow:auto}
+.phase2-list-item{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:9px 10px;border:1px solid #203b57;border-radius:10px;background:#0d1d2e}
+.phase2-list-item strong,.phase2-list-item small{display:block;overflow-wrap:anywhere}.phase2-list-item strong{font-size:12px}.phase2-list-item small,.phase2-muted{margin-top:4px;color:#93a9bf;font-size:10px;line-height:1.4}
+.phase2-form{display:grid;grid-template-columns:1fr 130px 110px auto;gap:6px;margin-top:10px}
+.phase2-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.phase2-metric{padding:11px;border:1px solid #24435f;border-radius:11px;background:#10243a}.phase2-metric strong{display:block;color:var(--phase2-accent,#42d7ff);font-size:22px}.phase2-metric small{display:block;color:#9bb2c8;font-size:10px;margin-top:3px}
+.phase2-bars{height:105px;display:grid;grid-template-columns:repeat(7,1fr);align-items:end;gap:8px;margin-top:14px;padding:8px 4px 0;border-bottom:1px solid #29445f}
+.phase2-bar-col{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:5px}.phase2-bar{width:65%;min-height:3px;border-radius:5px 5px 0 0;background:linear-gradient(0deg,#6f6df3,var(--phase2-accent,#42d7ff))}.phase2-bar-col small{color:#9bb2c8;font-size:9px}
+.phase2-label{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0;color:#b9cee0;font-size:12px}.phase2-label select{max-width:180px}
+.phase2-note-choice{display:flex;justify-content:space-between;align-items:center;text-align:left}.phase2-note-choice small{color:#9bb2c8;font-size:10px}
+.phase2-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0}.phase2-tabs button[aria-pressed=true]{border-color:#42d7ff;color:#fff;background:#173d58}
+.phase2-editor{box-sizing:border-box;width:100%;min-height:210px;resize:vertical;padding:12px;border:1px solid #294660;border-radius:10px;background:#050e18;color:#d7edff;font:12px/1.55 ui-monospace,monospace;tab-size:2}
+#p2Preview{width:100%;height:230px;margin-top:10px;border:1px solid #294660;border-radius:10px;background:#fff}
+body[data-phase2Theme="aurora"] .phase2-shell,body[data-phase2Theme="aurora"] .os-shell{background:radial-gradient(ellipse at 0 0,#285f6044,transparent 40%),linear-gradient(145deg,#0c252c,#10152b)}
+body[data-phase2Theme="light"] .phase2-shell{background:#eef5fb;color:#10243a;border-color:#b7ccdf}
+body[data-phase2Theme="light"] .phase2-card{background:#fff;border-color:#c7d7e5}
+body[data-phase2Theme="light"] .phase2-card p,body[data-phase2Theme="light"] .phase2-muted{color:#526a80}
+body[data-phase2Theme="light"] .phase2-list-item{background:#f1f6fb;border-color:#cfdae5;color:#10243a}
+body[data-phase2Theme="light"] .phase2-row input,body[data-phase2Theme="light"] .phase2-row select,body[data-phase2Theme="light"] .phase2-form input,body[data-phase2Theme="light"] .phase2-form select,body[data-phase2Theme="light"] .phase2-label select{background:#fff;color:#10243a;border-color:#b8cada}
+body[data-phase2Density="compact"] .phase2-card{padding:10px}
+body[data-phase2Density="spacious"] .phase2-card{padding:24px}
+.dashboard-shell.phase2-wide{max-width:1700px}
+@media(max-width:760px){.phase2-grid{grid-template-columns:1fr}.phase2-span{grid-column:span 1}.phase2-form{grid-template-columns:1fr 1fr}.phase2-form input:first-child{grid-column:span 2}.phase2-row{align-items:stretch}.phase2-label{align-items:flex-start}}
+
 </style>
 </head>
 <body>
@@ -627,7 +663,8 @@
 <script src="../js/saved-events.js"></script>
 <script src="../js/dashboard.js?v=6"></script>
 <script src="../js/dashboard-workspace.js?v=1"></script>
-<script src="../js/dashboard-os.js?v=1"></script>
+<script src="../js/dashboard-os.js?v=2"></script>
+<script src="../js/dashboard-phase2.js?v=1"></script>
 <script src="../js/script.js"></script>
 <script src="https://unpkg.com/mammoth@1.9.0/mammoth.browser.min.js" defer></script>
 <script src="../js/ai-assistant.js?v=11"></script>
