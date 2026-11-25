@@ -297,10 +297,14 @@ This table records known PR history. Where a final state has not been verified, 
 | #41 | Dashboard AI workspace integration | Merged into `main` on 25 November 2026 (verified via GitHub); embeds the existing free assistant and tools in the personal dashboard while retaining the dedicated AI page |
 | #42 | Personal dashboard command palette | Merged into `main` on 25 November 2026; local searchable Quick open dialog with Ctrl/Cmd+K and keyboard navigation |
 | #43 | Personal dashboard focus workspace | Merged into `main` on 25 November 2026; private browser-local task planner and visual refinements; merge commit `c0d5f3329e68f697a4857bfaa109d063b30727d5` |
-| #44 | Expanded personal dashboard workspace | Open draft PR: [#44](https://github.com/Elliots-Boys/TechNova/pull/44); calendar, habits, notes, insights, projects, local developer utilities, study prompts and community/admin quick links; browser-local data only; not merged or deployed |
+| #44 | Expanded personal dashboard workspace | Merged into `main` on 25 November 2026; calendar, habits, notes, insights, projects, local developer utilities, study prompts and community/admin quick links |
 
 | #37 | Admin dashboard refinement and dashboard-first login redirects | Merged into `main` on 25 November 2026; browser/provider QA remains outstanding |
 | #38 | Refresh cached authentication script for dashboard redirects | Open draft PR; updates the login and signup script cache version; no auth logic or backend changes |
+| #45 | TechNova OS dashboard workspace | Merged into `main` on 25 November 2026; task, study, developer and creative workspace |
+| #46 | Phase 2 personal workspace expansion | Merged into `main` on 25 November 2026; recurring tasks, analytics, agenda, notes organisation and multi-file developer studio |
+| #47 | TechNova Desktop environment | Merged into `main` on 25 November 2026; authenticated desktop-style workspace and built-in apps |
+| #48 | TechNova Desktop boot-screen fix | Merged into `main` on 25 November 2026; corrected hidden boot overlay and refreshed desktop asset cache |
 
 ### 10.1 PR #32 — Advanced assistant controls
 
@@ -478,7 +482,7 @@ This section intentionally records uncertainty so historical notes are not mista
 | 25 Nov 2026 | Verified PRs #33–#37 merged into `main`; PR #36 personal dashboard and PR #37 admin dashboard/auth routing are merged. |
 | 25 Nov 2026 | Verified PRs #40–#43 merged into `main`; PR #43 adds a browser-local focus planner to the personal dashboard. |
 | 25 Nov 2026 | PR #44 merged with calendar, habit, notes, insights, project, developer, study and community workspace widgets; no Cloudflare deployment. |
-| 25 Nov 2026 | PR #45 merged with TechNova OS task, study, developer and creative workspace; focus sessions, Phase 2 analytics, recurring task templates, notes organisation, multi-file ZIP export and personalisation added in PR #46. |
+| 25 Nov 2026 | PRs #45–#48 verified merged; TechNova OS, Phase 2 workspace, Desktop environment and Desktop boot-screen fix are recorded as merged. |
 
 ---
 
@@ -724,7 +728,7 @@ Validation:
 - JavaScript syntax parsing, static HTML ID checks and module-link checks are performed before PR creation.
 - Signed-in browser testing, file import/download checks, ZIP extraction, responsive layout, keyboard navigation and screen-reader QA remain to be completed manually.
 
-Pull request: [#47 — Build TechNova Desktop with integrated workspace apps](https://github.com/Elliots-Boys/TechNova/pull/47). Created as a draft; not merged or deployed at the time of this document update.
+Pull request: [#47 — Build TechNova Desktop with integrated workspace apps](https://github.com/Elliots-Boys/TechNova/pull/47). Merged into `main` on 25 November 2026 (verified via GitHub). No Cloudflare deployment was performed.
 
 
 ## 26. TechNova Desktop boot-screen fix (PR #48)
@@ -735,4 +739,44 @@ PR #48 adds an explicit `.tn-boot[hidden] { display: none !important; }` rule so
 
 Scope is limited to the desktop startup display and asset cache versions. No authentication logic, application data, Supabase configuration, Cloudflare deployment or other pages are changed. Validation includes a static check that the hidden-state override exists and that both asset versions are bumped; signed-in browser verification remains required.
 
-Pull request: [#48 — Fix TechNova Desktop startup overlay](https://github.com/Elliots-Boys/TechNova/pull/48). Created as a draft; merge and deployment status must be updated after verification.
+Pull request: [#48 — Fix TechNova Desktop startup overlay](https://github.com/Elliots-Boys/TechNova/pull/48). Merged into `main` on 25 November 2026 (verified via GitHub; merge commit `413da84fc0902ad53b693e9b39f19c2ff718d23d`). No Cloudflare deployment was performed.
+
+
+## 27. TechNova Browser inside Desktop (PR #49)
+
+PR #49 adds TechNova Browser as a built-in application inside the authenticated Desktop at `pages/desktop.html`. It is a browser-based web viewer running inside the existing Cloudflare Pages site, not a standalone Chromium engine or native browser installation.
+
+Features:
+- Multiple in-app tabs, each with its own embedded browsing frame and tab-local back/forward navigation for addresses entered through the TechNova Browser controls.
+- Address bar that accepts HTTP(S) website addresses or search text, with DuckDuckGo, Bing and Google search choices.
+- Reload and start-page controls, TechNova quick links, bookmark current page, bookmark list and removable bookmarks.
+- Browser-local history list and clear-history action.
+- Optional “Don't save local history” session toggle. This suppresses TechNova Browser's own history writes for the current session; it does not make network activity anonymous, clear website cookies, or prevent websites/network providers from observing connections.
+- Open current page externally for websites that refuse iframe embedding.
+- Responsive controls and styles aligned with Desktop themes.
+
+Security, privacy and limitations:
+- Embedded pages run in a sandboxed cross-origin iframe without `allow-same-origin`; forms, scripts, popups and downloads are permitted where the embedded site supports them. This is a compatibility/security trade-off, not a full browser isolation boundary.
+- Websites can block embedding with CSP `frame-ancestors` or `X-Frame-Options`; some sites may also require browser features that a sandboxed iframe does not provide. Those sites must be opened in the user's normal browser.
+- Back/forward tracks URLs submitted through the TechNova Browser address bar. Navigation performed internally by a cross-origin website cannot reliably be read or added to TechNova's address history.
+- Downloads started by an embedded third-party page are handled by the normal browser and cannot be comprehensively listed or controlled by this app.
+- Bookmarks and normal history are stored in this browser's local storage, not synced to Supabase or other devices. Private-session mode only suppresses this app's history writes; it is not equivalent to browser incognito mode.
+- No proxy, remote browsing service, Chromium engine, browser extension execution, cookie manager, password manager, or cross-device sync is added.
+- No Supabase schema, RLS, settings, Edge Functions, credentials, production data, admin dashboard or unrelated pages are changed.
+- No Cloudflare deployment is performed. User review and merge remain required.
+
+Files:
+- `pages/desktop.html`
+- `js/technova-desktop.js`
+- `js/technova-browser.js`
+- `css/technova-desktop.css`
+- `docs/technova-browser-pr49-qa.md`
+- `TECHNOVA_MASTER_DOCUMENT.md`
+
+Validation:
+- JavaScript syntax parsing and static markup/ID checks are performed before PR creation.
+- Manual signed-in browser testing, cross-origin embedding checks, tab/history/bookmark behaviour, private-session behaviour, download fallback, responsive layout, keyboard navigation and screen-reader QA remain required.
+
+Pull request: [#49 — Add the advanced TechNova Browser to Desktop](https://github.com/Elliots-Boys/TechNova/pull/49). Created as a draft; not merged or deployed.
+
+| 25 Nov 2026 | PR #49 adds the advanced browser-based TechNova Browser app to Desktop; browser-local tabs, bookmarks and history; iframe restrictions and privacy limitations documented; PR remains draft/unmerged and no deployment is performed. |
