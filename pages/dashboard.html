@@ -144,6 +144,7 @@
 <label><input type="checkbox" data-widget-toggle="overview" checked> Overview</label>
 <label><input type="checkbox" data-widget-toggle="apps" checked> Explore TechNova</label>
 <label><input type="checkbox" data-widget-toggle="events" checked> Events</label>
+<label><input type="checkbox" data-widget-toggle="saved" checked> Saved events</label>
 <label><input type="checkbox" data-widget-toggle="notes" checked> Quick note</label>
 <label><input type="checkbox" data-widget-toggle="profile" checked> Profile</label>
 </div>
@@ -243,6 +244,10 @@
 <section class="dashboard-panel" aria-labelledby="pinnedTitle">
 <div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">YOUR FAVOURITES</div><h3 id="pinnedTitle">Pinned shortcuts</h3><p>Keep your most-used pages close by.</p></div></div>
 <div id="pinnedAppsAside" class="dashboard-pinned-list"><p class="dashboard-empty">Pin a page from Explore TechNova.</p></div>
+</section>
+<section class="dashboard-panel" aria-labelledby="savedTitle" data-widget-section="saved">
+<div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">BOOKMARKS</div><h3 id="savedTitle">Saved events</h3><p>Your bookmarked events, ready when you need them.</p></div><a class="dashboard-section-link" href="saved-events.html">View all →</a></div>
+<div class="dashboard-event-list" id="dashboardSavedEvents"><p class="dashboard-empty">Loading your saved events…</p></div>
 </section>
 <section class="dashboard-panel" aria-labelledby="noteTitle" data-widget-section="notes">
 <div class="dashboard-panel-head"><div><div class="dashboard-eyebrow">QUICK CAPTURE</div><h3 id="noteTitle">Your quick note</h3><p>A private scratchpad saved only in this browser.</p></div></div>
