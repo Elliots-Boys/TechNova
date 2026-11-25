@@ -473,7 +473,7 @@ This section intentionally records uncertainty so historical notes are not mista
 | Date | Update |
 |---|---|
 | 25 Nov 2026 | Consolidated project identity, infrastructure, page map, historical architecture decisions, AI roadmap, PR history, development rules and verification gaps from available project context and repository inspection. |
-| 25 Nov 2026 | Verified PRs #33–#37 merged into `main`; PR #36 personal dashboard and PR #37 admin dashboard/auth routing are merged. |\n| 25 Nov 2026 | Verified PRs #40 and #41 merged into `main`; PR #42 adds a browser-local keyboard command palette to the personal dashboard. |
+| 25 Nov 2026 | Verified PRs #33–#37 merged into `main`; PR #36 personal dashboard and PR #37 admin dashboard/auth routing are merged. |\n| 25 Nov 2026 | Verified PRs #40, #41 and #42 merged into `main`; PR #43 adds a browser-local focus planner to the personal dashboard. |
 
 ---
 
@@ -548,4 +548,24 @@ Privacy and technical boundaries:
 - No Supabase schema, RLS, settings, Edge Functions, credentials, production data, admin dashboard or other site page changes.
 - No Cloudflare deployment. Keyboard, screen-reader, responsive and signed-in browser QA remain required.
 
-Pull request: [#42 — Add a keyboard-accessible dashboard command palette](https://github.com/Elliots-Boys/TechNova/pull/42). Created as a draft for user review; not merged or deployed.
+Pull request: [#42 — Add a keyboard-accessible dashboard command palette](https://github.com/Elliots-Boys/TechNova/pull/42). Merged into `main` on 25 November 2026 (verified via GitHub). Browser keyboard, screen-reader and responsive QA remain outstanding; no production deployment was performed.
+
+## 21. Personal dashboard focus workspace (PR #43)
+
+PR #42 was verified merged into `main` before this follow-up. PR #43 expands the personal workspace with a private task planner and a more polished command-centre presentation.
+
+Scope:
+- Add a Focus board with task creation, optional due dates, completion toggles, individual deletion, clearing completed tasks and a completion progress indicator.
+- Sort active tasks before completed tasks, then by due date and creation order.
+- Add a Personalise visibility control for the Focus planner.
+- Refine the existing dashboard hero, visual depth, stat cards and focus-panel responsive layout.
+- Bump the dashboard script cache version and add a manual QA checklist.
+
+Privacy and technical boundaries:
+- Tasks are stored in the current browser only under `technova.dashboard.tasks.v1`; they are not synced to Supabase or another device.
+- The board allows up to 50 tasks and uses safe DOM text rendering.
+- Existing AI assistant, command palette, directory, events, pins, notes, account and admin-role checks are retained.
+- No Supabase schema, RLS, settings, Edge Functions, credentials, production data, admin dashboard or other page changes.
+- No Cloudflare deployment. Signed-in browser, mobile, keyboard and screen-reader QA remain required.
+
+Pull request: [#43 — Add a personal focus planner to the TechNova dashboard](https://github.com/Elliots-Boys/TechNova/pull/43). Created as a draft for review; not merged or deployed.
