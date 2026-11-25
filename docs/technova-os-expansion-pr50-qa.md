@@ -21,6 +21,7 @@ One integrated expansion PR adding the App Store catalogue, Virtual Desktops, Wh
 - [ ] Document create/edit/save/reopen, safe formatting, HTML/TXT export and print-to-PDF work.
 - [ ] Spreadsheet cells, supported formulas, row/column addition and CSV export work.
 - [ ] API Studio handles valid requests, invalid JSON headers, network/CORS errors and bounded response display.
+- [ ] API request collections remain local-only; credential-like header names are excluded when saving requests.
 - [ ] Widget visibility, ordering and quick-note persistence work.
 - [ ] Control Centre appearance controls, backup export/import and local clear confirmation work.
 - [ ] Media import, playback and clear-library flow work for supported browser formats.
