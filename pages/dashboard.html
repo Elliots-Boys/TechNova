@@ -93,6 +93,33 @@
 .dashboard-widget-controls label{display:flex;align-items:center;gap:7px;color:#c2d4e5;font-size:12px}
 .dashboard-status{color:var(--dash-muted);font-size:12px;line-height:1.5}
 .dashboard-status.error{color:#ffabb9}
+.dashboard-ai-panel{margin:20px 0 0;padding:clamp(16px,2.4vw,26px);border-color:#315777;background:radial-gradient(ellipse at 95% 0%,#285e8744,transparent 38%),linear-gradient(145deg,#0d2035,#091522 72%);box-shadow:0 18px 50px #0004}
+.dashboard-ai-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.dashboard-ai-title{display:flex;align-items:center;gap:12px}
+.dashboard-ai-mark{width:44px;height:44px;display:grid;place-items:center;border:1px solid #3981a4;border-radius:14px;background:linear-gradient(145deg,#153c58,#26234a);color:#8deaff;font-size:24px;box-shadow:0 0 28px #42d7ff18}
+.dashboard-ai-title h2{margin:0;font-size:clamp(21px,3vw,28px);letter-spacing:-.03em}
+.dashboard-ai-title p{margin:5px 0 0;color:#a8bdd1;font-size:13px;line-height:1.5}
+.dashboard-ai-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #2b536e;border-radius:999px;color:#a6e9ff;background:#102b40;font-size:11px;font-weight:800}
+.dashboard-ai-badge:before{content:"";width:7px;height:7px;border-radius:50%;background:#53e0b0;box-shadow:0 0 10px #53e0b0}
+.dashboard-ai-prompts{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 13px}
+.dashboard-ai-panel .ai-prompt{border:1px solid #294a68;background:#10243a;color:#d6eaff;border-radius:999px;padding:8px 12px;font:inherit;font-size:12px;cursor:pointer}
+.dashboard-ai-panel .ai-prompt:hover{border-color:#42d7ff;color:#fff}
+.dashboard-ai-panel .ai-chat{height:310px;min-height:220px;max-height:46vh;overflow:auto;border:1px solid #28445f;border-radius:15px;padding:15px;background:#06101c;display:flex;flex-direction:column;gap:11px;scroll-behavior:smooth}
+.dashboard-ai-panel .ai-msg{max-width:min(82%,760px);padding:12px 14px;border-radius:14px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
+.dashboard-ai-panel .ai-msg.user{align-self:flex-end;background:#123b55;color:#e2f7ff;border:1px solid #28607e}
+.dashboard-ai-panel .ai-msg.assistant{align-self:flex-start;background:#101f31;color:#e0eafa;border:1px solid #29425d}
+.dashboard-ai-panel .ai-compose{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;margin-top:12px}
+.dashboard-ai-panel .ai-input{box-sizing:border-box;width:100%;min-height:54px;max-height:150px;resize:vertical;padding:13px;border:1px solid #2b4966;border-radius:12px;background:#06101c;color:#eaf5ff;font:inherit;font-size:14px}
+.dashboard-ai-panel .ai-input:focus{outline:3px solid #42d7ff55;border-color:#42d7ff}
+.dashboard-ai-panel .ai-compose .btn{align-self:stretch;min-width:112px}
+.dashboard-ai-panel .ai-status{min-height:18px;margin-top:8px;color:#91a9bf;font-size:12px}
+.dashboard-ai-panel .tn-ai-workspace{margin:0 0 14px}
+.dashboard-ai-panel .tn-ai-toolbar{border-color:#294660;background:#0a1929}
+.dashboard-ai-panel .tn-ai-tool-card{background:#0a1929;border-color:#294660}
+.dashboard-ai-panel .tn-ai-privacy{margin-top:0}
+.dashboard-ai-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.dashboard-ai-footer small{color:#8fa7bc;font-size:11px;line-height:1.5}
+@media(max-width:620px){.dashboard-ai-panel .ai-compose{grid-template-columns:1fr}.dashboard-ai-panel .ai-msg{max-width:94%}.dashboard-ai-panel .ai-chat{height:280px}.dashboard-ai-panel .ai-compose .btn{min-height:48px}}
 .dashboard-section-link{color:#70dfff;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
 .dashboard-directory-note{color:var(--dash-muted);font-size:12px;line-height:1.5;margin:10px 0 0}
 .dashboard-no-results{display:none;padding:15px;color:var(--dash-muted);font-size:13px}
@@ -141,6 +168,7 @@
 <div class="dashboard-hero-art" aria-hidden="true"><div class="dashboard-orbit"><span>✦</span></div></div>
 </section>
 <div class="dashboard-widget-controls" id="widgetControls" aria-label="Dashboard widget visibility">
+<label><input type="checkbox" data-widget-toggle="assistant" checked> AI Assistant</label>
 <label><input type="checkbox" data-widget-toggle="overview" checked> Overview</label>
 <label><input type="checkbox" data-widget-toggle="apps" checked> Explore TechNova</label>
 <label><input type="checkbox" data-widget-toggle="events" checked> Events</label>
@@ -148,6 +176,27 @@
 <label><input type="checkbox" data-widget-toggle="notes" checked> Quick note</label>
 <label><input type="checkbox" data-widget-toggle="profile" checked> Profile</label>
 </div>
+<section class="dashboard-panel dashboard-ai-panel ai-card" aria-labelledby="dashboardAiTitle" data-widget-section="assistant">
+<div class="dashboard-ai-heading">
+<div class="dashboard-ai-title"><div class="dashboard-ai-mark" aria-hidden="true">✧</div><div><div class="dashboard-eyebrow">YOUR BUILT-IN TECH ASSISTANT</div><h2 id="dashboardAiTitle">Ask TechNova</h2><p>Get help, explore ideas, work with notes and use your free TechNova tools without leaving your dashboard.</p></div></div>
+<div class="dashboard-ai-badge">Ready in your workspace</div>
+</div>
+<div class="dashboard-ai-prompts" aria-label="Suggested questions">
+<button class="ai-prompt" type="button">Explain a technology topic simply</button>
+<button class="ai-prompt" type="button">What events are coming up?</button>
+<button class="ai-prompt" type="button">Help me plan a project</button>
+<button class="ai-prompt" type="button">What can you do?</button>
+</div>
+<div id="aiChat" class="ai-chat" aria-live="polite" aria-label="TechNova AI conversation">
+<div class="ai-msg assistant">Hi! I'm your TechNova assistant. Ask me a question, explore a topic, use a quick tool or add notes and documents below. I'll be clear when I don't have a reliable answer.</div>
+</div>
+<form id="aiForm" class="ai-compose">
+<textarea id="aiInput" class="ai-input" rows="2" placeholder="Ask TechNova anything…" maxlength="4000" required aria-label="Message TechNova assistant"></textarea>
+<button class="btn primary" type="submit">Ask <span aria-hidden="true">→</span></button>
+</form>
+<div id="aiStatus" class="ai-status" role="status" aria-live="polite"></div>
+<div class="dashboard-ai-footer"><small>Free browser-based assistant. Uploaded files are processed locally in this tab; no paid AI model is connected.</small><a class="dashboard-section-link" href="ai-assistant.html">Open the full AI Assistant page →</a></div>
+</section>
 <div class="dashboard-grid">
 <div class="dashboard-main-column">
 <section class="dashboard-panel" aria-labelledby="overviewTitle" data-widget-section="overview">
@@ -273,7 +322,10 @@
 <script src="../js/supabase-config.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/saved-events.js"></script>
-<script src="../js/dashboard.js?v=3"></script>
+<script src="../js/dashboard.js?v=4"></script>
 <script src="../js/script.js"></script>
+<script src="https://unpkg.com/mammoth@1.9.0/mammoth.browser.min.js" defer></script>
+<script src="../js/ai-assistant.js?v=11"></script>
+<script src="../js/ai-enhancements.js?v=5"></script>
 </body>
 </html>
