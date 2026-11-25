@@ -53,8 +53,10 @@ function syncProfile(){
  const membership=$('dashboardMembership');if(membership)membership.textContent=status;
 }
 document.addEventListener('DOMContentLoaded',async()=>{
- const name=$('accountName');
- if(name){new MutationObserver(syncProfile).observe(name,{childList:true,subtree:true,characterData:true});}
+ const name=$('accountName'),status=$('accountStatus');
+ const profileObserver=new MutationObserver(syncProfile);
+ if(name)profileObserver.observe(name,{childList:true,subtree:true,characterData:true});
+ if(status)profileObserver.observe(status,{childList:true,subtree:true,characterData:true});
  syncProfile();
  try{
   const {data:{user},error}=await client().auth.getUser();
