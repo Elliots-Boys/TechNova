@@ -75,7 +75,7 @@ button.tn-os-list-item{cursor:pointer}
 .tn-mail-layout>section{display:grid;align-content:start;gap:8px}
 .tn-mail-layout textarea{width:100%;resize:vertical;padding:10px;border:1px solid #294660;border-radius:9px;background:#071321;color:#e5f3ff;font:inherit;font-size:11px}
 .tn-mail-layout input{width:100%;min-width:0;padding:9px;border:1px solid #294660;border-radius:9px;background:#071321;color:#e5f3ff;font:inherit;font-size:11px}
-.tn-mail-connect{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:12px;border:1px solid #294660;border-radius:10px;background:#0a1b2c}
+ .tn-mail-connect{display:grid;grid-template-columns:minmax(0,1fr) repeat(3,auto);gap:8px;align-items:center;padding:12px;border:1px solid #294660;border-radius:10px;background:#0a1b2c}.tn-mail-connect #mailGoogleStatus{grid-column:1/-1}
 .tn-mail-inbox{display:grid;gap:6px;max-height:400px;overflow:auto}
 .tn-mail-message{display:grid;gap:3px;width:100%;padding:9px;border:1px solid #294660;border-radius:8px;background:#0a1b2c;color:#dceeff;text-align:left;cursor:pointer}
 .tn-mail-message strong{font-size:10px}
