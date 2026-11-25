@@ -65,7 +65,7 @@ function buildQuestions(text,type,difficulty,count){
   if(kind==='mcq'){
    const blank=sentence.replace(new RegExp('\\b'+word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','i'),'________');
    if(blank===sentence)continue;
-   const distractors=shuffle(vocabulary.filter(w=>w.toLowerCase()!==word.toLowerCase()&&w.toLowerCase()!==word.toLowerCase())).slice(0,3);
+   const distractors=shuffle(vocabulary.filter(w=>w.toLowerCase()!==word.toLowerCase())).slice(0,3);
    if(distractors.length<3)continue;
    const options=shuffle([word,...distractors]).map((v,n)=>({id:String(n),text:v,correct:v.toLowerCase()===word.toLowerCase()}));
    out.push({kind:'mcq',prompt:'Choose the word that completes the sentence from your notes:',statement:blank,options,explanation:'Your notes state: “'+sentence+'”'});
