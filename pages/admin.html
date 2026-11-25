@@ -510,6 +510,37 @@ body{
     width:100%;
   }
 }
+
+/* Dashboard refinement: clearer hierarchy, compact controls and responsive tabs. */
+.admin-page{max-width:1500px}
+.admin-header{padding:8px 0 22px;border-bottom:1px solid #1d3048}
+.admin-header h1{letter-spacing:-.045em}
+.admin-actions .btn{white-space:nowrap}
+.admin-command-bar{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin:22px 0;padding:22px 24px;border:1px solid #284766;border-radius:18px;background:radial-gradient(circle at 92% 10%,#1a547b66,transparent 38%),linear-gradient(125deg,#102944,#0a1524 78%)}
+.admin-command-bar h2{margin:3px 0 5px;font-size:clamp(21px,3vw,28px)}
+.admin-command-bar p{margin:0;color:var(--admin-muted)}
+.admin-command-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#adminLastUpdated{font-size:12px;color:#91a0b7}
+#adminRefreshBtn{border:1px solid #34718f;background:#10344d;color:#dff8ff;border-radius:10px;padding:10px 14px;font:inherit;font-weight:800;cursor:pointer}
+#adminRefreshBtn:hover{border-color:var(--admin-cyan);background:#164260}
+#adminRefreshBtn:disabled{opacity:.65;cursor:wait}
+.admin-tabs{position:sticky;top:10px;z-index:20;backdrop-filter:blur(14px);box-shadow:0 10px 30px #0003}
+.admin-tab{white-space:nowrap;transition:background .16s ease,color .16s ease}
+.admin-tab:focus-visible,#adminRefreshBtn:focus-visible{outline:3px solid var(--admin-cyan);outline-offset:3px}
+.admin-stat{position:relative;overflow:hidden;transition:transform .18s ease,border-color .18s ease}
+.admin-stat:hover{transform:translateY(-2px);border-color:#38617e}
+.admin-stat strong{font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.admin-card{border-color:#263d59}
+.admin-table th{position:sticky;top:0;background:#0d1a2b}
+@media(max-width:700px){
+ .admin-command-bar{align-items:flex-start;padding:18px}
+ .admin-command-meta{width:100%;justify-content:space-between}
+ .admin-tabs{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+ .admin-tab{flex:0 0 auto}
+ .admin-card{padding:17px}
+}
+@media(prefers-reduced-motion:reduce){.admin-stat,.admin-tab{transition:none}.admin-stat:hover{transform:none}}
+
 </style>
 </head>
 
@@ -527,6 +558,7 @@ body{
 
 <div class="admin-actions">
 <a class="btn" href="../index.html">View website</a>
+<a class="btn" href="dashboard.html">Personal dashboard</a>
 <a class="btn" href="account.html">My account</a>
 <button id="logoutBtn" class="btn admin-danger" type="button">
 Log out
@@ -535,18 +567,30 @@ Log out
 
 </header>
 
+<section class="admin-command-bar" aria-label="Admin control centre">
+  <div>
+    <p class="eyebrow">CONTROL CENTRE</p>
+    <h2>Platform overview</h2>
+    <p>Monitor activity and manage TechNova from one workspace.</p>
+  </div>
+  <div class="admin-command-meta">
+    <span id="adminLastUpdated" role="status" aria-live="polite">Waiting for secure admin access…</span>
+    <button id="adminRefreshBtn" type="button">↻ Refresh data</button>
+  </div>
+</section>
+
 <div id="adminMessage" class="admin-message" aria-live="polite"></div>
 
 <nav class="admin-tabs" aria-label="Admin sections">
 
-<button class="admin-tab active" data-section="overview">📊 Overview</button>
-<button class="admin-tab" data-section="events">📅 Events</button>
-<button class="admin-tab" data-section="users">👥 Users</button>
-<button class="admin-tab" data-section="registrations">📋 Registrations</button>
-<button class="admin-tab" data-section="articles">📰 Articles</button>
-<button class="admin-tab" data-section="quiz">🧠 Quiz</button>
-<button class="admin-tab" data-section="content">🏠 Website</button>
-<button class="admin-tab" data-section="activity">📝 Activity</button>
+<button class="admin-tab active" type="button" aria-current="page" aria-controls="section-overview" data-section="overview">📊 Overview</button>
+<button class="admin-tab" type="button" aria-controls="section-events" data-section="events">📅 Events</button>
+<button class="admin-tab" type="button" aria-controls="section-users" data-section="users">👥 Users</button>
+<button class="admin-tab" type="button" aria-controls="section-registrations" data-section="registrations">📋 Registrations</button>
+<button class="admin-tab" type="button" aria-controls="section-articles" data-section="articles">📰 Articles</button>
+<button class="admin-tab" type="button" aria-controls="section-quiz" data-section="quiz">🧠 Quiz</button>
+<button class="admin-tab" type="button" aria-controls="section-content" data-section="content">🏠 Website</button>
+<button class="admin-tab" type="button" aria-controls="section-activity" data-section="activity">📝 Activity</button>
 
 </nav>
 
@@ -1373,6 +1417,7 @@ const supabaseClient =
 ===================================================== */
 
 let currentAdmin = null;
+let dashboardLoading = false;
 
 let allUsers = [];
 let allEvents = [];
@@ -1633,6 +1678,10 @@ document
 
 
         button.classList.add('active');
+        button.setAttribute('aria-current','page');
+        document.querySelectorAll('.admin-tab').forEach(item => {
+          if(item !== button) item.removeAttribute('aria-current');
+        });
 
         const section =
           $('section-' + button.dataset.section);
@@ -4627,15 +4676,15 @@ $('logoutBtn')
 ===================================================== */
 
 async function loadDashboard(){
-
-  const user =
-    await checkAdmin();
-
-
-  if(!user) return;
-
+  if(dashboardLoading) return;
+  dashboardLoading = true;
+  const refreshButton = $('adminRefreshBtn');
+  const updatedLabel = $('adminLastUpdated');
+  if(refreshButton){ refreshButton.disabled = true; refreshButton.textContent = 'Refreshing…'; }
 
   try{
+    const user = await checkAdmin();
+    if(!user) return;
 
     await Promise.all([
       loadUsers(),
@@ -4648,7 +4697,6 @@ async function loadDashboard(){
       loadActivity()
     ]);
 
-
     try{
       const contentStats = await window.TechNovaAnalytics.contentAndQuizStats();
       $('draftArticleCount').textContent = contentStats.draftArticles;
@@ -4660,44 +4708,26 @@ async function loadDashboard(){
       $('quizQuestionCount').textContent = '—';
     }
 
-
     renderOverview();
-
-
-    showMessage(
-      'Admin dashboard loaded successfully.',
-      'good'
-    );
-
-
-    setTimeout(
-      clearMessage,
-      3500
-    );
-
+    if(updatedLabel) updatedLabel.textContent = 'Last refreshed ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    showMessage('Admin dashboard refreshed successfully.','good');
+    setTimeout(clearMessage,3500);
   }
   catch(error){
-
-    console.error(
-      'TechNova admin error:',
-      error
-    );
-
-
-    showMessage(
-      error?.message ||
-      'Some administrator data could not be loaded.'
-    );
-
+    console.error('TechNova admin error:',error);
+    showMessage(error?.message || 'Some administrator data could not be loaded.');
+    if(updatedLabel) updatedLabel.textContent = 'Refresh failed — try again';
   }
-
+  finally{
+    dashboardLoading = false;
+    if(refreshButton){ refreshButton.disabled = false; refreshButton.textContent = '↻ Refresh data'; }
+  }
 }
 
-
-document.addEventListener(
-  'DOMContentLoaded',
-  loadDashboard
-);
+document.addEventListener('DOMContentLoaded', () => {
+  $('adminRefreshBtn')?.addEventListener('click', loadDashboard);
+  loadDashboard();
+});
 
 </script>
 <script src="../js/admin-tools.js"></script>
