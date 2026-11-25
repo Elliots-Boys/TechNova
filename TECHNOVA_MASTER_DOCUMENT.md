@@ -699,7 +699,7 @@ Applications included:
 - Personalisation Centre with theme, accent, wallpaper, density and reduced-motion settings.
 - File Manager using IndexedDB for files imported by the user, with folder labels, search, download and deletion. Existing Google Drive and Cloud Manager pages are linked for their separately configured services.
 - AI & Study Centre with local flashcards and manually entered grade records, plus a link to the existing TechNova AI Assistant for its current study and document tools.
-- Notification Centre deriving in-app reminders from local project deadlines and calendar entries.
+- Notification Centre deriving in-app reminders from local project deadlines, existing personal tasks and calendar entries.
 - Extensions Marketplace to enable/disable built-in desktop modules. It does not install or execute arbitrary third-party code.
 
 Privacy and technical boundaries:
