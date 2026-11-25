@@ -22,7 +22,7 @@ async function loadSavedEvents(){
  try{
   const rows=await window.TechNovaSavedEvents.list();
   container.replaceChildren();
-  if(!rows.length){const empty=document.createElement('p');empty.className='dashboard-empty';empty.textContent='No saved events yet. Browse events and save the ones you want to revisit.';container.append(empty);return;}
+  if(!rows.length){const empty=document.createElement('p');empty.className='dashboard-empty';empty.textContent='No saved events yet. Browse events and save the ones you want to revisit.';container.append(empty);return true;}
   rows.slice(0,4).forEach(row=>container.append(makeEventItem(row.events,'saved')));
   return true;
  }catch(error){container.textContent='Your saved events could not be loaded right now.';console.warn('Dashboard saved events unavailable:',error?.message);return false;}
