@@ -854,9 +854,9 @@ One integrated PR adds the following built-in Desktop applications and system fe
 
 ---
 
-## 29. TechNova Desktop expansion follow-up fixes (PR #51)
+## 29. TechNova Desktop expansion follow-up fixes (PR #52)
 
-**Status:** Draft follow-up PR prepared from the merged PR #50 baseline. Not merged and not deployed.
+**Status:** Open draft pull request [#52](https://github.com/Elliots-Boys/TechNova/pull/52), created from the merged PR #50 baseline. Not merged and not deployed.
 
 ### Fixes and additions
 
@@ -873,7 +873,7 @@ One integrated PR adds the following built-in Desktop applications and system fe
 
 - Enable Gmail API in Google Cloud, configure the OAuth consent screen, add `gmail.readonly` and `gmail.send`, create a Web application OAuth client, and authorise the exact TechNova JavaScript origin.
 - Enter only the OAuth Client ID in Mail Centre. Never enter or commit a Google client secret.
-- Google may require OAuth verification for public production access because Gmail scopes include restricted/sensitive access. Until the owner configures Google Cloud, local drafts remain available and the other Desktop apps continue to work.
+- Google may require OAuth verification for public production access because Gmail scopes include restricted/sensitive access. Until the owner configures Google Cloud and PR #52 is merged and deployed, local drafts remain available and the other Desktop apps continue to work.
 
 ### Scope and verification
 
@@ -883,4 +883,18 @@ One integrated PR adds the following built-in Desktop applications and system fe
 
 ### Pull request
 
-The follow-up PR is being prepared from the merged PR #50 baseline. Its final GitHub URL and state will be recorded here when created.
+[PR #52 — Fix and complete TechNova Desktop expansion](https://github.com/Elliots-Boys/TechNova/pull/52). Status: open draft; not merged or deployed.
+
+---
+
+## 30. README Gmail setup documentation (PR #56)
+
+**Status:** Documentation-only pull request, prepared separately for user review. Not merged and not deployed.
+
+- Replaces the placeholder README with a concise project introduction, TechNova Desktop overview, project links and documentation links.
+- Adds an optional Gmail connection section that explains Google Cloud project setup, Gmail API enablement, the two required Gmail scopes, Web OAuth Client ID creation, the authorised JavaScript origin and test-user configuration.
+- Clearly states that Gmail support is being added in PR #52 and will not be available on the live site until PR #52 is merged and the updated site is deployed.
+- Warns users never to publish or commit a Google Client Secret and links to the detailed `docs/technova-gmail-oauth-setup.md` guide.
+- No application code, Supabase configuration/schema, Cloudflare settings or deployment is changed.
+
+Pull request: [#56 — Document TechNova Gmail setup in README](https://github.com/Elliots-Boys/TechNova/pull/56). Status: open draft; not merged or deployed.
