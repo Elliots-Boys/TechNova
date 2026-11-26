@@ -7,24 +7,22 @@
   <url><loc>https://technova-bmm.pages.dev/pages/news.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/about.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/contact.html</loc></url>
-  <url><loc>https://technova-bmm.pages.dev/pages/login.html</loc></url>
-  <url><loc>https://technova-bmm.pages.dev/pages/signup.html</loc></url>
-  <url><loc>https://technova-bmm.pages.dev/pages/account.html</loc></url>
-  <url><loc>https://technova-bmm.pages.dev/pages/settings.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/discover.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/community.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/community-guidelines.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/resources.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/faq.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/faq-live.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/support.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/careers.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/partners.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/partners-directory.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/privacy.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/terms.html</loc></url>
-  <url><loc>https://technova-bmm.pages.dev/pages/search.html</loc></url>
-  <url><loc>https://technova-bmm.pages.dev/pages/saved.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/accessibility.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/roadmap.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/changelog.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/updates.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/sitemap.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/radar.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/compare.html</loc></url>
@@ -32,16 +30,30 @@
   <url><loc>https://technova-bmm.pages.dev/pages/glossary.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/learning.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/showcase.html</loc></url>
-  <url><loc>https://technova-bmm.pages.dev/pages/notifications.html</loc></url>
-  <url><loc>https://technova-bmm.pages.dev/pages/dashboard.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/challenges.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/directory.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/calendar.html</loc></url>
-  <url><loc>https://technova-bmm.pages.dev/pages/bookmarks.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/analytics.html</loc></url>
-  <url><loc>https://technova-bmm.pages.dev/pages/ai-assistant.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/achievements.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/leaderboard.html</loc></url>
-  <url><loc>https://technova-bmm.pages.dev/pages/tickets.html</loc></url>
   <url><loc>https://technova-bmm.pages.dev/pages/quiz.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/feedback.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/gallery.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/ideas.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/integrations.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/press.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/pricing.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/projects.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/releases.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/status.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/tools.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/tool-colour-palette.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/tool-file-size-converter.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/tool-html-playground.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/tool-ip-information.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/tool-json-formatter.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/tool-pc-planner.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/tool-qr-generator.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/tool-text-utilities.html</loc></url>
+  <url><loc>https://technova-bmm.pages.dev/pages/tool-unit-converter.html</loc></url>
 </urlset>

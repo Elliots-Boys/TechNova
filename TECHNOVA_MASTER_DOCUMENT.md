@@ -898,3 +898,19 @@ One integrated PR adds the following built-in Desktop applications and system fe
 - No application code, Supabase configuration/schema, Cloudflare settings or deployment is changed.
 
 Pull request: [#56 — Document TechNova Gmail setup in README](https://github.com/Elliots-Boys/TechNova/pull/56). Status: open draft; not merged or deployed.
+
+
+---
+
+## 31. Public XML sitemap refresh (SEO follow-up)
+
+**Status:** Open draft pull request for user review; not merged and not deployed.
+
+- Refreshes the root `sitemap.xml` using the current public-facing HTML page inventory.
+- Adds newly available public information, community, directory, tools, status, pricing, release and support pages.
+- Excludes account-specific, authentication, administrative, OAuth callback/test, and dynamic record pages from the public sitemap.
+- Keeps the existing `robots.txt` sitemap declaration pointing to `https://technova-bmm.pages.dev/sitemap.xml`.
+- No application functionality, Supabase configuration/schema, Cloudflare settings or deployment is changed.
+- After merge and deployment, submit `sitemap.xml` in Google Search Console. Google may take time to crawl and index listed URLs.
+
+Pull request: to be linked after creation. Status: open draft; not merged or deployed.
