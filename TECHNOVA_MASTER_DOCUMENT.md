@@ -887,7 +887,7 @@ One integrated PR adds the following built-in Desktop applications and system fe
 
 ---
 
-## 30. README Gmail setup documentation (PR #53)
+## 30. README Gmail setup documentation (PR #56)
 
 **Status:** Documentation-only pull request, prepared separately for user review. Not merged and not deployed.
 
@@ -897,4 +897,4 @@ One integrated PR adds the following built-in Desktop applications and system fe
 - Warns users never to publish or commit a Google Client Secret and links to the detailed `docs/technova-gmail-oauth-setup.md` guide.
 - No application code, Supabase configuration/schema, Cloudflare settings or deployment is changed.
 
-Pull request: to be recorded here after creation.
+Pull request: [#56 — Document TechNova Gmail setup in README](https://github.com/Elliots-Boys/TechNova/pull/56). Status: open draft; not merged or deployed.
